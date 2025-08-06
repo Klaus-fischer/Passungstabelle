@@ -159,55 +159,6 @@ Public Class SetupDialog
         End If
     End Sub
 
-    'Alte INI Datei einlesen
-    Private Sub Button10_Click(sender As Object, e As EventArgs) Handles Button10.Click
-        Dim pfad As String
-        Dim ok As Boolean
-
-        'Abfrage ob die Setup-Datei auch wirkllich ersetzt werden soll
-        If MsgBox("Achtung: Dadurch wird eine ev. vorhandene Setup Datei ersetzt." & Chr(10) & "Wählen Sie Ja wenn Sie die Datei importieren möchten", vbYesNo, "Meldung") = vbNo Then
-            Exit Sub
-        End If
-
-        pfad = Setup_pfad & Definitionen.INI_File
-
-        If WriteAccess(pfad) = False Then
-            MsgBox("Sie haben keinen Schreibzugriff auf die Datei " & pfad & " oder sie existiert nicht", vbOKOnly, "Meldung")
-            Exit Sub
-        End If
-
-        ok = False
-
-        'Wenn die alte Ini-Datei eingelsen werden konnte
-        If Module1.Write_XML_from_old_ini(Me) Then
-            'Fortschrittbalken und Text setzen
-            ToolStripProgressBar1.Value = 9
-            ToolStripStatusLabel1.Text = "Datei lesen"
-            Refresh()
-            'Versuche die XML-Datei einzulesen
-            Try
-                Data.ReadXml(pfad)
-                'Dataset zurücksetzen
-                'erst nachdem wir sicher sind, dass die Datei auch gelesen werden kann
-                'wird das Dataset Objekt gelöscht
-                Data.Clear()
-                Data.ReadXml(pfad)
-                GenerelleAttributeBindingSource.Position = 0
-                ToolStripProgressBar1.Value = 0
-                ToolStripStatusLabel1.Text = "Alte Datei konvertiert"
-            Catch
-                'Falls das Lesen nicht erfolgreich war
-                Module1.Create_Tabels(Data)
-                MsgBox("Fehler beim Lesen der Setup.XML Datei", vbOKOnly, "Meldung")
-                ToolStripProgressBar1.Value = 0
-                ToolStripStatusLabel1.Text = "Fehler bei der Konvertierung"
-            End Try
-        End If
-        Refresh()
-        TabControl1.SelectedTab = TabPage4
-        MsgBox("Achtung:" & Chr(10) & "da zusätzliche Spalten dazugekommen sind" & Chr(10) & "müssen Sie die Spaltenübersetzungen, im Tabulator, 'Sprachen' ergänzen", vbInformation, "Meldung")
-    End Sub
-
     Private Sub SetSpaltenFarbe(Spalte As String, Aktiv As Boolean)
         Dim ctrlList As New List(Of Control)
 
@@ -246,6 +197,14 @@ Public Class SetupDialog
 
         pfad = Setup_pfad & Definitionen.INI_File
 
+        '*****
+        Dim pt As New Passungstabelle
+        pt.Check_for_setup()
+        pt.ReadResources()
+        pt.Attr_get_Meldungen()
+        pt = Nothing
+        '*****
+
         'Versuch die Setup Datei zu lesen
         Try
             Data.ReadXml(pfad)
@@ -254,12 +213,13 @@ Public Class SetupDialog
         Catch
             ok = False
             Module1.Create_Tabels(Data)
-            MsgBox("Keine Setup.XML Datei gefunden, Daten werden mit Standardwerten befüllt", vbOKOnly, "Meldung")
+            MsgBox(My.Resources.Keine_Setup_XML_Datei_gefunden__Daten_werden_mit_Standardwerten_befüllt, vbOKOnly, My.Resources.Meldung)
         End Try
 
         'Check ob die Setup Datei geschrieben werden kann
         If WriteAccess(pfad) = False Then
-            MsgBox("Sie haben kein Schreibrecht für die Datei " & Chr(10) & pfad & Chr(10) & " Setup wird abgebrochen", vbOKOnly, "Meldung")
+            'MsgBox("Sie haben kein Schreibrecht für die Datei " & Chr(10) & pfad & Chr(10) & " Setup wird abgebrochen", vbOKOnly, "Meldung")
+            MsgBox(My.Resources.Sie_haben_kein_Schreibrecht_für_die_Datei & Chr(10) & pfad & Chr(10) & " " & My.Resources.Setup_wird_abgebrochen, vbOKOnly, My.Resources.Meldung)
             Me.Close()
             Exit Sub
         End If
@@ -271,7 +231,12 @@ Public Class SetupDialog
 
         Setup_pfad = GetSetupPath()
 
-        Me.Text = "Passungstabelle Ver. " & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " Setup für - " & ListBoxFormate.Text
+        'Me.Text = "Passungstabelle Ver. " & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " Setup für - " & ListBoxFormate.Text
+        Me.Text = My.Resources.Passungstabelle & " Ver. " & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " " & My.Resources.Setup_für & " - " & ListBoxFormate.Text
+        If Not CB_EventDriven.Checked Then
+            RB_AfterRegen.Enabled = False
+            RB_BeforeSave.Enabled = False
+        End If
     End Sub
 
     Private Sub FarbeZeile_TextChanged(sender As Object, e As EventArgs) Handles FarbeZeile.TextChanged
@@ -290,7 +255,8 @@ Public Class SetupDialog
         TabellenAttributeBindingSource.Position = pos
         FormatAttributeBindingSource.Position = Pos
         FormatBindingSource1.Position = Pos
-        Me.Text = "Passungstabelle Ver. " & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " Setup für - " & ListBoxFormate.Text
+        'Me.Text = "Passungstabelle Ver. " & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " Setup für - " & ListBoxFormate.Text
+        Me.Text = My.Resources.Passungstabelle & " Ver. " & System.Reflection.Assembly.GetExecutingAssembly.GetName.Version.ToString & " " & My.Resources.Setup_für & " - " & ListBoxFormate.Text
 
     End Sub
 
@@ -330,13 +296,15 @@ Public Class SetupDialog
 
         doc = swapp.ActiveDoc
         If doc Is Nothing Then
-            MsgBox("Keine Datei geladen", vbInformation, "Meldung")
+            'MsgBox("Keine Datei geladen", vbInformation, "Meldung")
+            MsgBox(My.Resources._Keine_Datei_geladen, vbInformation, My.Resources.Meldung)
             GetSheetProperties = prop
             Exit Function
         End If
 
         If doc.GetType <> SolidWorks.Interop.swconst.swDocumentTypes_e.swDocDRAWING Then
-            MsgBox("Keine Zeichnung geladen", vbInformation, "Meldung")
+            'MsgBox("Keine Zeichnung geladen", vbInformation, "Meldung")
+            MsgBox(My.Resources._Keine_Zeichnung_geladen, vbInformation, My.Resources.Meldung)
             GetSheetProperties = prop
             Exit Function
         End If
@@ -363,7 +331,8 @@ Public Class SetupDialog
     Private Function Format_anlegen() As String
         Dim name As String
 
-        name = InputBox("Formatname: ", "Format anlegen", "")
+        'name = InputBox("Formatname: ", "Format anlegen", "")
+        name = InputBox(My.Resources.Formatname & ": ", My.Resources.Format_anlegen, "")
         If name = "" Then
             Format_anlegen = ""
         Else
@@ -388,7 +357,8 @@ Public Class SetupDialog
         prop = GetSheetProperties()
 
         If prop.Eigenschaften Is Nothing Then
-            antwort = MsgBox("Keine Format gefunden. Möchten Sie ein Format manuell erstellen?", vbYesNo, "Meldung")
+            'antwort = MsgBox("Keine Format gefunden. Möchten Sie ein Format manuell erstellen?", vbYesNo, "Meldung")
+            antwort = MsgBox(My.Resources.Keine_Format_gefunden__Möchten_Sie_ein_Format_manuell_erstellen_, vbYesNo, My.Resources.Meldung)
             If antwort = vbNo Then
                 Exit Sub
             End If
@@ -405,7 +375,8 @@ Public Class SetupDialog
         End If
 
         If FormatBereitsVorhanden(prop.Formatname) Then
-            MsgBox("Format ist bereits definiert", vbInformation, "Meldung")
+            'MsgBox("Format ist bereits definiert", vbInformation, "Meldung")
+            MsgBox(My.Resources.Format_ist_bereits_definiert, vbInformation, My.Resources.Meldung)
             Exit Sub
         End If
 
@@ -457,11 +428,13 @@ Public Class SetupDialog
         Dim delpos As Integer
 
         If ListBoxFormate.SelectedIndex = -1 Then
-            MsgBox("Kein Eintrag gewählt", vbInformation & vbOKOnly, "Meldung")
+            'MsgBox("Kein Eintrag gewählt", vbInformation & vbOKOnly, "Meldung")
+            MsgBox(My.Resources.Kein_Eintrag_gewählt, vbInformation & vbOKOnly, My.Resources.Meldung)
             Exit Sub
         End If
 
-        antwort = MsgBox("Sind Sie sicher, dass Sie den Eintrag löschen möchten?", vbQuestion & vbYesNo, "Meldung")
+        'antwort = MsgBox("Sind Sie sicher, dass Sie den Eintrag löschen möchten?", vbQuestion & vbYesNo, "Meldung")
+        antwort = MsgBox(My.Resources.Sind_Sie_sicher__dass_Sie_den_Eintrag_löschen_möchten_, vbQuestion & vbYesNo, My.Resources.Meldung)
 
         If antwort <> vbYes Then
             Exit Sub
@@ -499,7 +472,8 @@ Public Class SetupDialog
         If sprachen.Count > 0 Then
             If DataGridÜbersetzungen.Rows(e.RowIndex).Cells(0).Value.ToString <> "" Then
                 If sprachen.Contains(DataGridÜbersetzungen.Rows(e.RowIndex).Cells(0).Value.ToString) = True Then
-                    MsgBox("Diese Sprache ist bereits definiert", vbInformation, "Meldung")
+                    'MsgBox("Diese Sprache ist bereits definiert", vbInformation, "Meldung")
+                    MsgBox(My.Resources.Diese_Sprache_ist_bereits_definiert, vbInformation, My.Resources.Meldung)
                     DataGridÜbersetzungen.Rows(e.RowIndex).Cells(0).Value = ""
                 Else
                     'Id speichern
@@ -523,7 +497,8 @@ Public Class SetupDialog
         End If
 
         If DataGridÜbersetzungen.Rows.Count = 1 And pos = 0 Then
-            MsgBox("Der einzige Eintrag kann nicht gelöscht werden", vbInformation, "Meldung")
+            'MsgBox("Der einzige Eintrag kann nicht gelöscht werden", vbInformation, "Meldung")
+            MsgBox(My.Resources.Der_einzige_Eintrag_kann_nicht_gelöscht_werden, vbInformation, My.Resources.Meldung)
             e.Cancel = vbCancel
             Exit Sub
         End If
@@ -538,13 +513,14 @@ Public Class SetupDialog
 
         For Each n In kombinationen
             If InStr(n, s1) Then
-                MsgBox("Diese Sprache wird in einer Tabelle verwendet und kann nicht gelöscht werden", vbInformation, "Meldung")
+                'MsgBox("Diese Sprache wird in einer Tabelle verwendet und kann nicht gelöscht werden", vbInformation, "Meldung")
+                MsgBox(My.Resources.Diese_Sprache_wird_in_einer_Tabelle_verwendet_und_kann_nicht_gelöscht_werden, vbInformation, My.Resources.Meldung)
                 e.Cancel = vbCancel
                 Exit Sub
             End If
         Next
 
-        antwort = MsgBox("Sind Sie sicher, dass Sie den Eintrag löschen möchten?", vbQuestion & vbYesNo, "Meldung")
+        antwort = MsgBox(My.Resources.Sind_Sie_sicher__dass_Sie_den_Eintrag_löschen_möchten_, vbQuestion & vbYesNo, My.Resources.Meldung)
 
         If antwort <> vbYes Then
             e.Cancel = vbCancel
@@ -574,13 +550,15 @@ Public Class SetupDialog
 
         'macht nur Sinn wenn mehr als 2 Formate vorhanden sind
         If ListBoxFormate.Items.Count <= 1 Then
-            MsgBox("Keine oder zu wenige Formate zum abgleichen vorhanden", vbOKOnly, "Meldung")
+            'MsgBox("Keine oder zu wenige Formate zum abgleichen vorhanden", vbOKOnly, "Meldung")
+            MsgBox(My.Resources.Keine_oder_zu_wenige_Formate_zum_abgleichen_vorhanden, vbOKOnly, My.Resources.Meldung)
             Exit Sub
         End If
 
         'wenn kein Format ausgewählt ist, dann können keine Werte übertragen werden
         If ListBoxFormate.SelectedIndex = -1 Then
-            MsgBox("Sie haben kein Format gewählt von dem die Werte übernommen werden sollen", vbOKOnly, "Meldung")
+            ' MsgBox("Sie haben kein Format gewählt von dem die Werte übernommen werden sollen", vbOKOnly, "Meldung")
+            MsgBox(My.Resources.Sie_haben_kein_Format_gewählt_von_dem_die_Werte_übernommen_werden_sollen, vbOKOnly, My.Resources.Meldung)
             Exit Sub
         End If
 
@@ -676,17 +654,20 @@ Public Class SetupDialog
 
     Private Sub NurAufErstemBlatt_CheckedChanged(sender As Object, e As EventArgs) Handles NurAufErstemBlatt.CheckedChanged
         If Not NurAufErstemBlatt.Checked And LöschenAufRestlichenBlättern.Checked Then
-            MsgBox("Achtung: durch diese Kombination" & Chr(10) _
-             & "(nur auf erstem Blatt nein UND auf restlichen Blättern löschen ja)" & Chr(10) _
-             & "wird auf keinem Baltt die Passungstabelle eingefügt")
+            ' MsgBox("Achtung: durch diese Kombination" & Chr(10) _
+            '  & "(nur auf erstem Blatt nein UND auf restlichen Blättern löschen ja)" & Chr(10) _
+            '  & "wird auf keinem Blatt die Passungstabelle eingefügt")
+            MsgBox(My.Resources.Achtung__durch_diese_Kombination & Chr(10) _
+             & My.Resources._nur_auf_erstem_Blatt_nein_UND_auf_restlichen_Blättern_löschen_ja_ & Chr(10) _
+             & My.Resources.wird_auf_keinem_Blatt_die_Passungstabelle_eingefügt)
         End If
     End Sub
 
     Private Sub LöschenAufRestlichenBlättern_CheckedChanged(sender As Object, e As EventArgs) Handles LöschenAufRestlichenBlättern.CheckedChanged
         If Not NurAufErstemBlatt.Checked And LöschenAufRestlichenBlättern.Checked Then
-            MsgBox("Achtung: durch diese Kombination" & Chr(10) _
-             & "(nur auf erstem Blatt nein UND auf restlichen Blättern löschen ja)" & Chr(10) _
-             & "wird auf keinem Baltt die Passungstabelle eingefügt")
+            MsgBox(My.Resources.Achtung__durch_diese_Kombination & Chr(10) _
+             & My.Resources._nur_auf_erstem_Blatt_nein_UND_auf_restlichen_Blättern_löschen_ja_ & Chr(10) _
+             & My.Resources.wird_auf_keinem_Blatt_die_Passungstabelle_eingefügt)
         End If
     End Sub
 
@@ -754,7 +735,7 @@ Public Class SetupDialog
         prop = GetSheetProperties()
 
         If prop.Eigenschaften Is Nothing Then
-            MsgBox("Keine Format gefunden", vbOKOnly, "Meldung")
+            MsgBox(My.Resources.Keine_Format_gefunden, vbOKOnly, My.Resources.Meldung)
             Exit Sub
         Else
             Breite.Text = prop.Eigenschaften(5) * 1000.0
@@ -777,7 +758,7 @@ Public Class SetupDialog
 
         For i = 0 To ListBoxFormate.Items.Count - 1
             If ListBoxFormate.Items(i).ToString.ToUpper = DlgRename.FormatName.Text.ToUpper Then
-                MsgBox("Dieser Formatname existiert bereits", vbOKOnly, "Meldung")
+                MsgBox(My.Resources.Dieser_Formatname_existiert_bereits, vbOKOnly, My.Resources.Meldung)
                 Exit Sub
             End If
         Next
@@ -845,4 +826,26 @@ Public Class SetupDialog
         End If
     End Function
 
+    Private Sub CB_EventDriven_CheckedChanged(sender As Object, e As EventArgs) Handles CB_EventDriven.CheckedChanged
+        If CB_EventDriven.Checked Then
+            RB_AfterRegen.Enabled = True
+            RB_BeforeSave.Enabled = True
+            If Not RB_AfterRegen.Checked And Not RB_BeforeSave.Checked Then
+                RB_AfterRegen.Checked = True
+            End If
+        Else
+            RB_AfterRegen.Enabled = False
+            RB_BeforeSave.Enabled = False
+            RB_BeforeSave.Checked = False
+            RB_AfterRegen.Checked = False
+        End If
+    End Sub
+
+    Private Sub RB_AfterRegen_CheckedChanged(sender As Object, e As EventArgs) Handles RB_AfterRegen.CheckedChanged
+        If RB_AfterRegen.Checked Then RB_BeforeSave.Checked = False
+    End Sub
+
+    Private Sub RB_BeforeSave_CheckedChanged(sender As Object, e As EventArgs) Handles RB_BeforeSave.CheckedChanged
+        If RB_BeforeSave.Checked Then RB_AfterRegen.Checked = False
+    End Sub
 End Class

@@ -92,39 +92,43 @@ Public Class Passungstabelle_Tabelle
 
                 'Keine Freistehenden Bemaßungen und Bemaßungen bei denen der Bemaßungswert 0 ist
                 'Bemaßungswert 0 kommt bei abgelösten Zeichnungen vor
-                If dispdim.GetAnnotation.isdangling = False And dispdim.GetDimension2(0).Value <> 0 Then
-                    If dispdim.GetAnnotation.visible = swAnnotationVisibilityState_e.swAnnotationHalfHidden Or dispdim.GetAnnotation.visible = swAnnotationVisibilityState_e.swAnnotationVisible Then
-                        'Dimension ermittel
-                        'dort befinden sich die Passungsangabe und Toleranzen
-                        dimen = dispdim.GetDimension2(0)
+                If dispdim.GetDimension2(0) Is Nothing Then
+                    Log.WriteInfo(My.Resources._keine_Bemaßung_gefunden, "", True)
+                Else
+                    If dispdim.GetAnnotation.isdangling = False And dispdim.GetDimension2(0).Value <> 0 Then
+                        If dispdim.GetAnnotation.visible = swAnnotationVisibilityState_e.swAnnotationHalfHidden Or dispdim.GetAnnotation.visible = swAnnotationVisibilityState_e.swAnnotationVisible Then
+                            'Dimension ermittel
+                            'dort befinden sich die Passungsangabe und Toleranzen
+                            dimen = dispdim.GetDimension2(0)
 
-                        'Wenn es sich um einen Durchmsser handelt dann wird dem Maß ein Ø Symbol vorangestellt
-                        'If dispdim.Type2 = swDimensionType_e.swDiameterDimension Or dispdim.GetText(swDimensionTextParts_e.swDimensionTextPrefix) = "<MOD-DIAM>" Or InStr(dispdim.GetText(swDimensionTextParts_e.swDimensionTextPrefix), "<MOD-DIAM>") <> 0 Then
-                        If CheckForDiameter(dispdim) = True Then
-                            prefix = "Ø"
-                        Else
-                            prefix = ""
+                            'Wenn es sich um einen Durchmsser handelt dann wird dem Maß ein Ø Symbol vorangestellt
+                            'If dispdim.Type2 = swDimensionType_e.swDiameterDimension Or dispdim.GetText(swDimensionTextParts_e.swDimensionTextPrefix) = "<MOD-DIAM>" Or InStr(dispdim.GetText(swDimensionTextParts_e.swDimensionTextPrefix), "<MOD-DIAM>") <> 0 Then
+                            If CheckForDiameter(dispdim) = True Then
+                                prefix = "Ø"
+                            Else
+                                prefix = ""
+                            End If
+
+                            'Test für Zone ****************
+                            zone = GetZoneFromDisplayDimension(dispdim, swView, Blatt)
+                            'Test für Zone ****************
+
+                            'Passung und Toleranzen ermitteln
+                            Gettolfromdim(dimen, prefix, zone)
+
+                            'Prüfung ob es sich um eine Bohrungsbeschreibung handelt
+                            holeVariables = dispdim.GetHoleCalloutVariables
+
+                            'Wenn Bohrungs-Beschreibungs-Variablen gefunden wurden
+                            If Not holeVariables Is Nothing Then
+                                Gettolfromcalloutvar(prefix, holeVariables, dimen, zone)
+                            End If
                         End If
-
-                        'Test für Zone ****************
-                        zone = GetZoneFromDisplayDimension(dispdim, swView, Blatt)
-                        'Test für Zone ****************
-
-                        'Passung und Toleranzen ermitteln
-                        Gettolfromdim(dimen, prefix, zone)
-
-                        'Prüfung ob es sich um eine Bohrungsbeschreibung handelt
-                        holeVariables = dispdim.GetHoleCalloutVariables
-
-                        'Wenn Bohrungs-Beschreibungs-Variablen gefunden wurden
-                        If Not holeVariables Is Nothing Then
-                            Gettolfromcalloutvar(prefix, holeVariables, dimen, zone)
-                        End If
+                    ElseIf dispdim.GetAnnotation.isdangling = True Then
+                        Log.WriteInfo(My.Resources._ist_eine_freistehende_Bemaßung, " " & My.Resources.Bemaßung & ": " & dispdim.GetDimension2(0).FullName & " " & My.Resources.Maß & ": " & (dispdim.GetDimension2(0).SystemValue * fac).ToString & Chr(9), True)
+                    ElseIf dispdim.GetDimension2(0).Value = 0 Then
+                        Log.WriteInfo(My.Resources._hat_den_Wert_0, " " & My.Resources.Bemaßung & ": " & dispdim.GetDimension2(0).FullName & " " & My.Resources.Maß & ": " & (dispdim.GetDimension2(0).SystemValue * fac).ToString & Chr(9), True)
                     End If
-                ElseIf dispdim.GetAnnotation.isdangling = True Then
-                    Log.WriteInfo("Bemaßung: " & dispdim.GetDimension2(0).FullName & " Maß: " & (dispdim.GetDimension2(0).SystemValue * fac).ToString & Chr(9) & "ist eine freistehende Bemaßung", True)
-                ElseIf dispdim.GetDimension2(0).Value = 0 Then
-                    Log.WriteInfo("Bemaßung: " & dispdim.GetDimension2(0).FullName & " Maß: " & (dispdim.GetDimension2(0).SystemValue * fac).ToString & Chr(9) & "hat den Wert 0", True)
                 End If
             Next
         End If
@@ -181,7 +185,7 @@ Public Class Passungstabelle_Tabelle
             'Könnte ja auch sein, dass als Toleranzttyp Passung eingestellt ist und keine Passung gewählt wurde
             'Wenn kein Passungswert gefunden wird, dann Abbruch der Funktion
             'If Not CheckForFitValues(tol.GetHoleFitValue, tol.GetShaftFitValue, "Bemaßung: " & dimen.FullName & " Maß: " & dimen.GetSystemValue2("") * fac) Then
-            If Not CheckForFitValues(tol.GetHoleFitValue, tol.GetShaftFitValue, "Bemaßung: " & dimen.FullName & " Maß: " & dimen.SystemValue * fac) Then
+            If Not CheckForFitValues(tol.GetHoleFitValue, tol.GetShaftFitValue, My.Resources.Bemaßung & ": " & dimen.FullName & " " & My.Resources.Maß & ": " & dimen.SystemValue * fac) Then
                 Gettolfromdim = False
                 Exit Function
             End If
@@ -247,7 +251,7 @@ Public Class Passungstabelle_Tabelle
             For Each temp In tempz
                 If Not temp Is Nothing Then
                     TabellenZeilen.Add(temp)
-                    Log.WriteInfo("Bemaßung: " & temp.Zeile("Name") & " Maß: " & temp.Zeile("Maß").ToString & Chr(9) & temp.Zeile("Passung"), False)
+                    Log.WriteInfo(My.Resources.Bemaßung & ": " & temp.Zeile("Name") & " " & My.Resources.Maß & ": " & temp.Zeile("Maß").ToString & Chr(9) & temp.Zeile("Passung"), "", False)
                     temp = Nothing
                     Tabellenzeilencount = Tabellenzeilencount + 1
                 End If
@@ -277,7 +281,7 @@ Public Class Passungstabelle_Tabelle
 
         'Prüfung ob auch Passungswerte eingetragen sind
         'Könnte ja auch sein, dass als Toleranzttyp Passung eingestellt ist und keine Passung gewählt wurde
-        If Not CheckForFitValues(swCalloutVariable.HoleFit, swCalloutVariable.ShaftFit, "Bemaßung: " & swCalloutVariable.VariableName & " Maß: " & swCalloutLengthVariable.Length * fac) Then
+        If Not CheckForFitValues(swCalloutVariable.HoleFit, swCalloutVariable.ShaftFit, My.Resources.Bemaßung & ": " & swCalloutVariable.VariableName & " " & My.Resources.Maß & ": " & swCalloutLengthVariable.Length * fac) Then
             tempz = Nothing
             GettolfromfitCallOut = tempz
             Exit Function
@@ -293,6 +297,7 @@ Public Class Passungstabelle_Tabelle
             swCalloutVariable.ShaftFit = temp1.Zeile("Passung")
             temp1.Zeile("ToleranzU") = swCalloutVariable.ToleranceMin * fac
             temp1.Zeile("ToleranzO") = swCalloutVariable.ToleranceMax * fac
+            ' Toleranzen von Doppepassungen
         ElseIf temp.Zeile("Passung") <> "" And temp1.Zeile("Passung") <> "" Then
             '* Bohungswerte ermitteln
             swCalloutVariable.HoleFit = temp.Zeile("Passung")
@@ -306,18 +311,17 @@ Public Class Passungstabelle_Tabelle
             '* Alten Wert wieder setzen
             swCalloutVariable.HoleFit = temp.Zeile("Passung")
             swCalloutVariable.ShaftFit = temp1.Zeile("Passung")
-
         End If
         If Not IsNothing(temp) Then
             If CheckForFitToleranceValues(temp) Then
                 tempz.Add(temp)
-                Log.WriteInfo("Bemaßung: " & temp.Zeile("Name") & " Maß: " & temp.Zeile("Maß").ToString & Chr(9) & temp.Zeile("Passung"), False)
+                Log.WriteInfo(My.Resources.Bemaßung & ": " & temp.Zeile("Name") & " " & My.Resources.Maß & ": " & temp.Zeile("Maß").ToString & Chr(9) & temp.Zeile("Passung"), "", False)
             End If
         End If
         If Not IsNothing(temp1) Then
             If CheckForFitToleranceValues(temp1) Then
                 tempz.Add(temp1)
-                Log.WriteInfo("Bemaßung: " & temp1.Zeile("Name") & " Maß: " & temp1.Zeile("Maß").ToString & Chr(9) & temp1.Zeile("Passung"), False)
+                Log.WriteInfo(My.Resources.Bemaßung & ": " & temp1.Zeile("Name") & " " & My.Resources.Maß & ": " & temp1.Zeile("Maß").ToString & Chr(9) & temp1.Zeile("Passung"), "", False)
             End If
         End If
         GettolfromfitCallOut = tempz
@@ -351,7 +355,7 @@ Public Class Passungstabelle_Tabelle
                     'Prüfung ob auch Passungswerte eingetragen sind
                     'Könnte ja auch sein, dass als Toleranzttyp Passung eingestellt ist und keine Passung gewählt wurde
                     'Wenn kein Passungswert gefunden wird, dann Abbruch der Funktion
-                    If Not CheckForFitValues(swCalloutVariable.HoleFit, swCalloutVariable.ShaftFit, "Bemaßung: " & swCalloutVariable.VariableName & " Maß: " & swCalloutLengthVariable.Length * fac) Then
+                    If Not CheckForFitValues(swCalloutVariable.HoleFit, swCalloutVariable.ShaftFit, My.Resources.Bemaßung & ": " & swCalloutVariable.VariableName & " " & My.Resources.Maß & ": " & swCalloutLengthVariable.Length * fac) Then
                         Gettolfromcalloutvar = False
                         Exit Function
                     End If
@@ -360,6 +364,7 @@ Public Class Passungstabelle_Tabelle
                     If swCalloutVariable.HoleFit <> "" And swCalloutVariable.ShaftFit = "" Then
                         temp = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, True, zone)
                         temp.Prefix = prefix
+                        temp.Zeile.Add("Type", "Hole")
                         'wenn die Passungswerte nicht gewählt wurden sondern manuel eingetragen wurden
                         If swCalloutVariable.ToleranceMin = 0.0 And swCalloutVariable.ToleranceMax = 0.0 Then
                             tempz = GettolfromfitCallOut(swCalloutVariable, swCalloutLengthVariable, dimen, zone)
@@ -371,7 +376,7 @@ Public Class Passungstabelle_Tabelle
                     ElseIf swCalloutVariable.ShaftFit <> "" And swCalloutVariable.HoleFit = "" Then
                         temp = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, False, zone)
                         temp.Prefix = prefix
-
+                        temp.Zeile.Add("Type", "Shaft")
                         If swCalloutVariable.ToleranceMin = 0.0 And swCalloutVariable.ToleranceMax = 0.0 Then
                             tempz = GettolfromfitCallOut(swCalloutVariable, swCalloutLengthVariable, dimen, zone)
                         Else
@@ -383,11 +388,13 @@ Public Class Passungstabelle_Tabelle
                         '* Bohungswerte ermitteln
                         temp = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, True, zone)
                         temp.Prefix = prefix
+                        temp.Zeile.Add("Type", "Hole")
                         If swCalloutVariable.ToleranceMin = 0.0 And swCalloutVariable.ToleranceMax = 0.0 Then flag = True
 
                         '* wellenwerte ermitteln
                         temp1 = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, False, zone)
                         temp1.Prefix = prefix
+                        temp1.Zeile.Add("Type", "Shaft")
                         If swCalloutVariable.ToleranceMin = 0.0 And swCalloutVariable.ToleranceMax = 0.0 Then flag = True
 
                         '* Alten Wert wieder setzen
@@ -404,11 +411,14 @@ Public Class Passungstabelle_Tabelle
 
                     For Each temp In tempz
                         If Not temp Is Nothing Then
-                            TabellenZeilen.Add(temp)
-                            Log.WriteInfo("Bohrungsbeschreibung", False)
-                            Log.WriteInfo("Bemaßung: " & temp.Zeile("Name") & " Maß: " & temp.Zeile("Maß").ToString & Chr(9) & temp.Zeile("Passung"), False)
-                            temp = Nothing
-                            Tabellenzeilencount = Tabellenzeilencount + 1
+                            '8.2.0.3 Änderung wegen falscher Passungen
+                            If CheckForFitToleranceValues(temp) Then
+                                TabellenZeilen.Add(temp)
+                                Log.WriteInfo(My.Resources.Bohrungsbeschreibung, "", False)
+                                Log.WriteInfo(My.Resources.Bemaßung & ": " & temp.Zeile("Name") & " " & My.Resources.Maß & ": " & temp.Zeile("Maß").ToString & Chr(9) & temp.Zeile("Passung"), "", False)
+                                temp = Nothing
+                                Tabellenzeilencount = Tabellenzeilencount + 1
+                            End If
                         End If
                     Next
                     Gettolfromcalloutvar = True
@@ -424,12 +434,12 @@ Public Class Passungstabelle_Tabelle
         If ShaftFitStr = "" And HoleFitStr = "" Then
             'If (Attr_generell("ReaktionAufLeerePassung") = True) And (Attr_generell("Fehlermeldung") = True) Then
             If (Attr_generell("ReaktionAufLeerePassung") = False) Then
-                Log.WriteInfo("Keine Passung für " & MaszStr & " eingetragen", True)
+                Log.WriteInfo(My.Resources._Keine_Passung_für, " " & MaszStr & " " & My.Resources.eingetragen, True)
             End If
             CheckForFitValues = False
-                Exit Function
-            End If
-            CheckForFitValues = True
+            Exit Function
+        End If
+        CheckForFitValues = True
     End Function
     'Prüfung ob auch Toleranzwertwerte für die Passung gefunden wurden
     'z.B.: Passung M3 ist nur bis zu einer Größe von max. 50mm definiert
@@ -437,7 +447,25 @@ Public Class Passungstabelle_Tabelle
         Dim log As New LogFile(Attr_generell)
 
         If temp.Zeile("Passung") <> "" And temp.Zeile("ToleranzO") = 0.0 And temp.Zeile("ToleranzU") = 0.0 Then
-            log.WriteInfo("Keine Passungswerte für Passung " & temp.Zeile("Maß") & "/" & temp.Zeile("Passung") & " gefunden", True)
+            log.WriteInfo(My.Resources._Keine_Passungswerte_für, " " & temp.Zeile("Maß") & "/" & temp.Zeile("Passung") & " " & My.Resources.gefunden, True)
+            ' Update 8.2.03 Hinweis auf falsche Passungen
+            If temp.Zeile("Passung")(0) >= "A" And temp.Zeile("Passung")(0) <= "Z" And temp.Zeile("Type") = "Shaft" Then
+                'log.WriteInfo("Passung " & temp.Zeile("Passung") & " passt nicht zu Wellenpassung", True)
+                log.WriteInfo(My.Resources._passt_nicht_zu_Wellenpassung, " " & My.Resources.Passung & " " & temp.Zeile("Passung"), True)
+            ElseIf temp.Zeile("Passung")(0) >= "a" And temp.Zeile("Passung")(0) <= "z" And temp.Zeile("Type") = "Hole" Then
+                'log.WriteInfo("Passung " & temp.Zeile("Passung") & " passt nicht zu Bohrungspassung", True)
+                log.WriteInfo(My.Resources._passt_nicht_zu_Bohrungspassung, " " & My.Resources.Passung & " " & temp.Zeile("Passung"), True)
+            End If
+            CheckForFitToleranceValues = False
+            Exit Function
+        ElseIf temp.Zeile("Passung")(0) >= "A" And temp.Zeile("Passung")(0) <= "Z" And temp.Zeile("Type") = "Shaft" Then
+            'log.WriteInfo("Passung " & temp.Zeile("Passung") & " passt nicht zu Wellenpassung", True)
+            log.WriteInfo(My.Resources._passt_nicht_zu_Wellenpassung, " " & My.Resources.Passung & " " & temp.Zeile("Passung"), True)
+            CheckForFitToleranceValues = False
+            Exit Function
+        ElseIf temp.Zeile("Passung")(0) >= "a" And temp.Zeile("Passung")(0) <= "z" And temp.Zeile("Type") = "Hole" Then
+            'log.WriteInfo("Passung " & temp.Zeile("Passung") & " passt nicht zu Bohrungspassung", True)
+            log.WriteInfo(My.Resources._passt_nicht_zu_Bohrungspassung, " " & My.Resources.Passung & " " & temp.Zeile("Passung"), True)
             CheckForFitToleranceValues = False
             Exit Function
         End If
@@ -461,8 +489,10 @@ Public Class Passungstabelle_Tabelle
 
         If Hole Then
             tol.SetFitValues(tol.GetHoleFitValue, "")
+            temp.Zeile.Add("Type", "Hole")
         Else
             tol.SetFitValues("", tol.GetShaftFitValue)
+            temp.Zeile.Add("Type", "Shaft")
         End If
         temp.Zeile("Zone") = zone
         temp.Zeile("Maß") = Math.Round((dimen.GetSystemValue2("") * fac), RundenAuf).ToString

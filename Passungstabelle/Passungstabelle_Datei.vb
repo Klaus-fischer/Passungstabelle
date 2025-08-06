@@ -10,6 +10,8 @@ Public Class Passungstabelle_Datei
     Property Attr_Übersetzungen As New Dictionary(Of String, Dictionary(Of String, String))
     Property Attr_Formate As New Dictionary(Of String, Dictionary(Of String, String))
     Property Attr_Tabelle As New Dictionary(Of String, Dictionary(Of String, String))
+    '2022-06-24
+    'Property Attr_Meldungen As New Dictionary(Of String, Dictionary(Of String, Boolean))
 
     'Property Log As New LogFile(Attr_generell)
     Property Log As LogFile
@@ -31,23 +33,23 @@ Public Class Passungstabelle_Datei
         ok = False
         SwDraw = swmodel
 
-        Log.WriteInfo(swmodel.GetPathName, False)
+        Log.WriteInfo(swmodel.GetPathName, "", False)
 
         '* Namen der Blätter speichern
         BlätterStr = swDraw.GetSheetNames()
         If BlätterStr.Length = 0 Then
-            Log.WriteInfo("Keine Blätter gefunden", True)
+            Log.WriteInfo(My.Resources._Keine_Blätter_in_der_Zeichnung, "", True)
             PassungsTabelleGetSheets = ok
             Exit Function
         End If
 
         '* Aktuelles Blatt speichern um diese später wieder zu aktivieren
-        Swcsheet = swDraw.GetCurrentSheet
+        Swcsheet = SwDraw.GetCurrentSheet
 
         'Blätter suchen und initialisieren
         SetBlätter(swmodel)
 
-        swDraw.ActivateSheet(swcsheet.GetName)
+        SwDraw.ActivateSheet(Swcsheet.GetName)
         PassungsTabelleGetSheets = True
     End Function
 
@@ -68,11 +70,11 @@ Public Class Passungstabelle_Datei
         End If
 
         For i = 0 To z
-            Blätter(i) = New Passungstabelle_Blatt(Swapp, Attr_generell, Attr_Übersetzungen, SwDraw.Sheet(BlätterStr(i)), swmodel)
+            Blätter(i) = New Passungstabelle_Blatt(Swapp, Attr_generell, Attr_Übersetzungen, SwDraw.Sheet(BlätterStr(i)), swmodel, Log)
             Blätter(i).SetSheetAttr(Attr_Formate, Attr_Tabelle)
             '* Ermittlung der Ansichten auf dem Blatt
             Blätter(i).PassungsTabelleGetViews(swmodel, BlätterStr(i))
-            Blätter(i).Log = Log
+            'Blätter(i).Log = Log
         Next
 
         'suchen nach Passungen auf den Blättern
@@ -116,7 +118,7 @@ Public Class Passungstabelle_Datei
 
         For i = 0 To z
             Blätter(i).SetEinfügepunkt()
-            Blätter(i).passungsTabelleGetDimensions()
+            Blätter(i).PassungsTabelleGetDimensions()
             Blätter(i).SetEinfügePunktPosition()
         Next
 
@@ -148,7 +150,7 @@ Public Class Passungstabelle_Datei
         'Keine Passungen gefunden
         If Not PassungenGefunden Then
             'Wenn Fehlermeldung ausgegeben werden soll
-            Log.WriteInfo("Keine Passungen gefunden", True)
+            Log.WriteInfo(My.Resources._Keine_Passungen_gefunden, "", True)
             Exit Sub
         End If
 

@@ -1,0 +1,179 @@
+﻿
+
+<html>
+	
+<head>
+	<title>Versionshinweise</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="HelpNDoc Personal Edition 7.2.0.306">
+	<meta name="description" content="" /> 
+	<meta name="keywords" content="">
+	
+	
+	
+	<link type="text/css" rel="stylesheet" media="all" href="css/reset.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/base.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/hnd.css" />
+	<!--[if lte IE 8]>
+		<link type="text/css" rel="stylesheet" media="all" href="css/ielte8.css" />
+	<![endif]-->
+	<style type="text/css">
+		#topic_header
+		{
+			background-color: #EFEFEF;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/hnd.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+		{
+			if (top.frames.length == 0)
+			{
+				var sTopicUrl = top.location.href.substring(top.location.href.lastIndexOf("/") + 1, top.location.href.length);
+				top.location.href = "Passungstabelle.html?" + sTopicUrl;
+			}
+			else
+			{
+				var bTocSelected = false;
+				(function waitForTOC()
+				{
+					if (top && top.FrameTOC && top.FrameTOC.SelectTocItem)
+					{
+						top.FrameTOC.SelectTocItem("Versionshinweise");
+						bTocSelected = true;
+					}
+					if (!bTocSelected) setTimeout(function() { waitForTOC(); }, 300);
+				})();
+			}
+		});
+	</script>
+	
+	
+</head>
+
+<body>
+
+
+
+	
+		<div id="topic_header">
+			<div id="topic_header_content">
+				<h1 id="topic_header_text">Versionshinweise</h1>
+				
+				
+				<div id="topic_breadcrumb">
+					<a href="Passungstabelle.html">Passungstabelle</a> &rsaquo;&rsaquo; <a href="Neuigkeiten.html">Neuigkeiten</a> &rsaquo;&rsaquo; 
+				</div>
+				
+			</div>
+			
+			<div id="topic_header_nav">
+				
+				
+				<a href="Neuigkeiten.html"><img src="img/arrow_up.png" alt="Parent"/></a>
+				
+				
+				
+				<a href="Neuigkeiten.html"><img src="img/arrow_left.png" alt="Previous"/></a>
+				
+				
+				
+				<a href="NeueOptionen.html"><img src="img/arrow_right.png" alt="Next"/></a>
+				
+				
+			</div>
+			
+			<div class="clear"></div>
+		</div>
+	
+	
+	<div id="topic_content">
+		
+<h1 class="rvps8"><a name="topic_content"></a><span class="rvts0"><span class="rvts12">Versionshinweise</span></span></h1>
+<p class="rvps11"><span class="rvts25">Version 8.2.0.3</span></p>
+<p class="rvps2"><span class="rvts23"> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="rvts24">Es wird geprüft ob die Angabe des Kennbuchstaben zu Passung richtig ist</span></p>
+<p class="rvps2"><span class="rvts24"> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="rvts24">d.h. wird ein Kleinbuchstabe bei einer Bohrungspassung oder umgekehrt</span></p>
+<p class="rvps10"><span class="rvts24">ein Großbuchstabe bei einer Wellenpassung angegeben, dann wird eine Fehlermeldung erzeugt.</span><br/><span class="rvts24"> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="rvts24">Abhängig davon ob die Optionen für die Meldungen bzw. schreiben der Log-Datei aktiviert ist</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.2.0.2</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Es wird auf freistehende Bemaßungen geprüft</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Freistehende Bemaßungen und Bemaßungen bei denen der Maßwert 0 ist werden übersprungen</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;d.h. Das Add-In ist nicht auf abgelöste Zeichnungen anwendbar</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.2.0.1</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Bei linearen Bemaßungen, denen ein Ø Zeichen mit zusätzlichem Text vor dem Ø Zeichen angefügt wurde,</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;wurde das Ø Zeichen in der Passungstabelle nicht angezeigt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Die Regel dafür ist, wenn die letzten Zeichen im Präfix &lt;MOD-DIA&gt; oder Ø enthalten wird ein Ø Zeichen</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;in der Passungstabelle gesetzt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.2.0.0</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Einstellung der Region und Sprache sollten keinen Einfluss mehr auf die Dezimalrechnung haben</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Log-Datei wird im Verzeichnis C:\Users\Benutzername\AppData\Roaming\nahe\Passungstabelle gespeichert</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;damit sollte auch das Problem mit fehlenden Schreibrechten behoben sein</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;zusätzlich wird geprüft ob in dem Verzeichnis der Log-Datei eine Datei erstellt werden kann</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;falls das nicht möglich ist, wird das Makro trotzdem ordnungsgemäß ausgeführt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.1.0.3</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler behoben:</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Berechnung der automatischen Spaltenbreite verbessert</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Berechnung der Zeilenhöhe</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Bohrungstabelle wird richtig auch ausgewertet wenn Bezeichnungen komprimiert sind</span></p>
+<p class="rvps10"><span class="rvts11">Sichtbarkeit von Bemaßungen wird berücksichtigt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.1.0.2</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler behoben:</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;wenn Kopfzeile unten, wurde Tabelle falsch formatiert</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Bug von SolidWorks 2019 setzen der Breite der Rasterlinienbreite behoben,</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;durch Verwendung von ModelDoc2.Extension.InsertGeneralTableAnnotation an Stelle von DrawingDoc.InsertTableAnnotation</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;siehe dazu auch SPR 1118249</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.1.0.1</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Zusätzliche Spalten für die Anzahl der Maß/Passungskombinationen und der Zeichenblattzone</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehlerbereinigung bei automatischer Bestimmung der Spaltenbreite</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Funktionen zum Setzen von Standardwerten, wenn Felder in der Setup.XML Datei nicht gefunden werden, hinzugefügt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;(vor allem in Hinblick auf zukünftige Erweiterungen)</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Log-Datei wird nicht mehr in das Installationsverzeichnis geschrieben, sonder in das Verzeichnis</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;C:\ProgramData\nahe\Passungstabelle\Passungstabelle.log</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Installation erweitert, damit Setup.XML Datei in ein eigenes Verzeichnis installiert werden kann</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;zusätzliche Fehlerabfragen beim Lesen und Speichern der Setup.XML Datei</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.0.0.5 Beta</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Nochmalige Fehlerbereinigung bei der Auswertung von Passungen in der Form H7/m6 bei Bohrungsbeschreibungen</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Versionsnummer wird im Setup Dialog angezeigt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.0.0.4 Beta</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler bei der Auswertung von Passungen in der Form H7/m6 bei Bohrungsbeschreibungen, bereinigt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler bei der Einstellung der Rahmen- und Raster-Linien-Stärke bereinigt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.0.0.3 Beta</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Code weiter bereinigt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Werkzeugkasten und Commandmanger Icons auf PNG-Format geändert</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Text bei Farbauswahl für Schriftarten nicht mehr sichtbar</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler korrigiert, Ø wird bei Linearbemaßung falsch angezeigt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.0.0.2 Beta</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler mehrfache Tabellen bei mehreren Blättern bereinigt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehlerabfragen hinzugefügt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Bemaßungsnamen in Log-Datei</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Wenn keine Passungen gefunden werden, werden ev. vorhandene Tabellen gelöscht</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Code weiter bereinigt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.0.0.1 Beta</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Getestet mit SolidWorks Version 2016 und 2018</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Fehler korrigiert, Ø wird falsch angezeigt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Symbol für Zusatzanwendungsdialog hinzugefügt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Standard Setup.XML Datei mit SolidWorks iso-Formaten hinzugefügt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Hilfe erweitert</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Option Alle Benutzer/aktueller Benutzer aus Setup Dialog entfernt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Werkzeugleiste für Passungstabelle hinzugefügt</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Code bereinigt</span></p>
+<p class="rvps9"><span class="rvts20">Version 8.0.0.0 Beta</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Neuprogrammierung als Add In</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;Setup-Datei als XML-Datei</span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;zusätzliche Optionen</span><br/><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;etliche Verbesserungen</span></p>
+<p class="rvps2"><span class="rvts11"><br/></span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;</span><img width="22" height="20" alt="" src="lib/libAchtung.png"></p>
+<p class="rvps10"><span class="rvts11">dies ist die erste Vorab-Version des Add In´s wahrscheinlich sind noch einige Fehler enthalten</span></p>
+<p class="rvps10"><span class="rvts11">und die Stabilität des Add In's ist sicher noch verbesserungswürdig.</span></p>
+<p class="rvps10"><span class="rvts11">sobald der Code bereinigt ist, werde ich auch wieder den Quellcode zur Verfügung stellen</span></p>
+<p class="rvps10"><span class="rvts11"><br/></span></p>
+<p class="rvps10"><span class="rvts11"><br/></span></p>
+<p class="rvps2"><span class="rvts11">&nbsp; &nbsp; &nbsp; &nbsp;</span></p>
+<p class="rvps10"><span class="rvts11"><br/></span></p>
+<p class="rvps10"><span class="rvts11"><br/></span></p>
+<p class="rvps10"><span class="rvts11"></span><span class="rvts6"></span></p>
+<p class="rvps5" style="clear: both;"><span class="rvts14">Mit dem Personal Edition von HelpNDoc erstellt: </span><a class="rvts15" href="https://www.helpndoc.com/de">Einfacher EPub und Dokumentationseditor</a></p>
+
+	</div>
+	
+	
+		<div id="topic_footer">
+
+			<div id="topic_footer_content">
+				Copyright &copy; 21.02.2021 by nahe. All Rights Reserved.
+			</div>
+		</div>
+	
+	
+
+	
+</body>
+	
+</html>
+

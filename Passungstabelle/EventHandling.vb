@@ -1,14 +1,15 @@
 Imports SolidWorks.Interop.sldworks
 Imports SolidWorks.Interop.swconst
 
+
 'Base class for model event handlers
 Public Class DocumentEventHandler
     Protected openModelViews As New Hashtable()
-    Protected userAddin As SwAddin
+    Protected userAddin As NaheFitTable
     Protected iDocument As ModelDoc2
     Protected iSwApp As SldWorks
 
-    Overridable Function Init(ByVal sw As SldWorks, ByVal addin As SwAddin, ByVal model As ModelDoc2) As Boolean
+    Overridable Function Init(ByVal sw As SldWorks, ByVal addin As NaheFitTable, ByVal model As ModelDoc2) As Boolean
     End Function
 
     Overridable Function AttachEventHandlers() As Boolean
@@ -69,7 +70,7 @@ Public Class PartEventHandler
 
     Dim WithEvents IPart As PartDoc
 
-    Overrides Function Init(ByVal sw As SldWorks, ByVal addin As SwAddin, ByVal model As ModelDoc2) As Boolean
+    Overrides Function Init(ByVal sw As SldWorks, ByVal addin As NaheFitTable, ByVal model As ModelDoc2) As Boolean
         userAddin = addin
         iPart = model
         iDocument = iPart
@@ -105,9 +106,9 @@ Public Class AssemblyEventHandler
     Inherits DocumentEventHandler
 
     Dim WithEvents IAssembly As AssemblyDoc
-    Dim swAddin As SwAddin
+    Dim swAddin As NaheFitTable
 
-    Overrides Function Init(ByVal sw As SldWorks, ByVal addin As SwAddin, ByVal model As ModelDoc2) As Boolean
+    Overrides Function Init(ByVal sw As SldWorks, ByVal addin As NaheFitTable, ByVal model As ModelDoc2) As Boolean
         userAddin = addin
         iAssembly = model
         iDocument = iAssembly
@@ -222,7 +223,7 @@ Public Class DrawingEventHandler
     Dim WithEvents IDrawing As DrawingDoc
 
 
-    Overrides Function Init(ByVal sw As SldWorks, ByVal addin As SwAddin, ByVal model As ModelDoc2) As Boolean
+    Overrides Function Init(ByVal sw As SldWorks, ByVal addin As NaheFitTable, ByVal model As ModelDoc2) As Boolean
         userAddin = addin
         iDrawing = model
         iDocument = IDrawing
@@ -233,7 +234,14 @@ Public Class DrawingEventHandler
         'AddHandler iDrawing.DestroyNotify, AddressOf Me.DrawingDoc_DestroyNotify
         'AddHandler IDrawing.NewSelectionNotify, AddressOf Me.DrawingDoc_NewSelectionNotify
         If userAddin.eventgesteuert = True Then
-            AddHandler IDrawing.RegenPostNotify, AddressOf Me.DrawingDoc_RegenPostNotify
+            If userAddin.Event_AfterRegen = True Then
+                AddHandler IDrawing.RegenPostNotify, AddressOf Me.DrawingDoc_RegenPostNotify
+            End If
+            If userAddin.Event_BevorSave = True Then
+                AddHandler IDrawing.FileSaveNotify, AddressOf Me.DrawingDocEvents_FileSaveNotify
+                AddHandler IDrawing.FileSaveAsNotify2, AddressOf Me.DrawingDocEvents_FileSaveNotify
+            End If
+
         End If
         '*ConnectModelViews()
     End Function
@@ -241,7 +249,13 @@ Public Class DrawingEventHandler
     Overrides Function DetachEventHandlers() As Boolean
 
         If userAddin.eventgesteuert = True Then
-            RemoveHandler IDrawing.RegenPostNotify, AddressOf Me.DrawingDoc_RegenPostNotify
+            If userAddin.Event_AfterRegen = True Then
+                RemoveHandler IDrawing.RegenPostNotify, AddressOf Me.DrawingDoc_RegenPostNotify
+            End If
+            If userAddin.Event_AfterRegen = True Then
+                RemoveHandler IDrawing.FileSaveNotify, AddressOf Me.DrawingDocEvents_FileSaveNotify
+                RemoveHandler IDrawing.FileSaveAsNotify2, AddressOf Me.DrawingDocEvents_FileSaveNotify
+            End If
         End If
         userAddin.DetachModelEventHandler(iDocument)
     End Function
@@ -249,7 +263,6 @@ Public Class DrawingEventHandler
     Function DrawingDoc_DestroyNotify() As Integer
         DetachEventHandlers()
     End Function
-
 
     Function DrawingDoc_RegenPostNotify() As Integer
         Dim Fittable As New Passungstabelle
@@ -259,16 +272,33 @@ Public Class DrawingEventHandler
         Return 0
     End Function
 
+    Function DrawingDocEvents_FileSaveNotify(ByVal FileName As System.String) As System.Int32
+        Dim Fittable As New Passungstabelle
+
+        Fittable.Main(iSwApp, IDrawing)
+        Fittable = Nothing
+
+        Return 0
+    End Function
+
+    'Function DrawingDocEvents_FileSaveAsNotify2(ByVal FileName As System.String) As System.Int32
+    '    Dim Fittable As New Passungstabelle
+
+    '    Fittable.Main(iSwApp, IDrawing)
+    '    Fittable = Nothing
+
+    '    Return 0
+    'End Function
 End Class
 
 'Class for handling ModelView events
 Public Class DocView
 
     Dim WithEvents IModelView As ModelView
-    Dim userAddin As SwAddin
+    Dim userAddin As NaheFitTable
     Dim parentDoc As DocumentEventHandler
 
-    Function Init(ByVal addin As SwAddin, ByVal mView As ModelView, ByVal parent As DocumentEventHandler) As Boolean
+    Function Init(ByVal addin As NaheFitTable, ByVal mView As ModelView, ByVal parent As DocumentEventHandler) As Boolean
         userAddin = addin
         iModelView = mView
         parentDoc = parent

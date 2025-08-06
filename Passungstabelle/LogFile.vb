@@ -5,12 +5,14 @@ Imports System.Collections.Generic
 Imports System.Environment
 
 Imports System.IO
+Imports System.Windows.Forms.ImageList
 
 Public Class LogFile
-    Property LogPfad As String = ""                                 'Pfad zur Log_Datei
-    Property Attr_generell As New Dictionary(Of String, String)     'Generelle Attribute
-    Property UserName As String = ""                                'Benutzername
-    Property IOAccessToLogPath As Boolean = False                   'Zeigt an ob Schreibzugriff auf das Verzeichnis der Log-Datei existiert
+    Property LogPfad As String = ""                                                          'Pfad zur Log_Datei
+    Property Attr_generell As New Dictionary(Of String, String)                              'Generelle Attribute
+    Property Attr_Meldungen As New Dictionary(Of String, Dictionary(Of String, Boolean))     'Liste der Meldungen die angezeigt werden sollen
+    Property UserName As String = ""                                                         'Benutzername
+    Property IOAccessToLogPath As Boolean = False                                            'Zeigt an ob Schreibzugriff auf das Verzeichnis der Log-Datei existiert
 
     'Initialisierung der Klasse mit der Liste der generellen Attribute
     Sub New(attr As Dictionary(Of String, String))
@@ -27,9 +29,12 @@ Public Class LogFile
 
     'Sub        WriteInfo  
     'Paramter:  Info (welcher Text soll ausgegeben werden
-    '           Msg (True es wird auch eine Mledung am Bildschirm ausgegeben, Fals keine Meldung am Bildschirm)
-    Public Sub WriteInfo(Info As String, Msg As Boolean)
+    '           Msg (True es wird auch eine Mledung am Bildschirm ausgegeben, False keine Meldung am Bildschirm)
+    Public Sub WriteInfo(Info As String, Info2 As String, Msg As Boolean)
         Dim tempattr As Boolean
+        Dim MsgShow As Boolean = False
+        Dim ShowStr As Dictionary(Of String, Boolean)
+
 
         'Wenn LogPfad leer ist, dann besteht kein Schreibrecht in das Verzeichnis
         If LogPfad = "" Then
@@ -49,9 +54,9 @@ Public Class LogFile
             My.Application.Log.DefaultFileLogWriter.BaseFileName = System.IO.Path.Combine(LogPfad, Definitionen.LOGName)
             My.Application.Log.DefaultFileLogWriter.AutoFlush = True
             If Info = "Start" Or Info = "Fertig" Then
-                My.Application.Log.WriteEntry(Now.ToLocalTime & Chr(9) & "***" & Info & "*** User: " & UserName, TraceEventType.Information)
+                My.Application.Log.WriteEntry(Now.ToLocalTime & Chr(9) & "***" & Info & Info2 & "*** User: " & UserName, TraceEventType.Information)
             Else
-                My.Application.Log.WriteEntry(Now.ToLocalTime & Chr(9) & Info, TraceEventType.Information)
+                My.Application.Log.WriteEntry(Now.ToLocalTime & Chr(9) & Info & Info2, TraceEventType.Information)
             End If
             If Info = "Fertig" Then
                 My.Application.Log.DefaultFileLogWriter.Close()
@@ -65,9 +70,29 @@ Public Class LogFile
             tempattr = False
         End Try
         If tempattr = False And Msg = True Then
-            MsgBox(Info, vbOKOnly, "Meldung")
+            MsgBox(Info & Info2, vbOKOnly, "Meldung")
+        ElseIf Msg = True Then
+            Try
+                If GetMsgValue(Info) Then
+                    MsgBox(Info + Info2, vbOKOnly, "Meldung")
+                End If
+            Catch ex As Exception
+            End Try
         End If
     End Sub
+
+    Public Function GetMsgValue(info As String) As Boolean
+        Dim value As Dictionary(Of String, Boolean)
+
+        For Each n As KeyValuePair(Of String, Dictionary(Of String, Boolean)) In Attr_Meldungen
+            value = n.Value
+            If value.ContainsKey(info) Then
+                GetMsgValue = value(info)
+                Exit Function
+            End If
+        Next
+        GetMsgValue = False
+    End Function
 
     'Function   GetLogPath
     'Paramter:  keine

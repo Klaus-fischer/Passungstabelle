@@ -12,4 +12,7 @@ Public Class RenameFormat
         Me.Close()
     End Sub
 
+    Private Sub RenameFormat_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        Me.Text = My.Resources.Format_umbenennen
+    End Sub
 End Class

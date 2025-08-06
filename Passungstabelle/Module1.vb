@@ -14,27 +14,8 @@ Imports System.Windows.Forms.DataVisualization
 
 
 Module Module1
-    Private exc As Microsoft.Office.Interop.Excel.Application   'Verweis auf Excel
     Property SwxMacroPfad As String                             'Pfad zum Verzeichnis der Applikation
     Property Setup_Pfad As String
-
-    'Sub        Init_excel
-    'Paramter:  Keine
-    'Startet Excel
-    'Achtung: keine Fehlerabfrage wenn Excel nicht gestartet werden kann
-    Sub Init_excel()
-        On Error Resume Next
-        'läuft Excel bereits?
-        exc = GetObject(, "Excel.Application")
-        'Wenn Excel noch nicht läuft
-        If Err.Number <> 0 Then
-            'Excel starten
-            exc = CreateObject("Excel.Application")
-            exc.Visible = False
-        Else
-            exc.Visible = False
-        End If
-    End Sub
 
     'Sub        Create_tabels
     'Paramter:  XMLDaten
@@ -168,80 +149,7 @@ Module Module1
         XMLDaten.AcceptChanges()
     End Sub
 
-    'Function:  Read_Tab_sprachen_neu
-    'Paramter:  Keine
-    'Ergebnis:  Dictionary(Of String, Dictionary(Of String, String))
-    'liest die Übersetzungen aus der Datei Sprachen.xls ein und gibt sie als Dictionary zurück
-    Function Read_Tab_sprachen_neu() As Dictionary(Of String, Dictionary(Of String, String))
-        Dim wbs As Microsoft.Office.Interop.Excel.Workbooks
-        Dim wb As Microsoft.Office.Interop.Excel.Workbook
-        Dim ws As Microsoft.Office.Interop.Excel.Worksheet
-        Dim rg As Microsoft.Office.Interop.Excel.Range
-        Dim pfad As String
-        Dim temp As Dictionary(Of String, String)
-        Dim temp1 As New Dictionary(Of String, Dictionary(Of String, String))
-        Dim x As Integer
-        Dim y As Integer
 
-        'Verweis auf Excel holen 
-        Init_excel()
-        'Pfad und Dateiname definieren
-        'pfad = SwxMacroPfad & "\Sprachen.xls"
-        pfad = SwxMacroPfad & "Sprachen.xls"
-        'Workbooks holen
-        wbs = exc.Workbooks
-        'Workbook holen
-        wb = wbs.Open(pfad, False, True)
-        'Wenn kein Workbook gefunden wurde, dann Programmabbruch
-        If IsNothing(wb) Then
-            MsgBox("Datei Sprachen.xls nicht gefunden" & Chr(10) & "im Verzeichnis: " & SwxMacroPfad & Chr(10) & "Import abgebrochen")
-            Read_Tab_sprachen_neu = temp1
-            Exit Function
-        End If
-        'Erstes Blatt holen
-        ws = wb.Worksheets.Item(1)
-
-        'Spalten und Zeilenzähler initialisieren
-        x = 2
-        y = 2
-
-        'Rangeobjekt auf die 2. Spalte setzen
-        'die 2. Spalte enthält das Sprachkürzel
-        'z.B.: DE für Deutsch
-        rg = CType(ws.Cells(y, x), Microsoft.Office.Interop.Excel.Range)
-
-        'So lange Werte gefunden werden
-        While rg.Value <> ""
-            'Dictionary initialisieren
-            temp = New Dictionary(Of String, String)
-            'auf 2. Spalte springen
-            x = 2
-            'Für alle Übersetzungsattribute die Werte einlesen
-            'ACHTUNG: da einige Übersetzungen dazugekommen sind die neuen Übersetzungen leere Strings
-            For Each item As KeyValuePair(Of String, String) In Definitionen.ÜBERSETZUNGSATTR
-                'Übersetzung hinzufügen
-                temp.Add(item.Key, Trim(CType(ws.Cells(y, x), Microsoft.Office.Interop.Excel.Range).Value))
-                'eine Spalte weiter
-                x = x + 1
-            Next
-            'Übersetzungen mit dem Sprachkürzel der 2. Spalte (= rg.Value)
-            'an das Übersetzungs-Dictionary anhänge
-            temp1.Add(rg.Value, temp)
-            'Spaltenzähler initialisieren
-            x = 2
-            'Zeilenzähler um 1 erhöhen
-            y = y + 1
-            'Rangeobjekt auf die 2. Spalte setzen
-            rg = CType(ws.Cells(y, x), Microsoft.Office.Interop.Excel.Range)
-        End While
-
-        'Workbook schließen
-        wb.Close(False)
-        'Excel beenden
-        exc.Quit()
-        'Übersetzungen zurückgeben
-        Read_Tab_sprachen_neu = temp1
-    End Function
 
     Function Read_old_ini_neu() As List(Of Definitionen.Strctformat)
         Dim pfad As String
@@ -953,84 +861,7 @@ Module Module1
         XmlWrt.WriteEndElement()
     End Sub
 
-    Function Write_XML_from_old_ini(ByRef dlg As SetupDialog) As Boolean
-        Dim settings As New XmlWriterSettings()
-        Dim pfad As String
-        Dim temp2 As New List(Of Definitionen.Strctformat) 'Formatattribute
-        Dim temp3 As New Dictionary(Of String, Dictionary(Of String, String)) 'Übersetzungen
 
-
-        settings.Indent = True
-        settings.IndentChars = "   "
-        settings.NewLineOnAttributes = True
-
-        dlg.ToolStripProgressBar1.Maximum = 10
-        dlg.ToolStripProgressBar1.Minimum = 0
-
-        dlg.ToolStripProgressBar1.Value = 2
-        dlg.ToolStripStatusLabel1.Text = "Formate einlesen"
-        dlg.Refresh()
-        temp2 = Read_old_ini_neu()
-        If temp2.Count = 0 Then
-            Write_XML_from_old_ini = False
-            Exit Function
-        End If
-
-        dlg.ToolStripProgressBar1.Value = 3
-        dlg.ToolStripStatusLabel1.Text = "Übersetzungen einlesen"
-        dlg.Refresh()
-        temp3 = Read_Tab_sprachen_neu()
-        If temp3.Count = 0 Then
-            Write_XML_from_old_ini = False
-            Exit Function
-        End If
-
-
-        'pfad = SwxMacroPfad & "\" & Definitionen.INI_File
-        pfad = SwxMacroPfad & Definitionen.INI_File
-        Dim XmlWrt As XmlWriter = XmlWriter.Create(pfad, settings)
-
-        dlg.ToolStripProgressBar1.Value = 4
-        dlg.ToolStripStatusLabel1.Text = "Header schreiben"
-        dlg.Refresh()
-        Write_XML_Header(XmlWrt)
-
-        dlg.ToolStripProgressBar1.Value = 5
-        dlg.ToolStripStatusLabel1.Text = "Sprachen schreiben"
-        dlg.Refresh()
-        Write_XML_Sprachen_neu(XmlWrt)
-
-        Write_XML_Tab_Sprachkombinationen(XmlWrt, temp3)
-
-        Write_XML_Linienarten(XmlWrt, Definitionen.LINIENARTEN)
-
-        dlg.ToolStripProgressBar1.Value = 6
-        dlg.ToolStripStatusLabel1.Text = "Generelle Einstellungen schreiben"
-        dlg.Refresh()
-        Write_XML_Generell_neu(XmlWrt, temp2.Item(0))
-
-        dlg.ToolStripProgressBar1.Value = 7
-        dlg.ToolStripStatusLabel1.Text = "Übersetzungen schreiben"
-        dlg.Refresh()
-        Write_XML_Tab_sprachen_neu(XmlWrt, temp3)
-
-        dlg.ToolStripProgressBar1.Value = 8
-        dlg.ToolStripStatusLabel1.Text = "Formate schreiben"
-        dlg.Refresh()
-        Write_XML_Formate_neu(XmlWrt, temp2)
-
-        dlg.ToolStripProgressBar1.Value = 9
-        dlg.ToolStripStatusLabel1.Text = "Datei schreiben"
-        dlg.Refresh()
-
-        With XmlWrt
-            .WriteEndDocument()
-            .Close()
-        End With
-        dlg.ToolStripStatusLabel1.Text = "alte INI Datei konvertiert"
-        Write_XML_from_old_ini = True
-
-    End Function
 
     Sub Create_strct(attr As Definitionen.Attribute, dic As Dictionary(Of String, String), ByRef temp As Definitionen.Strctformat)
         Dim w As Definitionen.Werte

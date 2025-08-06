@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="(nur auf erstem Blatt nein UND auf restlichen Blättern löschen ja)" xml:space="preserve">
+    <value>(only on first sheet no AND delete on remaining sheets yes)</value>
+  </data>
+  <data name="Abmessungen von" xml:space="preserve">
+    <value>Dimensions from</value>
+  </data>
+  <data name="Abmessungen von ersten definierten Format" xml:space="preserve">
+    <value>Dimensions of first defined format</value>
+  </data>
+  <data name="Achtung: durch diese Kombination" xml:space="preserve">
+    <value>Warning: through this combination</value>
+  </data>
+  <data name="Bemaßung" xml:space="preserve">
+    <value>Dimension</value>
+  </data>
+  <data name="Bitte verwenden Sie das Setup-Makro um die Einstellungen zu erzeugen" xml:space="preserve">
+    <value>Please use the Setup to create the parameters</value>
+  </data>
+  <data name="Bohrungsbeschreibung" xml:space="preserve">
+    <value>Hole description</value>
+  </data>
+  <data name="Der einzige Eintrag kann nicht gelöscht werden" xml:space="preserve">
+    <value>The only entry cannot be deleted</value>
+  </data>
+  <data name="Diese Sprache ist bereits definiert" xml:space="preserve">
+    <value>This language is already defined</value>
+  </data>
+  <data name="Diese Sprache wird in einer Tabelle verwendet und kann nicht gelöscht werden" xml:space="preserve">
+    <value>This language is used in a table and cannot be deleted</value>
+  </data>
+  <data name="Dieser Formatname existiert bereits" xml:space="preserve">
+    <value>This format name already exists</value>
+  </data>
+  <data name="eingetragen" xml:space="preserve">
+    <value>entered</value>
+  </data>
+  <data name="Fehler beim Lesen des Attributes" xml:space="preserve">
+    <value>Error reading the attribute '</value>
+  </data>
+  <data name="Fertig" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="Format anlegen" xml:space="preserve">
+    <value>Create format</value>
+  </data>
+  <data name="Format ist bereits definiert" xml:space="preserve">
+    <value>Format is already defined</value>
+  </data>
+  <data name="Format umbenennen" xml:space="preserve">
+    <value>Rename format</value>
+  </data>
+  <data name="Formatname" xml:space="preserve">
+    <value>Format name</value>
+  </data>
+  <data name="gefunden" xml:space="preserve">
+    <value>found</value>
+  </data>
+  <data name="hat den Wert 0" xml:space="preserve">
+    <value>has the value 0</value>
+  </data>
+  <data name="HtmlHelpPfad" xml:space="preserve">
+    <value>\Help\en-US\HtmlHelp\Welcome.html</value>
+  </data>
+  <data name="im Abschnitt 'generelle Attribute" xml:space="preserve">
+    <value>' in section 'general attributes'</value>
+  </data>
+  <data name="im Abschnitt Format" xml:space="preserve">
+    <value>' in section 'format'</value>
+  </data>
+  <data name="im Abschnitt Tabelle" xml:space="preserve">
+    <value>' in section "Table'</value>
+  </data>
+  <data name="im Abschnitt Übersetzung" xml:space="preserve">
+    <value>' in section 'translation'</value>
+  </data>
+  <data name="ist eine freistehende Bemaßung" xml:space="preserve">
+    <value>is a dangling dimension</value>
+  </data>
+  <data name="Kein Eintrag gewählt" xml:space="preserve">
+    <value>No entry selected</value>
+  </data>
+  <data name="Kein Format mit den Abmessungen" xml:space="preserve">
+    <value>No format with the dimensions</value>
+  </data>
+  <data name="Keine Blätter gefunden" xml:space="preserve">
+    <value>No sheets found</value>
+  </data>
+  <data name="Keine Blätter in der Zeichnung" xml:space="preserve">
+    <value>no sheets in drawing</value>
+  </data>
+  <data name="Keine Datei geladen" xml:space="preserve">
+    <value>no file loaded</value>
+  </data>
+  <data name="Keine Format gefunden" xml:space="preserve">
+    <value>No format found</value>
+  </data>
+  <data name="Keine Format gefunden. Möchten Sie ein Format manuell erstellen?" xml:space="preserve">
+    <value>No format found. Would you like to create a format manually?</value>
+  </data>
+  <data name="Keine oder zu wenige Formate zum abgleichen vorhanden" xml:space="preserve">
+    <value>No or too few formats available for comparison</value>
+  </data>
+  <data name="Keine Passung für" xml:space="preserve">
+    <value>No fit for</value>
+  </data>
+  <data name="Keine Passungswerte für Passung" xml:space="preserve">
+    <value>No fit values for fit</value>
+  </data>
+  <data name="Keine Setup.XML Datei gefunden" xml:space="preserve">
+    <value>No Setup.XML file found</value>
+  </data>
+  <data name="Keine Setup.XML Datei gefunden, Daten werden mit Standardwerten befüllt" xml:space="preserve">
+    <value>No Setup.XML file found, data are filled with standard values</value>
+  </data>
+  <data name="Keine Zeichnung geladen" xml:space="preserve">
+    <value>no drawing loaded</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="MainLarge1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MainLarge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MainSmall1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MainSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Makro Passungstabelle abgebrochen" xml:space="preserve">
+    <value>Macro fittings table canceled</value>
+  </data>
+  <data name="Maß" xml:space="preserve">
+    <value>Measure</value>
+  </data>
+  <data name="Meldung" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="nicht gefunden" xml:space="preserve">
+    <value>not found</value>
+  </data>
+  <data name="passt nicht zu Bohrungspassung" xml:space="preserve">
+    <value>does not match the hole fit</value>
+  </data>
+  <data name="passt nicht zu Wellenpassung" xml:space="preserve">
+    <value>does not match shaft fit</value>
+  </data>
+  <data name="Passung" xml:space="preserve">
+    <value>fit</value>
+  </data>
+  <data name="Passungstabelle" xml:space="preserve">
+    <value>Fittings Table</value>
+  </data>
+  <data name="Passungstabelle Add In für SolidWorks" xml:space="preserve">
+    <value>Fittings Table Add In for SolidWorks</value>
+  </data>
+  <data name="Passungstabelle Addin" xml:space="preserve">
+    <value>Fittings table Addin</value>
+  </data>
+  <data name="Passungstabelle Hilfe" xml:space="preserve">
+    <value>Fittings Table Help</value>
+  </data>
+  <data name="Passungstabelle Setup" xml:space="preserve">
+    <value>Fittings Table Setup</value>
+  </data>
+  <data name="Setup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Setup.XML;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Setup für" xml:space="preserve">
+    <value>Setup for</value>
+  </data>
+  <data name="Setup wird abgebrochen" xml:space="preserve">
+    <value>Setup is canceled</value>
+  </data>
+  <data name="Setup_Schema" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Setup-Schema.xsd;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Sie haben kein Format gewählt von dem die Werte übernommen werden sollen" xml:space="preserve">
+    <value>You have not selected a format from which the values are to be adopted</value>
+  </data>
+  <data name="Sie haben kein Schreibrecht für die Datei" xml:space="preserve">
+    <value>You do not have write access to the file</value>
+  </data>
+  <data name="Sind Sie sicher, dass Sie den Eintrag löschen möchten?" xml:space="preserve">
+    <value>Are you sure you want to delete the entry?</value>
+  </data>
+  <data name="Vorgabewert wird gesetzt" xml:space="preserve">
+    <value>default value will be used</value>
+  </data>
+  <data name="wird auf keinem Blatt die Passungstabelle eingefügt" xml:space="preserve">
+    <value>the fit table is not inserted on any sheet</value>
+  </data>
+</root>

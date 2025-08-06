@@ -1,3 +1,4 @@
+Imports System.Resources
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
@@ -26,7 +27,8 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 
-<Assembly: AssemblyVersion("8.2.0.2")>
+<Assembly: AssemblyVersion("8.4.0.0")>
 
-<Assembly: ComVisibleAttribute(True)>
-<Assembly: AssemblyFileVersion("8.2.0.2")>
+<Assembly: ComVisible(True)>
+<Assembly: AssemblyFileVersion("8.4.0.0")>
+<Assembly: NeutralResourcesLanguage("de-DE")>

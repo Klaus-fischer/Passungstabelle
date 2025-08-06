@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<ArrayOfCacheFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <CacheFile>
+    <FileName>My Project\Resources.resx</FileName>
+    <Checksum>141140245166842339032031111062021941484148</Checksum>
+    <ModifiedTime>2018-10-10T15:15:49.8049267</ModifiedTime>
+    <CacheFileType>NeutralResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+  <CacheFile>
+    <FileName>RenameFormat.resx</FileName>
+    <Checksum>78181145581490168663715116258314316248</Checksum>
+    <ModifiedTime>2018-08-30T07:52:43.8686391</ModifiedTime>
+    <CacheFileType>NeutralResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+  <CacheFile>
+    <FileName>SetupDialog.resx</FileName>
+    <Checksum>41241283410921432058820617496250205237208</Checksum>
+    <ModifiedTime>2019-02-08T20:56:12.518175</ModifiedTime>
+    <CacheFileType>NeutralResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+  <CacheFile>
+    <FileName>MultilingualResources\Passungstabelle.en-US.xlf</FileName>
+    <Checksum>33165249381891091273124314151207775176254</Checksum>
+    <ModifiedTime>2021-04-27T16:10:12.6192357+02:00</ModifiedTime>
+    <CacheFileType>XliffResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+  <CacheFile>
+    <FileName>My Project\Resources.en-US.resx</FileName>
+    <Checksum>237200141561181351014222366239169223207173</Checksum>
+    <ModifiedTime>2021-04-27T16:10:12.7917747+02:00</ModifiedTime>
+    <CacheFileType>LanguageResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+  <CacheFile>
+    <FileName>RenameFormat.en-US.resx</FileName>
+    <Checksum>19525178173832441949178108532091416317160</Checksum>
+    <ModifiedTime>2021-04-27T16:10:12.7917747+02:00</ModifiedTime>
+    <CacheFileType>LanguageResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+  <CacheFile>
+    <FileName>SetupDialog.en-US.resx</FileName>
+    <Checksum>1091521037975238155242187190401601382499895</Checksum>
+    <ModifiedTime>2021-04-27T16:10:12.7917747+02:00</ModifiedTime>
+    <CacheFileType>LanguageResource</CacheFileType>
+    <WarningMessage />
+  </CacheFile>
+</ArrayOfCacheFile>

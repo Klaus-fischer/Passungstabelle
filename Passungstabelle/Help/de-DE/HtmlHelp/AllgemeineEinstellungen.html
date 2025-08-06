@@ -1,0 +1,136 @@
+﻿
+
+<html>
+	
+<head>
+	<title>Allgemeine Einstellungen</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="generator" content="HelpNDoc Personal Edition 7.2.0.306">
+	<meta name="description" content="" /> 
+	<meta name="keywords" content="">
+	
+	
+	
+	<link type="text/css" rel="stylesheet" media="all" href="css/reset.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/base.css" />
+	<link type="text/css" rel="stylesheet" media="all" href="css/hnd.css" />
+	<!--[if lte IE 8]>
+		<link type="text/css" rel="stylesheet" media="all" href="css/ielte8.css" />
+	<![endif]-->
+	<style type="text/css">
+		#topic_header
+		{
+			background-color: #EFEFEF;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/hnd.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+		{
+			if (top.frames.length == 0)
+			{
+				var sTopicUrl = top.location.href.substring(top.location.href.lastIndexOf("/") + 1, top.location.href.length);
+				top.location.href = "Passungstabelle.html?" + sTopicUrl;
+			}
+			else
+			{
+				var bTocSelected = false;
+				(function waitForTOC()
+				{
+					if (top && top.FrameTOC && top.FrameTOC.SelectTocItem)
+					{
+						top.FrameTOC.SelectTocItem("AllgemeineEinstellungen");
+						bTocSelected = true;
+					}
+					if (!bTocSelected) setTimeout(function() { waitForTOC(); }, 300);
+				})();
+			}
+		});
+	</script>
+	
+	
+</head>
+
+<body>
+
+
+
+	
+		<div id="topic_header">
+			<div id="topic_header_content">
+				<h1 id="topic_header_text">Allgemeine Einstellungen</h1>
+				
+				
+				<div id="topic_breadcrumb">
+					<a href="Setup-Dialog.html">Setup-Dialog</a> &rsaquo;&rsaquo; <a href="generelleEinstellungen.html">generelle Einstellungen</a> &rsaquo;&rsaquo; 
+				</div>
+				
+			</div>
+			
+			<div id="topic_header_nav">
+				
+				
+				<a href="generelleEinstellungen.html"><img src="img/arrow_up.png" alt="Parent"/></a>
+				
+				
+				
+				<a href="generelleEinstellungen.html"><img src="img/arrow_left.png" alt="Previous"/></a>
+				
+				
+				
+				<a href="Einschrankungen.html"><img src="img/arrow_right.png" alt="Next"/></a>
+				
+				
+			</div>
+			
+			<div class="clear"></div>
+		</div>
+	
+	
+	<div id="topic_content">
+		
+<h1 class="rvps8"><a name="topic_content"></a><span class="rvts0"><span class="rvts12">Allgemeine Einstellungen</span></span></h1>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">PLUS-Zeichen anzeigen</span></span></h6>
+<p class="rvps2"><span class="rvts11">wenn aktiviert wird bei positiven Werten das "+" Symbol angezeigt</span></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">Tabelle neu positionieren</span></span></h6>
+<p class="rvps2"><span class="rvts11">ist diese Option aktiviert, wird eine vorhandene Passungstabelle an dem unter </span><a class="rvts19" href="Formateinstellungen.html">Formateeinstellungen</a><span class="rvts11"> eingestellten Einfügepunkt eingefügt.</span></p>
+<p class="rvps2"><span class="rvts11">ist diese Option deaktiviert, wird eine vorhandene Passungstabelle an dem Punkt einfügt, an dem sich die vorhandene Tabelle befindet</span></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">Meldungen unterdrücken</span></span></h6>
+<p class="rvps2"><span class="rvts11">es werden alle Hinweis- und Fehlermeldungen unterdrückt</span></p>
+<p class="rvps2"><span class="rvts11">diese Option ist sinnvoll, wenn das Makro </span><a class="rvts19" href="Eventgesteuert.html">Eventgesteuert</a><span class="rvts11"> ausgeführt wird und z.B.: ein Batch-Job über mehrere Datei ausgeführt wird</span></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">Log-Datei schreiben</span></span></h6>
+<p class="rvps2"><span class="rvts11">es werden alle Hinweise, Fehlermeldungen und zusätzliche Infos in eine Log-Datei geschrieben</span></p>
+<p class="rvps2"><span class="rvts11">die Log-Datei wird in das Verzeichnis "C:\Users\</span><span class="rvts20">Benutzername</span><span class="rvts11">\AppData\Roaming\nahe\Passungstabelle" geschrieben</span></p>
+<p class="rvps2"><span class="rvts11">Falls der Benutzer keine Schreibrechte auf dieses Verzeichnis hat, wird keine Log-Datei geschrieben.</span></p>
+<p class="rvps2"><span class="rvts11">Das Add-In funktioniert trotzdem.</span></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">auf restlichen Blättern löschen</span></span></h6>
+<p class="rvps2"><span class="rvts11">eventuell vorhandenen Passungstabellen auf den restlichen Blättern werden gelöscht</span></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">leere Passungen ignorieren</span></span></h6>
+<p class="rvps2"><span class="rvts11">es wird keine Meldung ausgegeben, wenn eine ungültige Passung gefunden wird</span></p>
+<p class="rvps2"><span class="rvts11">z.B.: ist für Maße &gt; 50 keine Passung N3 definiert</span></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28">Nachkommastellen gerundet auf</span></span></h6>
+<p class="rvps2"><span class="rvts11">da SolidWorks teilweise keine exakten Maßwerte liefert, werden alle Maße auf die hier angegebenen Nachkommastellen gerundet</span></p>
+<p class="rvps2"><span class="rvts11"><br/></span></p>
+<p class="rvps2"><img alt="" src="lib/libGenerelle_Einstellungen2.png"></p>
+<h6 class="rvps12"><span class="rvts0"><span class="rvts28"><br/></span></span></h6>
+<p class="rvps2"><span class="rvts11"></span><span class="rvts6"></span></p>
+<p class="rvps5" style="clear: both;"><span class="rvts14">Mit dem Personal Edition von HelpNDoc erstellt: </span><a class="rvts15" href="https://www.helpndoc.com/de/funktionen-tour">HTML-Hilfedokumente einfach erstellen</a></p>
+
+	</div>
+	
+	
+		<div id="topic_footer">
+
+			<div id="topic_footer_content">
+				Copyright &copy; 21.02.2021 by nahe. All Rights Reserved.
+			</div>
+		</div>
+	
+	
+
+	
+</body>
+	
+</html>
+

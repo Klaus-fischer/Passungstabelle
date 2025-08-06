@@ -50,13 +50,14 @@ Public Class Passungstabelle_Blatt
     Dim Einfügepunkt(1) As Double                   'Einfügepunkt für die Passungstabelle
 
     'Intialisierungsfuntkion für die Klasse "Passungstabelle_Blatt"
-    Sub New(iswapp As SldWorks, iAttr_generell As Dictionary(Of String, String), iAttr_Übersetzungen As Dictionary(Of String, Dictionary(Of String, String)), iBlatt As Sheet, model As DrawingDoc)
-        swapp = iswapp
+    Sub New(iswapp As SldWorks, iAttr_generell As Dictionary(Of String, String), iAttr_Übersetzungen As Dictionary(Of String, Dictionary(Of String, String)), iBlatt As Sheet, model As DrawingDoc, iLog As LogFile)
+        Swapp = iswapp
         Attr_generell = iAttr_generell
         Attr_Übersetzungen = iAttr_Übersetzungen
         swdraw = model
         Blatt = iBlatt
-        Log = New LogFile(Attr_generell)
+        'Log = New LogFile(Attr_generell)
+        Log = iLog
     End Sub
     'Funktion:  PassungsTabelleGetViews
     '           erstellt eine Liste der Ansicht in dem angegebenen Blatt
@@ -150,7 +151,7 @@ Public Class Passungstabelle_Blatt
 
     Function GetHoleTabletagsPosition(swAnsicht As Ansicht) As List(Of Dictionary(Of String, List(Of MathPoint)))
         Dim Zone As String = ""
-        Dim swviews As Object
+        'Dim swviews As Object
         Dim swview As View
         Dim ViewNotes As Object
         Dim swnote As Note
@@ -209,7 +210,7 @@ Public Class Passungstabelle_Blatt
         Dim plist As New List(Of MathPoint)
         Dim Zone As String = ""
         Dim zz As String
-        Dim TagList As List(Of Dictionary(Of String, List(Of MathPoint)))
+        'Dim TagList As List(Of Dictionary(Of String, List(Of MathPoint)))
         Dim Tagnew As New Dictionary(Of String, List(Of String))
 
         Dim Tag As New Dictionary(Of String, List(Of MathPoint))
@@ -253,7 +254,7 @@ Public Class Passungstabelle_Blatt
         For Each ans In Ansichten
             MarkerCominedHoleTab = False
             'Ansichtsnamen in Log-Datei schreiben
-            Log.WriteInfo(ans.ansichtsName, False)
+            Log.WriteInfo(ans.ansichtsName, "", False)
 
             'Passungen in der Ansicht suchen
             Tabelle.GetViewDimension(ans.ViewRef)
@@ -361,11 +362,17 @@ Public Class Passungstabelle_Blatt
 
         'Blatteigenschaften
         ss = Blatt.GetProperties2
+        'MsgBox(Blatt.GetTemplateName, vbOKOnly, "Meldung1")
+        If Blatt.GetTemplateName = "*.drt" Or Blatt.GetTemplateName = "" Then
+            prop.Formatname = ""
+            Log.WriteInfo(My.Resources._Keine_Formatvorlage, " - " & Blatt.GetName, True)
+        Else
+            'Formatname ohne Pfad
+            prop.Formatname = Mid(Blatt.GetTemplateName, InStrRev(Blatt.GetTemplateName, "\") + 1)
+            'Formatname ohne Erweiterung
+            prop.Formatname = Mid(prop.Formatname, 1, Len(prop.Formatname) - 7)
+        End If
 
-        'Formatname ohne Pfad
-        prop.Formatname = Mid(Blatt.GetTemplateName, InStrRev(Blatt.GetTemplateName, "\") + 1)
-        'Formatname ohne Erweiterung
-        prop.Formatname = Mid(prop.Formatname, 1, Len(prop.Formatname) - 7)
         'Blatteigenschaften
         prop.Eigenschaften = ss
         'Sprache der SolidWorks-Installation
@@ -418,23 +425,23 @@ Public Class Passungstabelle_Blatt
                 firstloop = True
                 tempname = n.Key
             End If
-            'Wenn ein Setupeintrag mit den gleichen ABmessungen gefunden wird
+            'Wenn ein Setupeintrag mit den gleichen Abmessungen gefunden wird
             If temp("Höhe") = Attr_Sheet.Eigenschaften(6) * 1000 And temp("Breite") = Attr_Sheet.Eigenschaften(5) * 1000 Then
                 'Format Attribut zuweisen
                 Attr_Format = temp
                 'Tabellen Attribut zuweisen
                 Attr_Tabelle = Attr_Tabellen(n.Key)
                 'Log-Info schreiben
-                Log.WriteInfo("Format " & Attr_Sheet.Formatname & " nicht gefunden", True)
-                Log.WriteInfo("Abmessungen von " & n.Key & " genommen", True)
+                Log.WriteInfo(My.Resources._nicht_gefunden, " " & My.Resources.Format & " " & Attr_Sheet.Formatname, True)
+                Log.WriteInfo(My.Resources._Abmessungen_von, " " & n.Key, True)
                 Exit Sub
             End If
         Next
 
         'Es wurde keine Format mit dem Formatvorlagenamen gefunden
         'deshalb werden die Werte vom ersten Format genommen
-        Log.WriteInfo("Kein Format mit den Abmessungen " & Attr_Sheet.Eigenschaften(6) * 1000 & "x" & Attr_Sheet.Eigenschaften(5) * 1000 & " gefunden", False)
-        Log.WriteInfo("Abmessungen von ersten definierten Format " & tempname & " genommen", True)
+        Log.WriteInfo(My.Resources.Kein_Format_mit_den_Abmessungen, " " & Attr_Sheet.Eigenschaften(6) * 1000 & "x" & Attr_Sheet.Eigenschaften(5) * 1000 & " " & My.Resources.gefunden, False)
+        Log.WriteInfo(My.Resources._Abmessungen_von_ersten_definierten_Format, " " & tempname, True)
         'Format Attribut vom ersten Eintrag zuweisen
         Attr_Format = Attr_Formate.Item(tempname)
         'Tabellen Attribut vom ersten Eintrag zuweisen
