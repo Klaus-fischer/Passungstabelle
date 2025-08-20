@@ -31,7 +31,7 @@
     <MyType>Windows</MyType>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <StartProgram>C:\Program Files\SolidWorks 2018\SOLIDWORKS\\SldWorks.exe</StartProgram>
+    <StartProgram>C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\SLDWORKS.exe</StartProgram>
     <StartAction>Program</StartAction>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -95,37 +95,10 @@
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\x64\Debug\</OutputPath>
-    <BaseAddress>285212672</BaseAddress>
-    <DocumentationFile>SwVBAddin1.xml</DocumentationFile>
-    <WarningLevel>1</WarningLevel>
-    <RegisterForComInterop>true</RegisterForComInterop>
-    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <DefineTrace>true</DefineTrace>
-    <OutputPath>bin\x64\Release\</OutputPath>
-    <BaseAddress>285212672</BaseAddress>
-    <DocumentationFile>SwVBAddin1.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-    <WarningLevel>1</WarningLevel>
-    <RegisterForComInterop>true</RegisterForComInterop>
-    <NoWarn>42016,42017,42018,42019,42032,42353,42354,42355</NoWarn>
-    <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SolidWorks.Interop.sldworks">
@@ -133,11 +106,11 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swcommands">
-      <HintPath>..\Libraries\2024\SolidWorks.Interop.swcommands.dll</HintPath>
+      <HintPath>C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\api\redist\SolidWorks.Interop.swcommands.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swconst">
-      <HintPath>..\Libraries\2024\SolidWorks.Interop.swconst.dll</HintPath>
+      <HintPath>C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\api\redist\SolidWorks.Interop.swconst.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="SolidWorks.Interop.swpublished">
@@ -150,6 +123,7 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -157,6 +131,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml">
@@ -245,13 +220,6 @@
       <DependentUpon>SetupDialog.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Help\de-DE\HtmlHelp\css\base.css">
@@ -1104,6 +1072,7 @@
     <Content Include="Help\de-DE\Passungstabelle.chm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="Install.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1290,10 +1259,6 @@
     <None Include="Resources\Setup.XML">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Help\en-US\" />
-    <Folder Include="Strings\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
