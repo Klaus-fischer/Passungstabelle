@@ -10,10 +10,10 @@ using My = Passungstabelle.CSharp.My;
 
 public class Passungstabelle_Tabelle
 {
-    private readonly Dictionary<string, dynamic> Attr_generell;
+    private readonly GeneralSettings Attr_generell;
 
     public Dictionary<string, Dictionary<string, string>> Attr_Übersetzungen { get; set; } = new Dictionary<string, Dictionary<string, string>>();
-    public Dictionary<string, dynamic> Attr_Tabelle { get; set; } = new Dictionary<string, dynamic>();
+    public TableSettings Attr_Tabelle { get; set; } = new();
     public string Attr_Sprache { get; set; }
     public double[] Einfügepunkt { get; set; }
     public int Einfügepunktposition { get; set; }
@@ -50,16 +50,16 @@ public class Passungstabelle_Tabelle
     }
 
     // Tabelle initialisieren
-    public Passungstabelle_Tabelle(Dictionary<string, dynamic> iAttr_generell, Dictionary<string, dynamic> iAttr_Tabelle, Dictionary<string, Dictionary<string, string>> iAttr_Übersetzungen, Sheet swSheet)
+    public Passungstabelle_Tabelle(GeneralSettings iAttr_generell, TableSettings iAttr_Tabelle, Dictionary<string, Dictionary<string, string>> iAttr_Übersetzungen, Sheet swSheet)
     {
         this.Attr_generell = iAttr_generell;
         Attr_Übersetzungen = iAttr_Übersetzungen;
         this.Attr_Tabelle = iAttr_Tabelle;
-        Attr_Sprache = Attr_Tabelle["HeaderLanguage"];
-        RundenAuf = int.Parse(iAttr_generell["RundenAuf"]);
-        SchichtStärke = double.Parse(iAttr_generell["SchichtStärke"]);
+        Attr_Sprache = Attr_Tabelle.HeaderLanguage;
+        RundenAuf = Attr_generell.RundenAuf;
+        SchichtStärke = Attr_generell.SchichtStärke;
         fac = 1000.0;
-        Log = new LogFile(iAttr_generell);
+        Log = new LogFile(Attr_generell);
         Blatt = swSheet;
     }
 
@@ -248,19 +248,19 @@ public class Passungstabelle_Tabelle
             temp.Prefix = prefix;
 
             // * Bohungswerte ermitteln
-            // tol.SetFitValues(temp.Zeile["Passung"], ""]
-            if (temp.Zeile["ToleranzO"] == "0.0" & temp.Zeile["ToleranzU"] == "0.0")
+            // tol.SetFitValues(temp.Passung, ""]
+            if (temp.ToleranzO == 0.0 & temp.ToleranzU == 0.0)
                 flag = true;
 
             // * wellenwerte ermitteln
             temp1 = SetColumnsFromDim(dimen, false, zone);
             temp1.Prefix = prefix;
-            // tol.SetFitValues("", temp1.Zeile["Passung"])
-            if (temp.Zeile["ToleranzO"] == "0.0" & temp.Zeile["ToleranzU"] == "0.0")
+            // tol.SetFitValues("", temp1.Passung)
+            if (temp.ToleranzO == 0.0 & temp.ToleranzU == 0.0)
                 flag = true;
 
             // * Alten Wert wieder setzen
-            tol.SetFitValues(temp.Zeile["Passung"], temp1.Zeile["Passung"]);
+            tol.SetFitValues(temp.Passung, temp1.Passung);
 
             if (flag == true)
             {
@@ -281,7 +281,7 @@ public class Passungstabelle_Tabelle
             if (temp2 != null)
             {
                 TabellenZeilen.Add(temp);
-                Log.WriteInfo(My.Resources.Bemaßung + ": " + temp.Zeile["Name"] + " " + My.Resources.Maß + ": " + temp.Zeile["Maß"] + Strings.Chr(9) + temp.Zeile["Passung"], "", false);
+                Log.WriteInfo(My.Resources.Bemaßung + ": " + temp.Name + " " + My.Resources.Maß + ": " + temp.Maß + Strings.Chr(9) + temp.Passung, "", false);
                 temp = null/* TODO Change to default(_) if this is not a reference type */;
                 Tabellenzeilencount = Tabellenzeilencount + 1;
             }
@@ -298,14 +298,14 @@ public class Passungstabelle_Tabelle
         Passungstabelle_Zeile temp1 = new Passungstabelle_Zeile();
         List<Passungstabelle_Zeile> tempz = new List<Passungstabelle_Zeile>();
 
-        temp.Zeile["Maß"] = swCalloutLengthVariable.Length * fac;
-        temp1.Zeile["Maß"] = swCalloutLengthVariable.Length * fac;
-        temp.Zeile["Passung"] = swCalloutVariable.HoleFit;
-        temp.Zeile["Name"] = dimen.FullName;
-        temp1.Zeile["Passung"] = swCalloutVariable.ShaftFit;
-        temp1.Zeile["Name"] = dimen.FullName;
-        temp.Zeile["Zone"] = zone;
-        temp1.Zeile["Zone"] = zone;
+        temp.Maß = swCalloutLengthVariable.Length * fac;
+        temp1.Maß = swCalloutLengthVariable.Length * fac;
+        temp.Passung = swCalloutVariable.HoleFit;
+        temp.Name = dimen.FullName;
+        temp1.Passung = swCalloutVariable.ShaftFit;
+        temp1.Name = dimen.FullName;
+        temp.Zone = zone;
+        temp1.Zone = zone;
 
         // Prüfung ob auch Passungswerte eingetragen sind
         // Könnte ja auch sein, dass als Toleranzttyp Passung eingestellt ist und keine Passung gewählt wurde
@@ -315,39 +315,39 @@ public class Passungstabelle_Tabelle
         }
 
         // Toleranzen von Bohrungspassung
-        if (temp.Zeile["Passung"] != "" & temp1.Zeile["Passung"] == "")
+        if (temp.Passung != "" & temp1.Passung == "")
         {
-            swCalloutVariable.HoleFit = temp.Zeile["Passung"];
-            temp.Zeile["ToleranzU"] = swCalloutVariable.ToleranceMin * fac;
-            temp.Zeile["ToleranzO"] = swCalloutVariable.ToleranceMax * fac;
+            swCalloutVariable.HoleFit = temp.Passung;
+            temp.ToleranzU = swCalloutVariable.ToleranceMin * fac;
+            temp.ToleranzO = swCalloutVariable.ToleranceMax * fac;
         }
-        else if (temp1.Zeile["Passung"] != "" & temp.Zeile["Passung"] == "")
+        else if (temp1.Passung != "" & temp.Passung == "")
         {
-            swCalloutVariable.ShaftFit = temp1.Zeile["Passung"];
-            temp1.Zeile["ToleranzU"] = swCalloutVariable.ToleranceMin * fac;
-            temp1.Zeile["ToleranzO"] = swCalloutVariable.ToleranceMax * fac;
+            swCalloutVariable.ShaftFit = temp1.Passung;
+            temp1.ToleranzU = swCalloutVariable.ToleranceMin * fac;
+            temp1.ToleranzO = swCalloutVariable.ToleranceMax * fac;
         }
-        else if (temp.Zeile["Passung"] != "" & temp1.Zeile["Passung"] != "")
+        else if (temp.Passung != "" & temp1.Passung != "")
         {
             // * Bohungswerte ermitteln
-            swCalloutVariable.HoleFit = temp.Zeile["Passung"];
-            temp.Zeile["ToleranzU"] = swCalloutVariable.ToleranceMin * fac;
-            temp.Zeile["ToleranzO"] = swCalloutVariable.ToleranceMax * fac;
+            swCalloutVariable.HoleFit = temp.Passung;
+            temp.ToleranzU = swCalloutVariable.ToleranceMin * fac;
+            temp.ToleranzO = swCalloutVariable.ToleranceMax * fac;
             // * wellenwerte ermitteln
-            swCalloutVariable.ShaftFit = temp1.Zeile["Passung"];
-            temp1.Zeile["ToleranzU"] = swCalloutVariable.ToleranceMin * fac;
-            temp1.Zeile["ToleranzO"] = swCalloutVariable.ToleranceMax * fac;
+            swCalloutVariable.ShaftFit = temp1.Passung;
+            temp1.ToleranzU = swCalloutVariable.ToleranceMin * fac;
+            temp1.ToleranzO = swCalloutVariable.ToleranceMax * fac;
 
             // * Alten Wert wieder setzen
-            swCalloutVariable.HoleFit = temp.Zeile["Passung"];
-            swCalloutVariable.ShaftFit = temp1.Zeile["Passung"];
+            swCalloutVariable.HoleFit = temp.Passung;
+            swCalloutVariable.ShaftFit = temp1.Passung;
         }
         if (temp is not null)
         {
             if (CheckForFitToleranceValues(temp))
             {
                 tempz.Add(temp);
-                Log.WriteInfo(My.Resources.Bemaßung + ": " + temp.Zeile["Name"] + " " + My.Resources.Maß + ": " + temp.Zeile["Maß"].ToString + Strings.Chr(9) + temp.Zeile["Passung"], "", false);
+                Log.WriteInfo(My.Resources.Bemaßung + ": " + temp.Name + " " + My.Resources.Maß + ": " + temp.Maß.ToString() + Strings.Chr(9) + temp.Passung, "", false);
             }
         }
         if (temp1 is not null)
@@ -355,7 +355,7 @@ public class Passungstabelle_Tabelle
             if (CheckForFitToleranceValues(temp1))
             {
                 tempz.Add(temp1);
-                Log.WriteInfo(My.Resources.Bemaßung + ": " + temp1.Zeile["Name"] + " " + My.Resources.Maß + ": " + temp1.Zeile["Maß"].ToString + Strings.Chr(9) + temp1.Zeile["Passung"], "", false);
+                Log.WriteInfo(My.Resources.Bemaßung + ": " + temp1.Name + " " + My.Resources.Maß + ": " + temp1.Maß.ToString() + Strings.Chr(9) + temp1.Passung, "", false);
             }
         }
 
@@ -371,8 +371,8 @@ public class Passungstabelle_Tabelle
         bool flag; // Marker um zu erkennen ob Passung manuell eingetragen wurde
         int i;
 
-        temp.Zeile["Zone"] = zone;
-        temp1.Zeile["Zone"] = zone;
+        temp.Zone = zone;
+        temp1.Zone = zone;
 
         foreach (ICalloutVariable swCalloutVariable in calloutvar)
         {
@@ -407,7 +407,7 @@ public class Passungstabelle_Tabelle
             {
                 temp = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, true, zone);
                 temp.Prefix = prefix;
-                temp.Zeile.Add("Type", "Hole");
+                temp.Type = ZeilenTyp.Hole;
                 // wenn die Passungswerte nicht gewählt wurden sondern manuel eingetragen wurden
                 if (swCalloutVariable.ToleranceMin == 0.0 & swCalloutVariable.ToleranceMax == 0.0)
                     tempz = GettolfromfitCallOut(swCalloutVariable, swCalloutLengthVariable, dimen, zone);
@@ -421,7 +421,7 @@ public class Passungstabelle_Tabelle
             {
                 temp = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, false, zone);
                 temp.Prefix = prefix;
-                temp.Zeile.Add("Type", "Shaft");
+                temp.Type = ZeilenTyp.Shaft;
                 if (swCalloutVariable.ToleranceMin == 0.0 & swCalloutVariable.ToleranceMax == 0.0)
                     tempz = GettolfromfitCallOut(swCalloutVariable, swCalloutLengthVariable, dimen, zone);
                 else
@@ -435,20 +435,20 @@ public class Passungstabelle_Tabelle
                 // * Bohungswerte ermitteln
                 temp = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, true, zone);
                 temp.Prefix = prefix;
-                temp.Zeile.Add("Type", "Hole");
+                temp.Type = ZeilenTyp.Hole;
                 if (swCalloutVariable.ToleranceMin == 0.0 & swCalloutVariable.ToleranceMax == 0.0)
                     flag = true;
 
                 // * wellenwerte ermitteln
                 temp1 = SetColumnsFromCallOut(dimen, swCalloutVariable, swCalloutLengthVariable, false, zone);
                 temp1.Prefix = prefix;
-                temp1.Zeile.Add("Type", "Shaft");
+                temp.Type = ZeilenTyp.Shaft;
                 if (swCalloutVariable.ToleranceMin == 0.0 & swCalloutVariable.ToleranceMax == 0.0)
                     flag = true;
 
                 // * Alten Wert wieder setzen
-                swCalloutVariable.HoleFit = temp.Zeile["Passung"];
-                swCalloutVariable.ShaftFit = temp1.Zeile["Passung"];
+                swCalloutVariable.HoleFit = temp.Passung;
+                swCalloutVariable.ShaftFit = temp1.Passung;
 
                 if (flag == true)
                     tempz = GettolfromfitCallOut(swCalloutVariable, swCalloutLengthVariable, dimen, zone);
@@ -468,7 +468,7 @@ public class Passungstabelle_Tabelle
                     {
                         TabellenZeilen.Add(temp);
                         Log.WriteInfo(My.Resources.Bohrungsbeschreibung, "", false);
-                        Log.WriteInfo(My.Resources.Bemaßung + ": " + temp.Zeile["Name"] + " " + My.Resources.Maß + ": " + temp.Zeile["Maß"].ToString + Strings.Chr(9) + temp.Zeile["Passung"], "", false);
+                        Log.WriteInfo(My.Resources.Bemaßung + ": " + temp.Name + " " + My.Resources.Maß + ": " + temp.Maß.ToString() + Strings.Chr(9) + temp.Passung, "", false);
                         temp = null/* TODO Change to default(_) if this is not a reference type */;
                         Tabellenzeilencount = Tabellenzeilencount + 1;
                     }
@@ -486,7 +486,7 @@ public class Passungstabelle_Tabelle
         if (ShaftFitStr == "" & HoleFitStr == "")
         {
             // If (Attr_generell("ReaktionAufLeerePassung") = True) And (Attr_generell("Fehlermeldung") = True) Then
-            if (Attr_generell["ReaktionAufLeerePassung"] == false)
+            if (Attr_generell.ReaktionAufLeerePassung == false)
                 Log.WriteInfo(My.Resources._Keine_Passung_für, " " + MaszStr + " " + My.Resources.eingetragen, true);
             return false;
         }
@@ -499,28 +499,28 @@ public class Passungstabelle_Tabelle
     {
         LogFile log = new LogFile(Attr_generell);
 
-        if (temp.Zeile["Passung"] != "" & temp.Zeile["ToleranzO"] == 0.0 & temp.Zeile["ToleranzU"] == 0.0)
+        if (temp.Passung != "" & temp.ToleranzO == 0.0 & temp.ToleranzU == 0.0)
         {
-            log.WriteInfo(My.Resources._Keine_Passungswerte_für, " " + temp.Zeile["Maß"] + "/" + temp.Zeile["Passung"] + " " + My.Resources.gefunden, true);
+            log.WriteInfo(My.Resources._Keine_Passungswerte_für, " " + temp.Maß + "/" + temp.Passung + " " + My.Resources.gefunden, true);
             // Update 8.2.03 Hinweis auf falsche Passungen
-            if (temp.Zeile["Passung"](0) >= "A" & temp.Zeile["Passung"](0) <= "Z" & temp.Zeile["Type"] == "Shaft")
-                // log.WriteInfo("Passung " & temp.Zeile["Passung"] & " passt nicht zu Wellenpassung", True)
-                log.WriteInfo(My.Resources._passt_nicht_zu_Wellenpassung, " " + My.Resources.Passung + " " + temp.Zeile["Passung"], true);
-            else if (temp.Zeile["Passung"](0) >= "a" & temp.Zeile["Passung"](0) <= "z" & temp.Zeile["Type"] == "Hole")
-                // log.WriteInfo("Passung " & temp.Zeile["Passung"] & " passt nicht zu Bohrungspassung", True)
-                log.WriteInfo(My.Resources._passt_nicht_zu_Bohrungspassung, " " + My.Resources.Passung + " " + temp.Zeile["Passung"], true);
+            if (temp.Passung[0] >= 'A' & temp.Passung[0] <= 'Z' & temp.Type == ZeilenTyp.Shaft)
+                // log.WriteInfo("Passung " & temp.Passung & " passt nicht zu Wellenpassung", True)
+                log.WriteInfo(My.Resources._passt_nicht_zu_Wellenpassung, " " + My.Resources.Passung + " " + temp.Passung, true);
+            else if (temp.Passung[0] >= 'a' & temp.Passung[0] <= 'Z' & temp.Type == ZeilenTyp.Hole)
+                // log.WriteInfo("Passung " & temp.Passung & " passt nicht zu Bohrungspassung", True)
+                log.WriteInfo(My.Resources._passt_nicht_zu_Bohrungspassung, " " + My.Resources.Passung + " " + temp.Passung, true);
             return false;
         }
-        else if (temp.Zeile["Passung"](0) >= "A" & temp.Zeile["Passung"](0) <= "Z" & temp.Zeile["Type"] == "Shaft")
+        else if (temp.Passung[0] >= 'A' & temp.Passung[0] <= 'Z' & temp.Type == ZeilenTyp.Shaft)
         {
-            // log.WriteInfo("Passung " & temp.Zeile["Passung"] & " passt nicht zu Wellenpassung", True)
-            log.WriteInfo(My.Resources._passt_nicht_zu_Wellenpassung, " " + My.Resources.Passung + " " + temp.Zeile["Passung"], true);
+            // log.WriteInfo("Passung " & temp.Passung & " passt nicht zu Wellenpassung", True)
+            log.WriteInfo(My.Resources._passt_nicht_zu_Wellenpassung, " " + My.Resources.Passung + " " + temp.Passung, true);
             return false;
         }
-        else if (temp.Zeile["Passung"](0) >= "a" & temp.Zeile["Passung"](0) <= "z" & temp.Zeile["Type"] == "Hole")
+        else if (temp.Passung[0] >= 'a' & temp.Passung[0] <= 'z' & temp.Type == ZeilenTyp.Hole)
         {
-            // log.WriteInfo("Passung " & temp.Zeile["Passung"] & " passt nicht zu Bohrungspassung", True)
-            log.WriteInfo(My.Resources._passt_nicht_zu_Bohrungspassung, " " + My.Resources.Passung + " " + temp.Zeile["Passung"], true);
+            // log.WriteInfo("Passung " & temp.Passung & " passt nicht zu Bohrungspassung", True)
+            log.WriteInfo(My.Resources._passt_nicht_zu_Bohrungspassung, " " + My.Resources.Passung + " " + temp.Passung, true);
             return false;
         }
         return true;
@@ -545,46 +545,46 @@ public class Passungstabelle_Tabelle
         if (Hole)
         {
             tol.SetFitValues(tol.GetHoleFitValue(), "");
-            temp.Zeile.Add("Type", "Hole");
+            temp.Type = ZeilenTyp.Hole;
         }
         else
         {
             tol.SetFitValues("", tol.GetShaftFitValue());
-            temp.Zeile.Add("Type", "Shaft");
+            temp.Type = ZeilenTyp.Shaft;
         }
-        temp.Zeile["Zone"] = zone;
-        temp.Zeile["Maß"] = Math.Round((dimen.GetSystemValue2("") * fac), RundenAuf).ToString();
-        if (Attr_generell["PlusZeichen"] & tol.GetMaxValue() > 0)
-            temp.Zeile["ToleranzO"] = "+" + tol.GetMaxValue() * fac;
+        temp.Zone = zone;
+        temp.Maß = Math.Round((dimen.GetSystemValue2("") * fac), RundenAuf);
+        if (Attr_generell.PlusZeichen & tol.GetMaxValue() > 0)
+            temp.ToleranzO = tol.GetMaxValue() * fac;
         else
-            temp.Zeile["ToleranzO"] = tol.GetMaxValue() * fac;
-        if (Attr_generell["PlusZeichen"] & tol.GetMinValue() > 0)
-            temp.Zeile["ToleranzU"] = "+" + tol.GetMinValue() * fac;
+            temp.ToleranzO = tol.GetMaxValue() * fac;
+        if (Attr_generell.PlusZeichen & tol.GetMinValue() > 0)
+            temp.ToleranzU = tol.GetMinValue() * fac;
         else
-            temp.Zeile["ToleranzU"] = tol.GetMinValue() * fac;
+            temp.ToleranzU = tol.GetMinValue() * fac;
 
-        temp.Zeile["AbmaßO"] = Convert.ToDouble(temp.Zeile["Maß"]) + Convert.ToDouble(temp.Zeile["ToleranzO"]);
-        temp.Zeile["AbmaßU"] = Convert.ToDouble(temp.Zeile["Maß"]) + Convert.ToDouble(temp.Zeile["ToleranzU"]);
-        temp.Zeile["AbmaßToleranzMitte"] = Convert.ToDouble(temp.Zeile["AbmaßU"]) + (Convert.ToDouble(temp.Zeile["AbmaßO"]) - Convert.ToDouble(temp.Zeile["AbmaßU"])) / 2.0;
+        temp.AbmaßO = Convert.ToDouble(temp.Maß) + Convert.ToDouble(temp.ToleranzO);
+        temp.AbmaßU = Convert.ToDouble(temp.Maß) + Convert.ToDouble(temp.ToleranzU);
+        temp.AbmaßToleranzMitte = Convert.ToDouble(temp.AbmaßU) + (Convert.ToDouble(temp.AbmaßO) - Convert.ToDouble(temp.AbmaßU)) / 2.0;
 
         // Wenn die Bohrungspassung benötigt wird
         if (Hole)
         {
-            temp.Zeile["Passung"] = tol.GetHoleFitValue();
-            temp.Zeile["VorbearbeitungAbmaßO"] = Convert.ToDouble(temp.Zeile["AbmaßO"]) + SchichtStärke * 2;
-            temp.Zeile["VorbearbeitungAbmaßU"] = Convert.ToDouble(temp.Zeile["AbmaßU"]) + SchichtStärke * 2;
+            temp.Passung = tol.GetHoleFitValue();
+            temp.VorbearbeitungAbmaßO = Convert.ToDouble(temp.AbmaßO) + SchichtStärke * 2;
+            temp.VorbearbeitungAbmaßU = Convert.ToDouble(temp.AbmaßU) + SchichtStärke * 2;
         }
         else
         {
-            temp.Zeile["Passung"] = tol.GetShaftFitValue();
-            temp.Zeile["VorbearbeitungAbmaßO"] = Convert.ToDouble(temp.Zeile["AbmaßO"]) - SchichtStärke * 2;
-            temp.Zeile["VorbearbeitungAbmaßU"] = Convert.ToDouble(temp.Zeile["AbmaßU"]) - SchichtStärke * 2;
+            temp.Passung = tol.GetShaftFitValue();
+            temp.VorbearbeitungAbmaßO = Convert.ToDouble(temp.AbmaßO) - SchichtStärke * 2;
+            temp.VorbearbeitungAbmaßU = Convert.ToDouble(temp.AbmaßU) - SchichtStärke * 2;
         }
 
-        temp.Zeile["VorbearbeitungAbmaßToleranzMitte"] = Convert.ToDouble(temp.Zeile["VorbearbeitungAbmaßU"]) + (Convert.ToDouble(temp.Zeile["VorbearbeitungAbmaßO"]) - Convert.ToDouble(temp.Zeile["VorbearbeitungAbmaßU"])) / 2.0;
+        temp.VorbearbeitungAbmaßToleranzMitte = Convert.ToDouble(temp.VorbearbeitungAbmaßU) + (Convert.ToDouble(temp.VorbearbeitungAbmaßO) - Convert.ToDouble(temp.VorbearbeitungAbmaßU)) / 2.0;
 
-        temp.Zeile["MaßPassung"] = temp.Prefix + temp.Zeile["Maß"] + " " + temp.Zeile["Passung"];
-        temp.Zeile["Name"] = dimen.FullName;
+        temp.MaßPassung = temp.Prefix + temp.Maß + " " + temp.Passung;
+        temp.Name = dimen.FullName;
 
         tol.SetFitValues(HoleValue, Shaftvalue);
         return temp;
@@ -639,40 +639,40 @@ public class Passungstabelle_Tabelle
                 fittext = swCalloutVariable.ShaftFit;
         }
 
-        temp.Zeile["Maß"] = Math.Round((swCalloutLengthVariable.Length * fac), RundenAuf).ToString();
-        temp.Zeile["Zone"] = zone;
+        temp.Maß = Math.Round(swCalloutLengthVariable.Length * fac, RundenAuf);
+        temp.Zone = zone;
 
-        if (Attr_generell["PlusZeichen"] & maxtol > 0)
-            temp.Zeile["ToleranzO"] = "+" + maxtol * fac;
+        if (Attr_generell.PlusZeichen & maxtol > 0)
+            temp.ToleranzO = maxtol * fac;
         else
-            temp.Zeile["ToleranzO"] = maxtol * fac;
-        if (Attr_generell["PlusZeichen"] & mintol > 0)
-            temp.Zeile["ToleranzU"] = "+" + mintol * fac;
+            temp.ToleranzO = maxtol * fac;
+        if (Attr_generell.PlusZeichen & mintol > 0)
+            temp.ToleranzU = mintol * fac;
         else
-            temp.Zeile["ToleranzU"] = mintol * fac;
+            temp.ToleranzU = mintol * fac;
 
-        temp.Zeile["AbmaßO"] = Convert.ToDouble(temp.Zeile["Maß"]) + Convert.ToDouble(temp.Zeile["ToleranzO"]);
-        temp.Zeile["AbmaßU"] = Convert.ToDouble(temp.Zeile["Maß"]) + Convert.ToDouble(temp.Zeile["ToleranzU"]);
-        temp.Zeile["AbmaßToleranzMitte"] = Convert.ToDouble(temp.Zeile["AbmaßU"]) + (Convert.ToDouble(temp.Zeile["AbmaßO"]) - Convert.ToDouble(temp.Zeile["AbmaßU"])) / 2.0;
+        temp.AbmaßO = Convert.ToDouble(temp.Maß) + Convert.ToDouble(temp.ToleranzO);
+        temp.AbmaßU = Convert.ToDouble(temp.Maß) + Convert.ToDouble(temp.ToleranzU);
+        temp.AbmaßToleranzMitte = Convert.ToDouble(temp.AbmaßU) + (Convert.ToDouble(temp.AbmaßO) - Convert.ToDouble(temp.AbmaßU)) / 2.0;
 
         // Wenn die Bohrungspassung benötigt wird
         if (Hole)
         {
-            temp.Zeile["Passung"] = fittext;
-            temp.Zeile["VorbearbeitungAbmaßO"] = Convert.ToDouble(temp.Zeile["AbmaßO"]) + SchichtStärke * 2;
-            temp.Zeile["VorbearbeitungAbmaßU"] = Convert.ToDouble(temp.Zeile["AbmaßU"]) + SchichtStärke * 2;
+            temp.Passung = fittext;
+            temp.VorbearbeitungAbmaßO = Convert.ToDouble(temp.AbmaßO) + SchichtStärke * 2;
+            temp.VorbearbeitungAbmaßU = Convert.ToDouble(temp.AbmaßU) + SchichtStärke * 2;
         }
         else
         {
-            temp.Zeile["Passung"] = fittext;
-            temp.Zeile["VorbearbeitungAbmaßO"] = Convert.ToDouble(temp.Zeile["AbmaßO"]) - SchichtStärke * 2;
-            temp.Zeile["VorbearbeitungAbmaßU"] = Convert.ToDouble(temp.Zeile["AbmaßU"]) - SchichtStärke * 2;
+            temp.Passung = fittext;
+            temp.VorbearbeitungAbmaßO = Convert.ToDouble(temp.AbmaßO) - SchichtStärke * 2;
+            temp.VorbearbeitungAbmaßU = Convert.ToDouble(temp.AbmaßU) - SchichtStärke * 2;
         }
 
-        temp.Zeile["VorbearbeitungAbmaßToleranzMitte"] = Convert.ToDouble(temp.Zeile["VorbearbeitungAbmaßU"]) + (Convert.ToDouble(temp.Zeile["VorbearbeitungAbmaßO"]) - Convert.ToDouble(temp.Zeile["VorbearbeitungAbmaßU"])) / 2.0;
+        temp.VorbearbeitungAbmaßToleranzMitte = Convert.ToDouble(temp.VorbearbeitungAbmaßU) + (Convert.ToDouble(temp.VorbearbeitungAbmaßO) - Convert.ToDouble(temp.VorbearbeitungAbmaßU)) / 2.0;
 
-        temp.Zeile["MaßPassung"] = temp.Prefix + temp.Zeile["Maß"] + " " + temp.Zeile["Passung"];
-        temp.Zeile["Name"] = swCalloutVariable.VariableName;
+        temp.MaßPassung = temp.Prefix + temp.Maß + " " + temp.Passung;
+        temp.Name = swCalloutVariable.VariableName;
 
         if (HoleValue != "" & Shaftvalue != "")
         {
@@ -735,8 +735,8 @@ public class Passungstabelle_Tabelle
     }
     private void SetColors()
     {
-        RowColor = ConvertColorToSwxHex(Attr_Tabelle["FarbeZeile"]);
-        HeadColor = ConvertColorToSwxHex(Attr_Tabelle["FarbeKopfZeile"]);
+        RowColor = ConvertColorToSwxHex(Attr_Tabelle.FarbeZeile);
+        HeadColor = ConvertColorToSwxHex(Attr_Tabelle.FarbeKopfZeile);
     }
 
     private string ConvertColorToSwxHex(long colorcode)
@@ -758,131 +758,20 @@ public class Passungstabelle_Tabelle
         return "0x" + temps2;
     }
 
-    public double GetLineWidth(string WhichOne, ModelDoc2 modeldoc)
+    public int GetLineWidth1(string widthName, ModelDoc2 modeldoc)
     {
-        swUserPreferenceDoubleValue_e lineWidth;
-
-        switch (Attr_Tabelle[WhichOne])
+        var lineWidth = widthName switch
         {
-            case "Dünn":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThinLineWeight;
-                    break;
-                }
-
-            case "Normal":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterNormalLineWeight;
-                    break;
-                }
-
-            case "Dick":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThickLineWeight;
-                    break;
-                }
-
-            case "Dick(2)":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThick2LineWeight;
-                    break;
-                }
-
-            case "Dick(3)":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThick3LineWeight;
-                    break;
-                }
-
-            case "Dick(4)":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThick4LineWeight;
-                    break;
-                }
-
-            case "Dick(5)":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThick5LineWeight;
-                    break;
-                }
-
-            case "Dick(6)":
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThick6LineWeight;
-                    break;
-                }
-
-            default:
-                {
-                    lineWidth = swUserPreferenceDoubleValue_e.swPageSetupPrinterThinLineWeight;
-                    break;
-                }
-        }
-
-        return modeldoc.Extension.GetUserPreferenceDouble((int)lineWidth, (int)swUserPreferenceOption_e.swDetailingNoOptionSpecified);
-    }
-
-    public int GetLineWidth1(string WhichOne, ModelDoc2 modeldoc)
-    {
-        swLineWeights_e lineWidth;
-
-        switch (Attr_Tabelle[WhichOne])
-        {
-            case "Dünn":
-                {
-                    lineWidth = swLineWeights_e.swLW_THIN;
-                    break;
-                }
-
-            case "Normal":
-                {
-                    lineWidth = swLineWeights_e.swLW_NORMAL;
-                    break;
-                }
-
-            case "Dick":
-                {
-                    lineWidth = swLineWeights_e.swLW_THICK;
-                    break;
-                }
-
-            case "Dick(2)":
-                {
-                    lineWidth = swLineWeights_e.swLW_THICK2;
-                    break;
-                }
-
-            case "Dick(3)":
-                {
-                    lineWidth = swLineWeights_e.swLW_THICK3;
-                    break;
-                }
-
-            case "Dick(4)":
-                {
-                    lineWidth = swLineWeights_e.swLW_THICK4;
-                    break;
-                }
-
-            case "Dick(5)":
-                {
-                    lineWidth = swLineWeights_e.swLW_THICK5;
-                    break;
-                }
-
-            case "Dick(6)":
-                {
-                    lineWidth = swLineWeights_e.swLW_THICK6;
-                    break;
-                }
-
-            default:
-                {
-                    lineWidth = swLineWeights_e.swLW_THIN;
-                    break;
-                }
-        }
-
+            "Dünn" => swLineWeights_e.swLW_THIN,
+            "Normal" => swLineWeights_e.swLW_NORMAL,
+            "Dick" => swLineWeights_e.swLW_THICK,
+            "Dick(2)" => swLineWeights_e.swLW_THICK2,
+            "Dick(3)" => swLineWeights_e.swLW_THICK3,
+            "Dick(4)" => swLineWeights_e.swLW_THICK4,
+            "Dick(5)" => swLineWeights_e.swLW_THICK5,
+            "Dick(6)" => swLineWeights_e.swLW_THICK6,
+            _ => swLineWeights_e.swLW_THIN,
+        };
         return (int)lineWidth;
     }
 
@@ -912,7 +801,7 @@ public class Passungstabelle_Tabelle
         double h = GetTableHeigth(swtable);
         double[] temp = new double[2];
 
-        if (Attr_generell["NeuPositionieren"] == true)
+        if (Attr_generell.NeuPositionieren == true)
         {
             if (Einfügepunktposition == (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomLeft)
             {
@@ -958,14 +847,8 @@ public class Passungstabelle_Tabelle
         swTable.Title = "Passungstabelle";
         swTable.GeneralTableFeature.GetFeature().Name = "Passungstabelle-" + swsheet.GetName();
 
-        // wegen Bug in SWX2019 
-        // *******************
-        // swTable.BorderLineWeightCustom = GetLineWidth("RahmenStrichStärke", modeldoc)
-        // swTable.GridLineWeightCustom = GetLineWidth("RasterStrichStärke", modeldoc)
-        // *******************
-        swTable.BorderLineWeight = GetLineWidth1("RahmenStrichStärke", modeldoc);
-        swTable.GridLineWeight = GetLineWidth1("RasterStrichStärke", modeldoc);
-        // *******************
+        swTable.BorderLineWeight = (int)Attr_Tabelle.RahmenStrichStärke;
+        swTable.GridLineWeight = (int)Attr_Tabelle.RasterStrichStärke;
 
 
         SetColors();
@@ -982,7 +865,7 @@ public class Passungstabelle_Tabelle
         InsertRowsText(swTable);
 
 
-        if (Attr_Tabelle["SpaltenBreiteAutomatisch"] == true)
+        if (Attr_Tabelle.SpaltenBreiteAutomatisch == true)
         {
             SetColumnWithAuto(swTable);
             SetColumnHeightAuto(swTable);
@@ -1001,6 +884,7 @@ public class Passungstabelle_Tabelle
         // swTable.GetAnnotation.Visible = True
         swTable.GetAnnotation().Visible = (int)swAnnotationVisibilityState_e.swAnnotationVisible;
     }
+
     private TextFormat GetTextStyle(bool Header, TableAnnotation swTable)
     {
         TextFormat temp;
@@ -1009,54 +893,25 @@ public class Passungstabelle_Tabelle
 
         if (Header == true)
         {
-            temp.TypeFaceName = Attr_Tabelle["SchriftartKopfZeile"];
-            temp.CharHeight = Attr_Tabelle["TexthöheKopfZeile"].Replace(".", ",") / 1000.0;
-            temp.Bold = Attr_Tabelle["FettKopfZeile"];
-            temp.Underline = Attr_Tabelle["UnterstrichenKopfZeile"];
-            temp.Strikeout = Attr_Tabelle["DurchgestrichenKopfZeile"];
-            temp.Italic = Attr_Tabelle["KursivKopfZeile"];
+            temp.TypeFaceName = Attr_Tabelle.SchriftartKopfZeile;
+            temp.CharHeight = Attr_Tabelle.TexthöheKopfZeile / 1000.0;
+            temp.Bold = Attr_Tabelle.FettKopfZeile;
+            temp.Underline = Attr_Tabelle.UnterstrichenKopfZeile;
+            temp.Strikeout = Attr_Tabelle.DurchgestrichenKopfZeile;
+            temp.Italic = Attr_Tabelle.KursivKopfZeile;
         }
         else
         {
-            temp.TypeFaceName = Attr_Tabelle["SchriftartZeile"];
-            temp.CharHeight = Attr_Tabelle["TexthöheZeile"].Replace(".", ",") / 1000.0;
-            temp.Bold = Attr_Tabelle["FettZeile"];
-            temp.Underline = Attr_Tabelle["UnterstrichenZeile"];
-            temp.Strikeout = Attr_Tabelle["DurchgestrichenZeile"];
-            temp.Italic = Attr_Tabelle["KursivZeile"];
+            temp.TypeFaceName = Attr_Tabelle.SchriftartZeile;
+            temp.CharHeight = Attr_Tabelle.TexthöheZeile / 1000.0;
+            temp.Bold = Attr_Tabelle.FettZeile;
+            temp.Underline = Attr_Tabelle.UnterstrichenZeile;
+            temp.Strikeout = Attr_Tabelle.DurchgestrichenZeile;
+            temp.Italic = Attr_Tabelle.KursivZeile;
         }
 
         return temp;
     }
-
-    //private Font GetFontStyle(bool Header)
-    //{
-    //    FontStyle style = new FontStyle();
-    //    float höheK;
-    //    float höheR;
-    //    Font temp;
-
-    //    höheK = Attr_Tabelle["TexthöheKopfZeile"].Replace(".", ",");
-    //    höheR = Attr_Tabelle["TexthöheZeile"].Replace(".", ",");
-
-    //    if (Header == true)
-    //    {
-    //        if (Attr_Tabelle["FettKopfZeile"] == true)
-    //            style = style ^ FontStyle.Bold;
-    //        if (Attr_Tabelle["KursivKopfZeile"] == true)
-    //            style = style ^ FontStyle.Italic;
-    //        temp = new Font(Attr_Tabelle["SchriftartKopfZeile"], höheK, style, GraphicsUnit.Millimeter);
-    //    }
-    //    else
-    //    {
-    //        if (Attr_Tabelle["FettZeile"] == true)
-    //            style = style ^ FontStyle.Bold;
-    //        if (Attr_Tabelle["KursivZeile"] == true)
-    //            style = style ^ FontStyle.Italic;
-    //        temp = new Font(Attr_Tabelle["SchriftartZeile"], höheR, style, GraphicsUnit.Millimeter);
-    //    }
-    //    return temp;
-    //}
 
     private void SetTabelHeader(TableAnnotation swTable)
     {
@@ -1064,7 +919,7 @@ public class Passungstabelle_Tabelle
         // Wenn zweisprachig dann auch zwei Zeilen
         // If Attr_Sprache.Contains("/") Then rows = 2 Else rows = 1
 
-        if (Attr_Tabelle["HeaderOben"] == true)
+        if (Attr_Tabelle.HeaderOben == true)
             swTable.SetHeader((int)swTableHeaderPosition_e.swTableHeader_Top, rows);
         else
             swTable.SetHeader((int)swTableHeaderPosition_e.swTableHeader_Bottom, rows);
@@ -1098,23 +953,6 @@ public class Passungstabelle_Tabelle
         InsertHeaderText(swTable, lang1l, lang2l);
     }
 
-    private void SetColumnWith(TableAnnotation swtable)
-    {
-        int pos = 0;
-
-        foreach (KeyValuePair<string, string> n in Definitionen.TABELLENATTR_Init)
-        {
-            if (n.Key.Length > 10)
-            {
-                if (n.Key.Substring(0, 9) == "TabSpalte")
-                {
-                    if (Attr_Tabelle[n.Key] == true)
-                        pos = pos + 1;
-                }
-            }
-        }
-    }
-
     private void InsertHeaderText(TableAnnotation swTable, Dictionary<string, string> lang1l, Dictionary<string, string> lang2l)
     {
         int pos = 0;
@@ -1132,18 +970,15 @@ public class Passungstabelle_Tabelle
             {
                 if (n.Key.Substring(0, 9) == "TabSpalte")
                 {
-                    if (Attr_Tabelle[n.Key] == true)
+                    swTable.SetColumnTitle(pos, "<FONT color=" + HeadColor + ">" + lang1l[n.Key.Substring(9)]);
+                    swTable.SetCellTextFormat(rowpos, pos, false, HeadStyle);
+                    if (lang2l.Count > 0)
                     {
-                        swTable.SetColumnTitle(pos, "<FONT color=" + HeadColor + ">" + lang1l[n.Key.Substring(9)]);
+                        // swTable.SetColumnTitle(pos, swTable.GetColumnTitle2(pos, True) & Chr(13) & lang2l(n.Key.Substring(9)))
+                        swTable.SetColumnTitle(pos, swTable.GetColumnTitle(pos) + Strings.Chr(13) + lang2l[n.Key.Substring(9)]);
                         swTable.SetCellTextFormat(rowpos, pos, false, HeadStyle);
-                        if (lang2l.Count > 0)
-                        {
-                            // swTable.SetColumnTitle(pos, swTable.GetColumnTitle2(pos, True) & Chr(13) & lang2l(n.Key.Substring(9)))
-                            swTable.SetColumnTitle(pos, swTable.GetColumnTitle(pos) + Strings.Chr(13) + lang2l[n.Key.Substring(9)]);
-                            swTable.SetCellTextFormat(rowpos, pos, false, HeadStyle);
-                        }
-                        pos = pos + 1;
                     }
+                    pos = pos + 1;
                 }
             }
         }
@@ -1213,91 +1048,66 @@ public class Passungstabelle_Tabelle
         {
         }
 
-        foreach (KeyValuePair<string, string> n in Definitionen.TABELLENATTR_Init)
+        foreach (var spalte in Attr_Tabelle.Spalten)
         {
-            if (n.Key.Length <= 10)
+            if (!spalte.Visible)
             {
                 continue;
             }
-            if (n.Key.Substring(0, 9) != "TabSpalte")
-            {
-                continue;
-            }
-            if (Attr_Tabelle[n.Key] != true)
-            {
-                continue;
-            }
-            switch (n.Key.Substring(9))
+
+
+            switch (spalte.Name)
             {
                 case "Maß":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Prefix + row.Zeile["Maß"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Prefix + row.Maß;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
 
                 case "Passung":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["Passung"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Passung;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
 
                 case "MaßePassung":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Prefix + row.Zeile["Maß"] + " " + row.Zeile["Passung"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Prefix + row.Maß + " " + row.Passung;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
 
                 case "Toleranz":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["ToleranzO"];
-                        swTable.Text[rowpos + rstep, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["ToleranzU"];
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.ToleranzO;
+                    swTable.Text[rowpos + rstep, pos] = "<FONT color=" + RowColor + ">" + row.ToleranzU;
+                    break;
 
                 case "Abmaß":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["AbmaßO"];
-                        swTable.Text[rowpos + rstep, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["AbmaßU"];
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.AbmaßO;
+                    swTable.Text[rowpos + rstep, pos] = "<FONT color=" + RowColor + ">" + row.AbmaßU;
+                    break;
 
                 case "AbmaßToleranzMitte":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["AbmaßToleranzMitte"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.AbmaßToleranzMitte;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
 
                 case "VorbearbeitungsAbmaße":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["VorbearbeitungAbmaßO"];
-                        swTable.Text[rowpos + rstep, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["VorbearbeitungAbmaßU"];
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.VorbearbeitungAbmaßO;
+                    swTable.Text[rowpos + rstep, pos] = "<FONT color=" + RowColor + ">" + row.VorbearbeitungAbmaßU;
+                    break;
 
                 case "VorbearbeitungsToleranzMitte":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["VorbearbeitungAbmaßToleranzMitte"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.VorbearbeitungAbmaßToleranzMitte;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
 
                 case "Anzahl":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["Anzahl"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Anzahl;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
 
                 case "Zone":
-                    {
-                        swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zeile["Zone"];
-                        swTable.Text[rowpos + rstep, pos] = "-";
-                        break;
-                    }
+                    swTable.Text[rowpos, pos] = "<FONT color=" + RowColor + ">" + row.Zone;
+                    swTable.Text[rowpos + rstep, pos] = "-";
+                    break;
+
             }
             pos = pos + 1;
         }
@@ -1306,87 +1116,18 @@ public class Passungstabelle_Tabelle
     private void MergeCell(TableAnnotation swTable, int rowpos, int rowstep, Passungstabelle_Zeile row)
     {
         int pos = 0;
-        int rstep;
+        int rstep = rowstep < 0 ? -1 : 1;
 
-        if (rowstep < 0)
-            rstep = -1;
-        else
-            rstep = 1;
-
-        foreach (KeyValuePair<string, string> n in Definitionen.TABELLENATTR_Init)
+        foreach (var spalte in Attr_Tabelle.Spalten)
         {
-            if (n.Key.Length <= 10)
-            {
-                continue;
-            }
-            if (n.Key.Substring(0, 9) != "TabSpalte")
+            if (spalte.Visible != true)
             {
                 continue;
             }
 
-            if (Attr_Tabelle[n.Key] != true)
+            if (spalte.MergeCells)
             {
-                continue;
-            }
-
-            switch (n.Key.Substring(9))
-            {
-                case "Maß":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
-
-                case "Passung":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
-
-                case "MaßePassung":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
-
-                case "Toleranz":
-                    {
-                        break;
-                    }
-
-                case "Abmaß":
-                    {
-                        break;
-                    }
-
-                case "AbmaßToleranzMitte":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
-
-                case "VorbearbeitungsAbmaße":
-                    {
-                        break;
-                    }
-
-                case "VorbearbeitungsToleranzMitte":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
-
-                case "Anzahl":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
-
-                case "Zone":
-                    {
-                        swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
-                        break;
-                    }
+                swTable.MergeCells(rowpos, pos, rowpos + rstep, pos);
             }
 
             pos = pos + 1;
@@ -1399,23 +1140,19 @@ public class Passungstabelle_Tabelle
     {
         int i = 0;
 
-        foreach (KeyValuePair<string, string> n in Definitionen.TABELLENATTR_Init)
+        foreach (var spalte in Attr_Tabelle.Spalten)
         {
-            if (n.Key.Length > 10)
+            if (spalte.Visible != true)
             {
-                if (n.Key.Substring(0, 9) == "TabSpalte")
-                {
-                    if (Attr_Tabelle[n.Key] == true)
-                    {
-                        swTable.SetColumnWidth(
-                            i,
-                            System.Convert.ToDouble(Attr_Tabelle["BreiteSpalte" + n.Key.Substring(9)] / (double)1000),
-                            (int)swTableRowColSizeChangeBehavior_e.swTableRowColChange_TableSizeCanChange);
-
-                        i = i + 1;
-                    }
-                }
+                continue;
             }
+
+            swTable.SetColumnWidth(
+                i,
+                spalte.Breite / 1000,
+                (int)swTableRowColSizeChangeBehavior_e.swTableRowColChange_TableSizeCanChange);
+
+            i = i + 1;
         }
     }
 
@@ -1424,14 +1161,14 @@ public class Passungstabelle_Tabelle
     {
         int index = 0;
         Annotation swAnnotation;
-        DisplayData swDislplayData;
+        DisplayData swDisplayData;
         double TextWidth = 0.0;
         bool HeaderZweizeilig = false;
         double temp = 0.0;
 
         swAnnotation = swTable.GetAnnotation();
 
-        swDislplayData = swAnnotation.GetDisplayData().As<DisplayData>()!;
+        swDisplayData = swAnnotation.GetDisplayData().As<DisplayData>()!;
 
         if (Attr_Sprache.Contains("/"))
             HeaderZweizeilig = true;
@@ -1446,16 +1183,16 @@ public class Passungstabelle_Tabelle
             {
                 if (j == 0 & HeaderZweizeilig)
                 {
-                    if (swDislplayData.GetTextInBoxWidthAtIndex(index) > TextWidth)
-                        temp = swDislplayData.GetTextInBoxWidthAtIndex(index);
-                    if (swDislplayData.GetTextInBoxWidthAtIndex(index + 1) > temp)
-                        temp = swDislplayData.GetTextInBoxWidthAtIndex(index + 1);
+                    if (swDisplayData.GetTextInBoxWidthAtIndex(index) > TextWidth)
+                        temp = swDisplayData.GetTextInBoxWidthAtIndex(index);
+                    if (swDisplayData.GetTextInBoxWidthAtIndex(index + 1) > temp)
+                        temp = swDisplayData.GetTextInBoxWidthAtIndex(index + 1);
                     index = index + swTable.ColumnCount * 2 - i;
                 }
                 else
                 {
-                    if (swDislplayData.GetTextInBoxWidthAtIndex(index) > TextWidth)
-                        temp = swDislplayData.GetTextInBoxWidthAtIndex(index);
+                    if (swDisplayData.GetTextInBoxWidthAtIndex(index) > TextWidth)
+                        temp = swDisplayData.GetTextInBoxWidthAtIndex(index);
                     index = index + swTable.ColumnCount;
                 }
                 if (temp > TextWidth)
@@ -1480,13 +1217,13 @@ public class Passungstabelle_Tabelle
         double TextWidth = 0.0;
         bool HeaderZweizeilig = false;
         double temp = 0.0;
-        double höheR = Attr_Tabelle["TexthöheZeile"].Replace(".", ",") * 1.5 / 1000.0;
+        double höheR = Attr_Tabelle.TexthöheZeile * 1.5 / 1000.0;
         double höheK = 0.0;
 
         if (HeaderZweizeilig)
-            höheK = Attr_Tabelle["TexthöheKopfZeile"].Replace(".", ",") * 1.25 / 1000.0;
+            höheK = Attr_Tabelle.TexthöheKopfZeile * 1.25 / 1000.0;
         else
-            höheK = Attr_Tabelle["TexthöheKopfZeile"].Replace(".", ",") * 1.5 / 1000.0;
+            höheK = Attr_Tabelle.TexthöheKopfZeile * 1.5 / 1000.0;
 
         swAnnotation = swTable.GetAnnotation();
 
@@ -1498,7 +1235,7 @@ public class Passungstabelle_Tabelle
         for (var i = 0; i <= swTable.RowCount - 1; i++)
         {
             // For j = 0 To swTable.ColumnCount - 1
-            // temp = swDislplayData.GetTextInBoxHeightAtIndex(index)
+            // temp = swDisplayData.GetTextInBoxHeightAtIndex(index)
             // index = index + 1
             // If temp > TextWidth Then TextWidth = temp
             // Next
@@ -1560,7 +1297,7 @@ public class Passungstabelle_Tabelle
             zähler = 1;
             if (j < TabellenZeilen.Count - 1)
             {
-                while (TabellenZeilen[j].Zeile["MaßPassung"] == TabellenZeilen[j + 1].Zeile["MaßPassung"])
+                while (TabellenZeilen[j].MaßPassung == TabellenZeilen[j + 1].MaßPassung)
                 {
                     zähler = zähler + 1;
                     j = j + 1;
@@ -1573,6 +1310,6 @@ public class Passungstabelle_Tabelle
             i = j + 1;
         }
         foreach (var n in anzahl)
-            TabellenZeilen[n.Key].Zeile["Anzahl"] = n.Value;
+            TabellenZeilen[n.Key].Anzahl = n.Value;
     }
 }

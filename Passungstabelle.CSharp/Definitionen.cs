@@ -73,6 +73,7 @@ public class Definitionen
     /// <summary>
     /// 'Vorgabewerte für generelle Attribute
     /// </summary>
+    [Obsolete("See GeneralSettings")]
     public static Dictionary<string, string> GENERELLE_ATTR_Init { get; set; } = new() { { "RundenAuf", "8" }, { "PlusZeichen", "True" }, { "ReaktionAufLeerePassung", "False" }, { "NeuPositionieren", "True" }, { "NurAufErstemBlatt", "True" }, { "AnsichtsTypSkizzen", "True" }, { "AnsichtsTypTeile", "True" }, { "AnsichtsTypBaugruppen", "True" }, { "LogDatei", "False" }, { "SchichtStärke", "0" }, { "SchichtStärkeAbfragen", tb }, { "SchichtStärkeKeine", "True" }, { "SchichtStärkeFix", "False" }, { "Fehlermeldung", "False" }, { "LöschenAufRestlichenBlättern", "True" }, { "Eventgesteuert", "False" }, { "Event_BevorSave", "False" }, { "Event_AfterRegen", "False" } };
 
     /// <summary>
@@ -83,6 +84,7 @@ public class Definitionen
     /// <summary>
     /// 'Vorgabewerte für Tabellen-Attribute
     /// </summary>
+    [Obsolete("See TableSettings")]
     public static Dictionary<string, string> TABELLENATTR_Init { get; set; } = new() { { "HeaderOben", "True" }, { "HeaderUnten", "False" }, { "HeaderLanguage", "DE" }, { "SchriftartZeile", "Arial" }, { "SchriftstilZeile", "Standard" }, { "UnterstrichenZeile", "False" }, { "DurchgestrichenZeile", "False" }, { "FettZeile", "False" }, { "TexthöheZeile", "2,5" }, { "FarbeZeile", "0" }, { "KursivZeile", "False" }, { "SchriftartKopfZeile", "Arial" }, { "SchriftstilKopfZeile", "Standard" }, { "UnterstrichenKopfZeile", "False" }, { "DurchgestrichenKopfZeile", "False" }, { "FettKopfZeile", "False" }, { "TexthöheKopfZeile", "2,5" }, { "FarbeKopfZeile", "0" }, { "KursivKopfZeile", "False" }, { "BreiteSpalteMaß", "15" }, { "BreiteSpaltePassung", "15" }, { "BreiteSpalteMaßePassung", "20" }, { "BreiteSpalteToleranz", "20" }, { "BreiteSpalteAbmaß", "20" }, { "BreiteSpalteAbmaßToleranzMitte", "20" }, { "BreiteSpalteVorbearbeitungsAbmaße", "20" }, { "BreiteSpalteVorbearbeitungsToleranzMitte", "20" }, { "BreiteSpalteAnzahl", "20" }, { "BreiteSpalteZone", "20" }, { "RasterStrichStärke", "Dünn" }, { "RahmenStrichStärke", "Dick" }, { "SpaltenBreiteAutomatisch", "False" }, { "TabSpalteMaß", "True" }, { "TabSpaltePassung", "True" }, { "TabSpalteMaßePassung", "True" }, { "TabSpalteToleranz", "True" }, { "TabSpalteAbmaß", "True" }, { "TabSpalteAbmaßToleranzMitte", "True" }, { "TabSpalteVorbearbeitungsAbmaße", "True" }, { "TabSpalteVorbearbeitungsToleranzMitte", "True" }, { "TabSpalteAnzahl", "False" }, { "TabSpalteZone", "False" } };
 
     /// <summary>

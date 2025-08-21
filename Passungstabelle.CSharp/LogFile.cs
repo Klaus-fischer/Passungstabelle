@@ -8,15 +8,15 @@ using System.Windows;
 public class LogFile
 {
     public string LogPfad = "";
-    public Dictionary<string, dynamic> Attr_generell = new();
+    public GeneralSettings Attr_generell = new();
     public Dictionary<string, Dictionary<string, bool>> Attr_Meldungen = new();
     public string UserName = "";
     public bool IOAccessToLogPath = false;
 
-    public LogFile(Dictionary<string, dynamic> attr)
+    public LogFile(GeneralSettings settings)
     {
         LogPfad = GetLogPath();
-        Attr_generell = attr;
+        Attr_generell = settings;
         UserName = Environment.UserName;
     }
 
@@ -35,7 +35,7 @@ public class LogFile
 
         try
         {
-            tempattr = Convert.ToBoolean(Attr_generell["LogDatei"]);
+            tempattr = Convert.ToBoolean(Attr_generell.LogDatei);
         }
         catch
         {
@@ -58,7 +58,7 @@ public class LogFile
 
         try
         {
-            tempattr = Convert.ToBoolean(Attr_generell["Fehlermeldung"]);
+            tempattr = Convert.ToBoolean(Attr_generell.Fehlermeldung);
         }
         catch
         {

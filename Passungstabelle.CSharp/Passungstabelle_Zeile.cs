@@ -5,9 +5,6 @@ using System.Collections.Generic;
 
 public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquatable<Passungstabelle_Zeile>
 {
-    [Obsolete]
-    public IDictionary<string, dynamic> Zeile { get; }
-
     public string Prefix { get; set; } = string.Empty;
     
     public double Maß { get; set; }
@@ -33,6 +30,9 @@ public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquata
     public double VorbearbeitungAbmaßToleranzMitte { get; set; }
 
     public ZeilenTyp Type { get; set; }
+    public string Name { get; internal set; }
+    public string Zone { get; internal set; }
+    public int Anzahl { get; internal set; }
 
     /// <summary>
     /// Vergleichsfunktion zum Sortieren
