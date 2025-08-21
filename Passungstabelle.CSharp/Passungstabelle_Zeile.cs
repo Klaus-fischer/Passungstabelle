@@ -1,9 +1,13 @@
 ﻿namespace Passungstabelle.CSharp;
 
 using System;
+using System.Collections.Generic;
 
 public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquatable<Passungstabelle_Zeile>
 {
+    [Obsolete]
+    public IDictionary<string, dynamic> Zeile { get; }
+
     public string Prefix { get; set; } = string.Empty;
     
     public double Maß { get; set; }
@@ -27,6 +31,8 @@ public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquata
     public double VorbearbeitungAbmaßU { get; set; }
     
     public double VorbearbeitungAbmaßToleranzMitte { get; set; }
+
+    public ZeilenTyp Type { get; set; }
 
     /// <summary>
     /// Vergleichsfunktion zum Sortieren
@@ -57,4 +63,10 @@ public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquata
     // Hashcode für eindeutige Einträge
     public override int GetHashCode() 
         => HashCode.Combine(this.Maß, this.Passung);
+}
+
+public enum ZeilenTyp
+{
+    Shaft, 
+    Hole,
 }

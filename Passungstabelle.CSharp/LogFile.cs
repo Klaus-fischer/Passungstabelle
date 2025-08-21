@@ -8,12 +8,12 @@ using System.Windows;
 public class LogFile
 {
     public string LogPfad = "";
-    public Dictionary<string, string> Attr_generell = new();
+    public Dictionary<string, dynamic> Attr_generell = new();
     public Dictionary<string, Dictionary<string, bool>> Attr_Meldungen = new();
     public string UserName = "";
     public bool IOAccessToLogPath = false;
 
-    public LogFile(Dictionary<string, string> attr)
+    public LogFile(Dictionary<string, dynamic> attr)
     {
         LogPfad = GetLogPath();
         Attr_generell = attr;
@@ -144,5 +144,10 @@ public class LogFile
         {
             return false;
         }
+    }
+
+    internal void WriteInfo(object hat_den_Wert_0, object value, bool v)
+    {
+        throw new NotImplementedException();
     }
 }
