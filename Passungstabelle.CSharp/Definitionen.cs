@@ -95,6 +95,7 @@ public class Definitionen
     /// <summary>
     /// 'Vorgabewerte für Format-Attribute
     /// </summary>
+    [Obsolete("See FormatSettings")]
     public static Dictionary<string, string> FORMATATTR_Init { get; set; } = new() { { "Breite", "210" }, { "Höhe", "297" }, { "EinfügepunktLO", "False" }, { "EinfügepunktRO", "True" }, { "EinfügepunktLU", "False" }, { "EinfügepunktRU", "False" }, { "Offset_X", "0" }, { "Offset_Y", "0" } };
 
     /// <summary>
@@ -144,12 +145,12 @@ public class Definitionen
         /// <summary>
         /// Sprache
         /// </summary>
-        public string sprache { get; set; }
+        public string Sprache { get; set; }
 
         /// <summary>
         /// Blatteigenschaften (Abmessungen, Formatvorlage, ....)
         /// </summary>
-        public object Eigenschaften { get; set; }
+        public double[] Eigenschaften { get; set; }
     }
 
     public struct Werte

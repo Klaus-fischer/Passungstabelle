@@ -23,7 +23,15 @@ internal static class Resources
     internal static string _passt_nicht_zu_Wellenpassung;
     internal static string Passung;
     internal static string _passt_nicht_zu_Bohrungspassung;
+    internal static string _Keine_Blätter_in_der_Zeichnung;
+    internal static string _Keine_Passungen_gefunden;
+    internal static string _Keine_Formatvorlage;
+    internal static string _nicht_gefunden;
+    internal static string _Abmessungen_von;
+    internal static string Format;
+    internal static string _Abmessungen_von_ersten_definierten_Format;
 
     public static string Maß { get; internal set; }
     public static string Bohrungsbeschreibung { get; internal set; }
+    public static string Kein_Format_mit_den_Abmessungen { get; internal set; }
 }
