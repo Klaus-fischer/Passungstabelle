@@ -30,6 +30,7 @@ internal static class Resources
     internal static string _Abmessungen_von;
     internal static string Format;
     internal static string _Abmessungen_von_ersten_definierten_Format;
+    internal static string Fertig;
 
     public static string Maß { get; internal set; }
     public static string Bohrungsbeschreibung { get; internal set; }
