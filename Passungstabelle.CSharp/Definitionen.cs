@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 
 /// <summary>
-/// stellt diverse Definitionen für das Projekt Passungstabelle bereit
+/// stellt diverse Definitionen für das Projekt PassungstabellenHandler bereit
 /// </summary>
 public class Definitionen
 {

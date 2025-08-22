@@ -35,4 +35,9 @@ internal static class Resources
     public static string Maß { get; internal set; }
     public static string Bohrungsbeschreibung { get; internal set; }
     public static string Kein_Format_mit_den_Abmessungen { get; internal set; }
+    public static string Passungstabelle_Add_In_für_SolidWorks { get; internal set; }
+    public static string Passungstabelle { get; internal set; }
+    public static string Passungstabelle_Setup { get; internal set; }
+    public static string Passungstabelle_Hilfe { get; internal set; }
+    public static string HtmlHelpPfad { get; internal set; }
 }

@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections;
+﻿namespace Passungstabelle.CSharp;
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 
 using System.Data;
 using static System.Environment;
-using System.Globalization;
 using System.IO;
-using System.Resources;
-using System.Threading;
-using System.Xml;
-using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
-using My = Passungstabelle.CSharp.My;
 using Microsoft.Win32;
-using Passungstabellen.CSharp;
-
-namespace Passungstabelle.CSharp;
 
 
-public class Passungstabelle
+public class PassungstabellenHandler
 {
     public string Macro_pfad { get; set; }
     public string Log_pfad { get; set; }
@@ -279,7 +269,7 @@ public class Passungstabelle
         //catch
         //{
         //    ok = false;
-        //    // MsgBox("Keine Setup.XML Datei gefunden" & Chr(10) & "Bitte verwenden Sie das Setup-Makro um die Einstellungen zu erzeugen", vbOKOnly, "Passungstabelle Addin")
+        //    // MsgBox("Keine Setup.XML Datei gefunden" & Chr(10) & "Bitte verwenden Sie das Setup-Makro um die Einstellungen zu erzeugen", vbOKOnly, "PassungstabellenHandler Addin")
         //    Interaction.MsgBox(Passungstabellen.My.Resources.Resources.Keine_Setup_XML_Datei_gefunden + '\n' + Passungstabellen.My.Resources.Resources.Bitte_verwenden_Sie_das_Setup_Makro_um_die_Einstellungen_zu_erzeugen, Constants.vbOKOnly, Passungstabellen.My.Resources.Resources.Passungstabelle_Addin);
         //    Check_for_setupRet = false;
         //    return Check_for_setupRet;
@@ -398,7 +388,7 @@ public class Passungstabelle
         //    }
         //    catch (Exception ex)
         //    {
-        //        // Log.WriteInfo("Fehler beim Lesen des Attributes '" & attrname & "' im Abschnitt 'generelle Attribute'" & Chr(10) & "Makro 'Passungstabelle' abgebrochen", False)
+        //        // Log.WriteInfo("Fehler beim Lesen des Attributes '" & attrname & "' im Abschnitt 'generelle Attribute'" & Chr(10) & "Makro 'PassungstabellenHandler' abgebrochen", False)
         //        this.Log.WriteInfo(Passungstabellen.My.Resources.Resources.Fehler_beim_Lesen_des_Attributes + "'" + attrname + Passungstabellen.My.Resources.Resources.im_Abschnitt__generelle_Attribute + '\n' + Passungstabellen.My.Resources.Resources.Makro_Passungstabelle_abgebrochen, "", false);
         //        // Attr_get_generell = Nothing
         //        // Exit Function
@@ -617,7 +607,7 @@ public class Passungstabelle
         //        }
         //        catch (Exception ex)
         //        {
-        //            // Log.WriteInfo("Fehler beim Lesen des Attributes '" & attrname & "' im Abschnitt 'Format'" & Chr(10) & "Makro 'Passungstabelle' abgebrochen", False)
+        //            // Log.WriteInfo("Fehler beim Lesen des Attributes '" & attrname & "' im Abschnitt 'Format'" & Chr(10) & "Makro 'PassungstabellenHandler' abgebrochen", False)
         //            this.Log.WriteInfo(Passungstabellen.My.Resources.Resources.Fehler_beim_Lesen_des_Attributes + "'" + attrname + Passungstabellen.My.Resources.Resources.im_Abschnitt_Format + '\n' + Passungstabellen.My.Resources.Resources.Makro_Passungstabelle_abgebrochen, "", false);
         //            // Attr_get_formate = Nothing
         //            // Exit Function

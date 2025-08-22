@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SolidWorks.Interop.sldworks;
 
-namespace Passungstabellen.CSharp;
+namespace Passungstabelle.CSharp;
 
 
 public partial class Passungstabelle_Blatt

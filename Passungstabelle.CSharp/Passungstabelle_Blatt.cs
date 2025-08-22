@@ -7,7 +7,7 @@ using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using My = Passungstabelle.CSharp.My;
 
-namespace Passungstabellen.CSharp;
+namespace Passungstabelle.CSharp;
 
 
 public partial class Passungstabelle_Blatt
@@ -25,7 +25,7 @@ public partial class Passungstabelle_Blatt
     public TableSettings Attr_Tabelle { get; set; } = new();
     public Definitionen.BlattEigenschaften Attr_Sheet { get; set; }
 
-    public ITableAnnotation? AlteTabelle { get; set; }         // Verweis auf eine eventuell vorhandene alte Passungstabelle
+    public ITableAnnotation? AlteTabelle { get; set; }         // Verweis auf eine eventuell vorhandene alte PassungstabellenHandler
     public double AlteTabelleX { get; set; }                 // X-Positon der alten Tabelle
     public double AlteTabelleY { get; set; }                 // Y-Positon der alten Tabelle
 
@@ -33,7 +33,7 @@ public partial class Passungstabelle_Blatt
     public SldWorks Swapp { get; set; }                      // Verweis auf SolidWorks
 
     private DrawingDoc swdraw;                        // Verweis auf die Zeichnungsdatei
-    private double[] Einfügepunkt = new double[2];                   // Einfügepunkt für die Passungstabelle
+    private double[] Einfügepunkt = new double[2];                   // Einfügepunkt für die PassungstabellenHandler
 
     /// <summary>
     /// Intialisierungsfuntkion für die Klasse "Passungstabelle_Blatt"
@@ -102,7 +102,7 @@ public partial class Passungstabelle_Blatt
                 AnsichtRec.holetab = this.CheckForHoleTable(swView);
                 // Ansicht zur Liste hinzufügen
                 this.Ansichten.Add(AnsichtRec);
-                // Prüfen ob eine alte Passungstabelle an der Ansicht hänt
+                // Prüfen ob eine alte PassungstabellenHandler an der Ansicht hänt
                 this.CheckForOldTable(swView);
             }
             // Nächste Ansicht holen
@@ -527,7 +527,7 @@ public partial class Passungstabelle_Blatt
     }
 
     // Sub:       DeleteTab
-    // löscht die Passungstabelle
+    // löscht die PassungstabellenHandler
     // es wird davon ausgegangen, dass das Blatt, auf dem sich die Tabelle befindet aktiv ist
     // Parameter: keine
     public void DeleteTab()
@@ -547,7 +547,7 @@ public partial class Passungstabelle_Blatt
         this.AlteTabelle = null;
     }
     // Sub:       CheckForOldTable
-    // sucht nach einer vorhandenen Passungstabelle und setzt die entsprechenden Werte
+    // sucht nach einer vorhandenen PassungstabellenHandler und setzt die entsprechenden Werte
     // Parameter: Ansicht in der gesucht werden soll
     public void CheckForOldTable(View swView)
     {
@@ -561,10 +561,10 @@ public partial class Passungstabelle_Blatt
             // Das Annotation-objekt ermitteln
             var annotation = table.GetAnnotation();
 
-            // Wenn es sich um eine Passungstabelle handelt
+            // Wenn es sich um eine PassungstabellenHandler handelt
             if (annotation.GetName() == "PASSUNGSTABELLE")
             {
-                // Wenn die Passungstabelle nicht verdeckt ist
+                // Wenn die PassungstabellenHandler nicht verdeckt ist
                 var visible = annotation.Visible != (int)swAnnotationVisibilityState_e.swAnnotationHidden;
 
                 // Einfügepunkt speichern

@@ -1,10 +1,8 @@
-﻿namespace Passungstabellen.CSharp;
+﻿namespace Passungstabelle.CSharp;
 
 using System.Collections.Generic;
 
-using Passungstabelle.CSharp;
 using SolidWorks.Interop.sldworks;
-using My = Passungstabelle.CSharp.My;
 
 
 public class Passungstabelle_Datei
