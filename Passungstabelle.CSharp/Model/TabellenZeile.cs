@@ -2,9 +2,9 @@
 
 using System;
 
-public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquatable<Passungstabelle_Zeile>
+public class TabellenZeile : IComparable<TabellenZeile>, IEquatable<TabellenZeile>
 {
-    public Passungstabelle_Zeile(double maß, string passung, double toleranzO, double toleranzU, bool hole, double schichtstärke)
+    public TabellenZeile(double maß, string passung, double toleranzO, double toleranzU, bool hole, double schichtstärke)
     {
         this.Maß = maß;
         this.Passung = passung;
@@ -56,7 +56,7 @@ public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquata
     /// <summary>
     /// Vergleichsfunktion zum Sortieren
     /// </summary>
-    public int CompareTo(Passungstabelle_Zeile? other)
+    public int CompareTo(TabellenZeile? other)
     {
         return this.Maß.CompareTo(other?.Maß);
     }
@@ -64,7 +64,7 @@ public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquata
     /// <summary>
     /// Vergleichsfunktion für eindeutige Einträge
     /// </summary>
-    public bool Equals(Passungstabelle_Zeile? other)
+    public bool Equals(TabellenZeile? other)
     {
         if (other is null)
         {

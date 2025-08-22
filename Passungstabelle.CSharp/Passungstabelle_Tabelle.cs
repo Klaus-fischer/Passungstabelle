@@ -16,8 +16,8 @@ public class Passungstabelle_Tabelle
 
     public Einfügepunkt Einfügepunkt { get; set; }
 
-    public List<Passungstabelle_Zeile> TabellenZeilen { get; set; } = new List<Passungstabelle_Zeile>();
-    public IEnumerable<Passungstabelle_Zeile> TabellenZeilengefiltert { get; set; }
+    public List<TabellenZeile> TabellenZeilen { get; set; } = new List<TabellenZeile>();
+    public IEnumerable<TabellenZeile> TabellenZeilengefiltert { get; set; }
     public int Tabellenzeilencount { get; set; }
     public int TabellenSpaltenCount { get; set; }
 
@@ -179,9 +179,9 @@ public class Passungstabelle_Tabelle
     // ermittelt die Passung und Toleranzen aus dem Dimension-Objekt
     private bool Gettolfromdim(IDimension dimension, string prefix, string zone)
     {
-        Passungstabelle_Zeile temp;
-        Passungstabelle_Zeile temp1;
-        List<Passungstabelle_Zeile> tempz = new List<Passungstabelle_Zeile>();
+        TabellenZeile temp;
+        TabellenZeile temp1;
+        List<TabellenZeile> tempz = new List<TabellenZeile>();
         DimensionTolerance tol;
         bool flag; // Marker um zu erkennen ob Passung manuell eingetragen wurde
 
@@ -301,7 +301,7 @@ public class Passungstabelle_Tabelle
     /// <param varName="dimension"></param>
     /// <param varName="zone"></param>
     /// <returns></returns>
-    private List<Passungstabelle_Zeile>? GettolfromfitCallOut(ICalloutVariable swCalloutVariable, ICalloutLengthVariable swCalloutLengthVariable, string zone)
+    private List<TabellenZeile>? GettolfromfitCallOut(ICalloutVariable swCalloutVariable, ICalloutLengthVariable swCalloutLengthVariable, string zone)
     {
         var holeFit = swCalloutVariable.HoleFit;
         var shaftFit = swCalloutVariable.ShaftFit;
@@ -315,10 +315,10 @@ public class Passungstabelle_Tabelle
             return [];
         }
 
-        Passungstabelle_Zeile? holePassung = this.GetPassung(swCalloutVariable, value, true);
-        Passungstabelle_Zeile? shaftPassung = this.GetPassung(swCalloutVariable, value, false);
+        TabellenZeile? holePassung = this.GetPassung(swCalloutVariable, value, true);
+        TabellenZeile? shaftPassung = this.GetPassung(swCalloutVariable, value, false);
 
-        List<Passungstabelle_Zeile> tempz = new List<Passungstabelle_Zeile>();
+        List<TabellenZeile> tempz = new List<TabellenZeile>();
 
         if (holePassung is not null && CheckForFitToleranceValues(holePassung))
         {
@@ -336,7 +336,7 @@ public class Passungstabelle_Tabelle
         return tempz;
     }
 
-    private Passungstabelle_Zeile? GetPassung(ICalloutVariable swCalloutVariable, double maß, bool isHole)
+    private TabellenZeile? GetPassung(ICalloutVariable swCalloutVariable, double maß, bool isHole)
     {
         var holeFit = swCalloutVariable.HoleFit;
         var shaftFit = swCalloutVariable.ShaftFit;
@@ -351,7 +351,7 @@ public class Passungstabelle_Tabelle
         swCalloutVariable.ShaftFit = isHole ? string.Empty : shaftFit;
         swCalloutVariable.HoleFit = isHole ? holeFit : string.Empty;
 
-        var result = new Passungstabelle_Zeile(
+        var result = new TabellenZeile(
             maß,
             passung,
             swCalloutVariable.ToleranceMax,
@@ -375,7 +375,7 @@ public class Passungstabelle_Tabelle
     /// <returns></returns>
     private bool Gettolfromcalloutvar(string prefix, ICalloutVariable[] calloutvar, IDimension dimen, string zone)
     {
-        List<Passungstabelle_Zeile> tempz = new List<Passungstabelle_Zeile>();
+        List<TabellenZeile> tempz = new List<TabellenZeile>();
 
 
         foreach (ICalloutVariable swCalloutVariable in calloutvar)
@@ -404,6 +404,9 @@ public class Passungstabelle_Tabelle
             {
                 continue;
             }
+
+            TabellenZeile? temp;
+            TabellenZeile? temp1;
 
             // Toleranzen von Bohrungspassung
             if (swCalloutVariable.HoleFit != "" & swCalloutVariable.ShaftFit == "")
@@ -509,7 +512,7 @@ public class Passungstabelle_Tabelle
     /// </summary>
     /// <param varName="temp"></param>
     /// <returns></returns>
-    private bool CheckForFitToleranceValues(Passungstabelle_Zeile temp)
+    private bool CheckForFitToleranceValues(TabellenZeile temp)
     {
         if (temp.Passung != "" & temp.ToleranzO == 0.0 & temp.ToleranzU == 0.0)
         {
@@ -547,9 +550,9 @@ public class Passungstabelle_Tabelle
     /// <param varName="isHole"></param>
     /// <param varName="zone"></param>
     /// <returns></returns>
-    private Passungstabelle_Zeile SetColumnsFromDim(IDimension dimen, bool Hole, string zone)
+    private TabellenZeile SetColumnsFromDim(IDimension dimen, bool Hole, string zone)
     {
-        Passungstabelle_Zeile temp = new Passungstabelle_Zeile();
+        TabellenZeile temp = new Passungstabelle_Zeile();
 
         DimensionTolerance tol;
         bool flag;
@@ -611,7 +614,7 @@ public class Passungstabelle_Tabelle
     }
 
     // setzt die Zeileneinträge für diese Maß/Passungskombination
-    public Passungstabelle_Zeile SetColumnsFromCallOut(IDimension dimension, ICalloutVariable swCalloutVariable, ICalloutLengthVariable swCalloutLengthVariable, bool isHole, string zone)
+    public TabellenZeile SetColumnsFromCallOut(IDimension dimension, ICalloutVariable swCalloutVariable, ICalloutLengthVariable swCalloutLengthVariable, bool isHole, string zone)
     {
         var maß = swCalloutLengthVariable.Length * fac;
         double maxTolerance;
@@ -651,7 +654,7 @@ public class Passungstabelle_Tabelle
             minTolerance = swCalloutVariable.ToleranceMin * fac;
         }
 
-        return new Passungstabelle_Zeile(maß, passung, maxTolerance, minTolerance, isHole, this.SchichtStärke);
+        return new TabellenZeile(maß, passung, maxTolerance, minTolerance, isHole, this.SchichtStärke);
     }
 
     private bool GetHoleTableDimension(List<HoleTable> HoleTabs, View swview, List<Dictionary<string, List<string>>> Zonen)
@@ -964,7 +967,7 @@ public class Passungstabelle_Tabelle
         }
     }
 
-    private void InsertRowText(TableAnnotation swTable, int rowpos, int rowstep, Passungstabelle_Zeile row)
+    private void InsertRowText(TableAnnotation swTable, int rowpos, int rowstep, TabellenZeile row)
     {
         int pos = 0;
         int rstep;
@@ -1048,7 +1051,7 @@ public class Passungstabelle_Tabelle
         }
     }
 
-    private void MergeCell(TableAnnotation swTable, int rowpos, int rowstep, Passungstabelle_Zeile row)
+    private void MergeCell(TableAnnotation swTable, int rowpos, int rowstep, TabellenZeile row)
     {
         int pos = 0;
         int rstep = rowstep < 0 ? -1 : 1;
