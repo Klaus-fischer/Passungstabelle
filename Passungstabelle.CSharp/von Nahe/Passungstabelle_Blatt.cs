@@ -113,11 +113,6 @@ public partial class Passungstabelle_Blatt
         return PassungsTabelleGetViewsRet;
     }
 
-    internal class HoleTableTagReference(IHoleTable table, MathPoint location, )
-    {
-
-    }
-
     public List<Dictionary<string, List<MathPoint>>> GetHoleTabletags(List<HoleTable> HoleTab)
     {
         List<Dictionary<string, List<MathPoint>>> GetHoleTabletagsRet = default;
