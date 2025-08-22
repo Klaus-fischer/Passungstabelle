@@ -199,12 +199,12 @@ public class Passungstabelle_Tabelle
 
         // Umrechnungsfaktor ermitteln
         // normalerweise gibt SWX die Werte in Meter zurück
-        // fac = GetDimFactor(dimension)
+        // factor = GetDimFactor(dimension)
 
         // Prüfung ob auch Passungswerte eingetragen sind
         // Könnte ja auch sein, dass als Toleranzttyp Passung eingestellt ist und keine Passung gewählt wurde
         // Wenn kein Passungswert gefunden wird, dann Abbruch der Funktion
-        // If Not CheckForFitValues(tol.GetHoleFitValue, tol.GetShaftFitValue, "Bemaßung: " & dimension.FullName & " Maß: " & dimension.GetSystemValue2("") * fac) Then
+        // If Not CheckForFitValues(tol.GetHoleFitValue, tol.GetShaftFitValue, "Bemaßung: " & dimension.FullName & " Maß: " & dimension.GetSystemValue2("") * factor) Then
         if (!CheckForFitValues(tol.GetHoleFitValue(), tol.GetShaftFitValue(), dimension.FullName, dimension.SystemValue * fac))
         {
             return false;
@@ -552,7 +552,7 @@ public class Passungstabelle_Tabelle
     /// <returns></returns>
     private TabellenZeile SetColumnsFromDim(IDimension dimen, bool Hole, string zone)
     {
-        TabellenZeile temp = new Passungstabelle_Zeile();
+        TabellenZeile temp = new TabellenZeile();
 
         DimensionTolerance tol;
         bool flag;

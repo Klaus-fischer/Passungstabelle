@@ -10,7 +10,7 @@ using My = Passungstabelle.CSharp.My;
 namespace Passungstabelle.CSharp;
 
 
-public partial class Passungstabelle_Blatt
+public class Passungstabelle_Blatt
 {
     public Sheet Blatt { get; set; }                         // Verweis auf das Blatt
     public ModelDoc2 BlattMod { get; set; }                  // Verweis auf die Datei von der die erste Ansicht abgeleitet ist
