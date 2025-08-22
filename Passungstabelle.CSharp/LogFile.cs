@@ -26,6 +26,11 @@ public class LogFile
         UserName = Environment.UserName;
     }
 
+    public void WriteInfo(LogTemplate template, params object[] data)
+    {
+
+    }
+
     public void WriteInfo(string Info, string Info2, bool Msg)
     {
         bool tempattr;

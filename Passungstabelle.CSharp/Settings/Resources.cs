@@ -12,6 +12,14 @@ using System.Threading.Tasks;
 
 internal static class Resources
 {
+    public static LogTemplate KeinePassungTemplate { get; } = (LogTemplate)"Keine Passung für Bemaßung: {Name} Maß: {Wert} eingetragen.";
+
+    public static LogTemplate UngültigeWellenpassung { get; } = (LogTemplate)"Ungültige Wellenpassung {Passung}.";
+
+    public static LogTemplate UngültigeBohrungspassung{ get; } = (LogTemplate)"Ungültige Bohrungspassung {Passung}.";
+
+    public static LogTemplate LeerePassungsWerte { get; } = (LogTemplate)"Keine Passungswerte für {Maß} {Passung} gefunden.";
+
     internal static string _keine_Bemaßung_gefunden;
     internal static string _ist_eine_freistehende_Bemaßung;
     internal static string Bemaßung;
