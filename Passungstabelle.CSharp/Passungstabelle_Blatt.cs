@@ -33,7 +33,7 @@ public partial class Passungstabelle_Blatt
     public SldWorks Swapp { get; set; }                      // Verweis auf SolidWorks
 
     private DrawingDoc swdraw;                        // Verweis auf die Zeichnungsdatei
-    private double[] Einfügepunkt = new double[2];                   // Einfügepunkt für die PassungstabellenHandler
+    private double[] Einfügeposition = new double[2];                   // Einfügeposition für die PassungstabellenHandler
 
     /// <summary>
     /// Intialisierungsfuntkion für die Klasse "Passungstabelle_Blatt"
@@ -111,6 +111,11 @@ public partial class Passungstabelle_Blatt
 
         PassungsTabelleGetViewsRet = true;
         return PassungsTabelleGetViewsRet;
+    }
+
+    internal class HoleTableTagReference(IHoleTable table, MathPoint location, )
+    {
+
     }
 
     public List<Dictionary<string, List<MathPoint>>> GetHoleTabletags(List<HoleTable> HoleTab)
@@ -317,8 +322,8 @@ public partial class Passungstabelle_Blatt
             // Tabelle.getHoleTableDimension(ans.ViewRef)
         }
 
-        // Einfügepunkt setzen
-        this.Tabelle.Einfügepunkt = this.Einfügepunkt;
+        // Einfügeposition setzen
+        this.Tabelle.EinfügePosition = this.Einfügeposition;
 
         // Sortiert die Tabelle und entfernt doppelte Einträge
         this.Tabelle.SetTabellenzeilenGefiltert();
@@ -361,7 +366,7 @@ public partial class Passungstabelle_Blatt
     /// Ermittelt den Dokumenttyp der ausgewertet werden soll
     /// </summary>
     /// <returns></returns>
-    public int GetDokumentTypeFromSetup()
+    private int GetDokumentTypeFromSetup()
     {
         var dokt_setup = default(int);
 
@@ -380,7 +385,7 @@ public partial class Passungstabelle_Blatt
     /// </summary>
     /// <param name="ans"></param>
     /// <returns></returns>
-    public int GetDocumentTypeFromRef(View ans)
+    private int GetDocumentTypeFromRef(View ans)
     {
         int dokt = 0;
         if (ans.ReferencedDocument is null)
@@ -400,12 +405,12 @@ public partial class Passungstabelle_Blatt
         }
         return dokt;
     }
-    
+
     /// <summary>
     /// ermittelt die Blatteigenschaften
     /// </summary>
     /// <returns></returns>
-    public Definitionen.BlattEigenschaften GetSheetProperties()
+    private Definitionen.BlattEigenschaften GetSheetProperties()
     {
         Definitionen.BlattEigenschaften GetSheetPropertiesRet = default;
         double[] ss;
@@ -434,7 +439,7 @@ public partial class Passungstabelle_Blatt
         return GetSheetPropertiesRet;
     }
 
-    public void SetSheetAttr(Dictionary<string, FormatSettings> Attr_Formate, Dictionary<string, TableSettings> Attr_Tabellen)
+    private void SetSheetAttr(Dictionary<string, FormatSettings> Attr_Formate, Dictionary<string, TableSettings> Attr_Tabellen)
     {
         // Die Eigenschaften vom Blatt holen
         this.Attr_Sheet = this.GetSheetProperties();
@@ -450,14 +455,14 @@ public partial class Passungstabelle_Blatt
             this.SetSheetFormatFromDimension(Attr_Formate, Attr_Tabellen);
         }
     }
-    
+
     /// <summary>
     /// Ermittelt die Setupeinstellungen für das übergebene Format
     /// </summary>
     /// <param name="formatname"></param>
     /// <param name="Attr_Formate"></param>
     /// <param name="Attr_Tabellen"></param>
-    public void SetSheetFormatAttr(string formatname, Dictionary<string, FormatSettings> Attr_Formate, Dictionary<string, TableSettings> Attr_Tabellen)
+    private void SetSheetFormatAttr(string formatname, Dictionary<string, FormatSettings> Attr_Formate, Dictionary<string, TableSettings> Attr_Tabellen)
     {
         FormatSettings temp;
 
@@ -475,14 +480,14 @@ public partial class Passungstabelle_Blatt
             this.SetSheetFormatFromDimension(Attr_Formate, Attr_Tabellen);
         }
     }
-    
+
 
     /// <summary>
     /// sucht nach einem Format in den Setup Einstellungen, das die gleichen Abmessungen hat wie das aktuelle Blattformat
     /// </summary>
     /// <param name="Attr_Formate">Format Attribute</param>
     /// <param name="Attr_Tabellen">Tabellen Attribute</param>
-    public void SetSheetFormatFromDimension(Dictionary<string, FormatSettings> Attr_Formate, Dictionary<string, TableSettings> Attr_Tabellen)
+    private void SetSheetFormatFromDimension(Dictionary<string, FormatSettings> Attr_Formate, Dictionary<string, TableSettings> Attr_Tabellen)
     {
         FormatSettings temp;
         string tempName = "";
@@ -519,7 +524,7 @@ public partial class Passungstabelle_Blatt
 
         this.Log.WriteInfo(My.Resources.Kein_Format_mit_den_Abmessungen, $" {Attr_Sheet.Eigenschaften[6] * 1000} x {Attr_Sheet.Eigenschaften[5] * 1000} {My.Resources.gefunden}", false);
         this.Log.WriteInfo(My.Resources._Abmessungen_von_ersten_definierten_Format, " " + tempName, true);
-        
+
         // Format Attribut vom ersten Eintrag zuweisen
         this.Attr_Format = Attr_Formate[tempName];
         // Tabellen Attribut vom ersten Eintrag zuweisen
@@ -567,7 +572,7 @@ public partial class Passungstabelle_Blatt
                 // Wenn die PassungstabellenHandler nicht verdeckt ist
                 var visible = annotation.Visible != (int)swAnnotationVisibilityState_e.swAnnotationHidden;
 
-                // Einfügepunkt speichern
+                // Einfügeposition speichern
                 var position = annotation.GetPosition().AsArrayOfType<double>();
                 this.AlteTabelleX = position[0];
                 this.AlteTabelleY = position[1];
@@ -590,7 +595,7 @@ public partial class Passungstabelle_Blatt
         var tables = swView.GetTableAnnotations().AsArrayOfType<ITableAnnotation>();
 
         // Alle Tabellen durchlaufen
-        foreach(ITableAnnotation table in tables) 
+        foreach (ITableAnnotation table in tables)
         {
             // Wenn es sich um eine Bohrungstabelle handelt
             // dann Ende der Funktion
@@ -613,25 +618,25 @@ public partial class Passungstabelle_Blatt
 
         // X/Y Koordinaten des Einfügepunkts setzen
         // Links-Oben
-        if (this.Attr_Format.EinfügepunktLO)
+        if (this.Attr_Format.Einfügepunkt == Einfügepunkt.TopLeft)
         {
             temp[0] = 0.0d;
             temp[1] = this.Attr_Format.Höhe / 1000.0d;
         }
         // Links-Unten
-        else if (this.Attr_Format.EinfügepunktLU)
+        else if (this.Attr_Format.Einfügepunkt == Einfügepunkt.TopRight)
         {
             temp[0] = 0.0d;
             temp[1] = 0.0d;
         }
         // Rechts-Oben
-        else if (this.Attr_Format.EinfügepunktRO)
+        else if (this.Attr_Format.Einfügepunkt == Einfügepunkt.TopRight)
         {
             temp[0] = this.Attr_Format.Breite / 1000.0d;
             temp[1] = this.Attr_Format.Höhe / 1000.0d;
         }
         // Rechts-Unten
-        else if (this.Attr_Format.EinfügepunktRU)
+        else if (this.Attr_Format.Einfügepunkt == Einfügepunkt.BottomRight)
         {
             temp[0] = this.Attr_Format.Breite / 1000.0d;
             temp[1] = 0.0d;
@@ -641,7 +646,7 @@ public partial class Passungstabelle_Blatt
         temp[0] = temp[0] + this.Attr_Format.Offset_X / 1000.0d;
         temp[1] = temp[1] + this.Attr_Format.Offset_Y / 1000.0d;
 
-        this.Einfügepunkt = temp;
+        this.Einfügeposition = temp;
     }
     // Function:  GetColumnsCount
     // ermittelt die Anzahl der Spalten der Tabelle
@@ -656,14 +661,7 @@ public partial class Passungstabelle_Blatt
     // Parameter: keine
     public void SetEinfügePunktPosition()
     {
-        if (this.Attr_Format.EinfügepunktLO)
-            this.Tabelle.Einfügepunktposition = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_TopLeft;
-        if (this.Attr_Format.EinfügepunktLU)
-            this.Tabelle.Einfügepunktposition = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomLeft;
-        if (this.Attr_Format.EinfügepunktRO)
-            this.Tabelle.Einfügepunktposition = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_TopRight;
-        if (this.Attr_Format.EinfügepunktRU)
-            this.Tabelle.Einfügepunktposition = (int)swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_BottomRight;
+        this.Tabelle.Einfügepunkt = this.Attr_Format.Einfügepunkt;
     }
 
     public void InsertTable()
@@ -672,11 +670,11 @@ public partial class Passungstabelle_Blatt
         this.SetEinfügepunkt();
 
         // Wenn nicht neu positioniert werden soll und es eine alte Tabelle gibt
-        // dann wird der Einfügepunkt der alten Tabelle übernommen
+        // dann wird der Einfügeposition der alten Tabelle übernommen
         if (!this.Attr_generell.NeuPositionieren & this.AlteTabelle is not null)
         {
-            this.Tabelle.Einfügepunkt[0] = this.AlteTabelleX;
-            this.Tabelle.Einfügepunkt[1] = this.AlteTabelleY;
+            this.Tabelle.EinfügePosition[0] = this.AlteTabelleX;
+            this.Tabelle.EinfügePosition[1] = this.AlteTabelleY;
         }
 
         // Spalten bestimmen

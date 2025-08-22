@@ -1,37 +1,56 @@
 ﻿namespace Passungstabelle.CSharp;
 
 using System;
-using System.Collections.Generic;
 
 public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquatable<Passungstabelle_Zeile>
 {
-    public string Prefix { get; set; } = string.Empty;
-    
-    public double Maß { get; set; }
-    
-    public string Passung { get; set; } = string.Empty;
-    
-    public string MaßPassung { get; set; } = string.Empty;
-    
-    public double ToleranzO { get; set; }
-    
-    public double ToleranzU { get; set; }
-    
-    public double AbmaßO { get; set; }
-    
-    public double AbmaßU { get; set; }
-    
-    public double AbmaßToleranzMitte { get; set; }
-    
-    public double VorbearbeitungAbmaßO { get; set; }
-    
-    public double VorbearbeitungAbmaßU { get; set; }
-    
-    public double VorbearbeitungAbmaßToleranzMitte { get; set; }
+    public Passungstabelle_Zeile(double maß, string passung, double toleranzO, double toleranzU, bool hole, double schichtstärke)
+    {
+        this.Maß = maß;
+        this.Passung = passung;
+        this.ToleranzO = toleranzO;
+        this.ToleranzU = toleranzU;
+        this.AbmaßO = maß + toleranzO;
+        this.AbmaßU = maß + toleranzU;
+        this.AbmaßToleranzMitte = maß + (toleranzO + toleranzU) / 2;
+        this.Type = hole ? PassungsType.Hole : PassungsType.Shaft;
 
-    public ZeilenTyp Type { get; set; }
+        this.VorbearbeitungAbmaßO = hole ? AbmaßO + 2 * schichtstärke : AbmaßO - 2 * schichtstärke;
+        this.VorbearbeitungAbmaßU = hole ? AbmaßU + 2 * schichtstärke : AbmaßU - 2 * schichtstärke;
+        this.VorbearbeitungAbmaßToleranzMitte = AbmaßU + (AbmaßO - AbmaßU) / 2.0;
+        this.MaßPassung = $"{maß:0.########} {passung}";
+    }
+
+    public string Prefix { get; set; } = string.Empty;
+
+    public double Maß { get; }
+
+    public string Passung { get; } = string.Empty;
+
+    public string MaßPassung { get; set; } = string.Empty;
+
+    public double ToleranzO { get; }
+
+    public double ToleranzU { get; }
+
+    public double AbmaßO { get; }
+
+    public double AbmaßU { get; }
+
+    public double AbmaßToleranzMitte { get; }
+
+    public double VorbearbeitungAbmaßO { get; }
+
+    public double VorbearbeitungAbmaßU { get; }
+
+    public double VorbearbeitungAbmaßToleranzMitte { get; }
+
+    public PassungsType Type { get; set; } = PassungsType.Hole;
+
     public string Name { get; internal set; }
+
     public string Zone { get; internal set; }
+
     public int Anzahl { get; internal set; }
 
     /// <summary>
@@ -58,15 +77,15 @@ public class Passungstabelle_Zeile : IComparable<Passungstabelle_Zeile>, IEquata
         }
 
         return this.Maß == other.Maß && this.Passung == other.Passung;
-     }
+    }
 
     // Hashcode für eindeutige Einträge
-    public override int GetHashCode() 
+    public override int GetHashCode()
         => HashCode.Combine(this.Maß, this.Passung);
 }
 
-public enum ZeilenTyp
+public enum PassungsType
 {
-    Shaft, 
     Hole,
+    Shaft,
 }
