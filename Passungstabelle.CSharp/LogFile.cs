@@ -1,5 +1,6 @@
 ﻿namespace Passungstabelle.CSharp;
 
+using Passungstabelle.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;

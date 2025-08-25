@@ -4,6 +4,8 @@
 
 using SolidWorks.Interop.swconst;
 
+namespace Passungstabelle.Settings;
+
 public enum LineWidth
 {
     Dünn = swLineWeights_e.swLW_THIN,

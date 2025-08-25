@@ -2,7 +2,8 @@
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
-namespace Passungstabelle.CSharp; 
+namespace Passungstabelle.Settings;
+
 using SolidWorks.Interop.swconst;
 
 public enum HeaderPosition

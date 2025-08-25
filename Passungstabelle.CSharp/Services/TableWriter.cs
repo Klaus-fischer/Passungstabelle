@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.CSharp;
 
+using Passungstabelle.Settings;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;

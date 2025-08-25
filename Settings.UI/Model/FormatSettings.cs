@@ -2,14 +2,21 @@
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
-namespace Passungstabelle.CSharp;
+namespace Passungstabelle.Settings;
+
+using System.Windows;
+
 public class FormatSettings
 {
-    public double Breite { get; set; } = 210;
-    public double Höhe { get; set; } = 297;
+    public SheetFormat Format { get; set; } = SheetFormat.A4H;
 
     public Einfügepunkt Einfügepunkt { get; set; }
 
+    public Thickness Margin { get; set; } = new Thickness(20, 10, 10, 10);
+
+    public string MaxZone { get; set; } = "H6";
+
     public double Offset_X { get; set; } = 0;
+
     public double Offset_Y { get; set; } = 0;
 }

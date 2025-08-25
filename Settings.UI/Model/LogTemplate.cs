@@ -2,7 +2,7 @@
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
-namespace Passungstabelle.CSharp;
+namespace Passungstabelle.Settings;
 
 public struct LogTemplate(string template)
 {

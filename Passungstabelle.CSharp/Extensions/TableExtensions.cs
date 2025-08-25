@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.CSharp;
 
+using Passungstabelle.Settings;
 using SolidWorks.Interop.sldworks;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ internal static class TableExtensions
         1);// settings.HasMultiLineHeader ? 2 : 1);
     }
 
-    public static void SetTextFormat(this TableAnnotation table, TextFormat format)
+    public static void SetTextFormat(this TableAnnotation table, Settings.TextFormat format)
     {
         var textFormat = table.GetTextFormat();
 
@@ -37,7 +38,7 @@ internal static class TableExtensions
         table.SetTextFormat(false, textFormat);
     }
 
-    public static void SetCellTextFormat(this TableAnnotation table, int row, int column, TextFormat format)
+    public static void SetCellTextFormat(this TableAnnotation table, int row, int column, Settings.TextFormat format)
     {
         var textFormat = table.GetTextFormat();
 

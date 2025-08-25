@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.CSharp.My;
 
+using Passungstabelle.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

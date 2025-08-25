@@ -2,7 +2,7 @@
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
-using System.Xml.Serialization;
+namespace Passungstabelle.Settings;
 
 public class SpalteSettings
 {

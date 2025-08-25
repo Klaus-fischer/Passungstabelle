@@ -4,6 +4,8 @@
 
 namespace Passungstabelle.CSharp;
 
+using Passungstabelle.Settings;
+
 internal class SettingsLoader
 {
     public GeneralSettings Settings { get; } = new GeneralSettings();

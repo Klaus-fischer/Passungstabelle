@@ -31,6 +31,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Settings.UI\Settings.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="SolidWorks.Interop.sldworks">
       <HintPath>..\Libraries\2024\SolidWorks.Interop.sldworks.dll</HintPath>
       <EmbedInteropTypes>false</EmbedInteropTypes>
