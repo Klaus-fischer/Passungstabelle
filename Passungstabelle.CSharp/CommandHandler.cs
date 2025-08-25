@@ -9,31 +9,28 @@ using SolidWorks.Interop.swconst;
 using SolidWorksTools.File;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 [Guid("5C8AC6DE-D5A9-4AEB-AA40-7D9F869B0622")]
 [ComVisible(true)]
-public class CommandHandler
+public class CommandHandler : IDisposable
 {
     public const int mainCmdGroupID = 3130;
     public const int mainItemID1 = 31300;
     public const int mainItemID2 = 31301;
     public const int mainItemID3 = 31301;
     public const int flyoutGroupID = 91;
-
+    private readonly SldWorks sldWorks;
     private readonly int cookie;
+    private readonly NaheFitTable addIn;
     private readonly CommandManager swCommandManager;
 
-
-
-    public CommandHandler(SldWorks sldWorks, int cookie)
+    public CommandHandler(SldWorks sldWorks, int cookie, NaheFitTable addIn)
     {
+        this.sldWorks = sldWorks;
         this.cookie = cookie;
+        this.addIn = addIn;
         sldWorks.SetAddinCallbackInfo(0, this, this.cookie);
         this.swCommandManager = sldWorks.GetCommandManager(this.cookie);
     }
@@ -48,7 +45,7 @@ public class CommandHandler
         int cmdIndex2;
         string Title = My.Resources.Passungstabelle;
         string ToolTip = My.Resources.Passungstabelle_Add_In_für_SolidWorks;
-        int[] docTypes = new int[] { (int)swDocumentTypes_e.swDocDRAWING };
+        int[] docTypes = [(int)swDocumentTypes_e.swDocDRAWING];
 
         var thisAssembly = Assembly.GetAssembly(this.GetType());
 
@@ -81,21 +78,21 @@ public class CommandHandler
 
         cmdIndex0 = cmdGroup.AddCommandItem2(
             My.Resources.Passungstabelle,
-            -1, 
+            -1,
             My.Resources.Passungstabelle,
             My.Resources.Passungstabelle,
-            0, 
+            0,
             nameof(ErstelleTabelle),
-            "", 
-            mainItemID1, 
+            "",
+            mainItemID1,
             menuToolbarOption);
 
         cmdIndex1 = cmdGroup.AddCommandItem2(
             My.Resources.Passungstabelle_Setup,
-            -1, 
-            My.Resources.Passungstabelle_Setup, 
+            -1,
             My.Resources.Passungstabelle_Setup,
-            1, 
+            My.Resources.Passungstabelle_Setup,
+            1,
             nameof(PassungsTabelleSetup),
             "",
             mainItemID2,
@@ -103,13 +100,13 @@ public class CommandHandler
 
         cmdIndex2 = cmdGroup.AddCommandItem2(
             My.Resources.Passungstabelle_Hilfe,
-            -1, 
+            -1,
             My.Resources.Passungstabelle_Hilfe,
             My.Resources.Passungstabelle_Hilfe,
-            2, 
+            2,
             nameof(PassungsTabelleHilfe),
             "",
-            mainItemID3, 
+            mainItemID3,
             menuToolbarOption);
 
         cmdGroup.HasToolbar = true;
@@ -253,22 +250,34 @@ public class CommandHandler
         //p.Start();
     }
 
-    public void ErstelleTabelle()
+    /// <summary>
+    /// 0 - disabled, 1 - enabled, 2 - selected, 3 - selected & enabled.
+    /// </summary>
+    /// <returns></returns>
+    public int CanErstelleTabelle()
     {
-        var cinfo = Thread.CurrentThread.CurrentUICulture;
-
-        if (cinfo.TwoLetterISOLanguageName != "de")
+        var openDoc = this.sldWorks.ActiveDoc as IModelDoc2;
+        if (openDoc is null || openDoc.GetType() == (int)swDocumentTypes_e.swDocDRAWING)
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-        }
-        else
-        {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
+            return 0;
         }
 
-        Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-
-        // todo: execute
+        return 1;
     }
 
+    public void ErstelleTabelle()
+    {
+        var openDoc = this.sldWorks.ActiveDoc as DrawingDoc;
+        if (openDoc is null)
+        {
+            return;
+        }
+
+        this.addIn.Execute(openDoc);
+    }
+
+    public void Dispose()
+    {
+        Marshal.ReleaseComObject(this.swCommandManager);
+    }
 }

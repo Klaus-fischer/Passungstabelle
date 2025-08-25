@@ -1,96 +1,48 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Reflection;
+﻿namespace Passungstabelle.CSharp;
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-using System.Threading;
 using System.Windows;
-using Microsoft.VisualBasic.CompilerServices;
-using Microsoft.Win32;
 using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
 using SolidWorks.Interop.swpublished;
 using SolidWorksTools;
-using SolidWorksTools.File;
-using My = Passungstabelle.CSharp.My;
-
-namespace Passungstabelle.CSharp;
-
 
 [Guid("09a29164-06dc-4670-bfb9-3243404d59ca")]
 [ComVisible(true)]
 [SwAddin(Description = "Passungstabelle Add In für SolidWorks", Title = "Passungstabelle", LoadAtStartup = true)]
 public class NaheFitTable : ISwAddin
 {
+    private SldWorks? sldWorksApp;
 
-    #region Local Variables
-    private SldWorks _ISwApp;
-
-    private SldWorks ISwApp
+    private SldWorks ISldWorksApp
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
-        get
-        {
-            return _ISwApp;
-        }
+        get => sldWorksApp ?? throw new InvalidOperationException("Not Initialized yet.");
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        set
-        {
-            _ISwApp = value;
-        }
+        set => sldWorksApp = value;
     }
-    private ICommandManager iCmdMgr;
-    private int addinID;
-    private Dictionary<ModelDoc2, DocumentEventHandler> openDocs;
-    private SldWorks SwEventPtr;
-    // Dim ppage As UserPMPage
-    private BitmapHandler iBmp;
-    private string macro_pfad = "";
-    private string Setup_pfad = "";
 
-    public const int mainCmdGroupID = 3130;
-    public const int mainItemID1 = 31300;
-    public const int mainItemID2 = 31301;
-    public const int mainItemID3 = 31301;
-    public const int flyoutGroupID = 91;
 
-    private PassungsTabelleGenerator PassungsTabelleGenerator { get; }
     internal CommandHandler? CommandHandler {get; private set;}
 
-    // Public Properties
+    internal EventHandler? EventHandler { get; private set; }
+
+    internal PassungsTabelleGenerator? PassungsTabelleGenerator { get; private set; }
+
+    /// <summary>
+    /// Public Properties
+    /// </summary>
     public SldWorks SwApp
     {
         get
         {
-            return this.ISwApp;
+            return this.ISldWorksApp;
         }
     }
 
-    public ICommandManager CmdMgr
-    {
-        get
-        {
-            return this.iCmdMgr;
-        }
-    }
-
-    public Dictionary<ModelDoc2, DocumentEventHandler> OpenDocumentsTable
-    {
-        get
-        {
-            return this.openDocs;
-        }
-    }
-
-    public GeneralSettings Settings { get; private set; }
-    #endregion
-
-    #region SolidWorks Registration
+    public GeneralSettings Settings { get; private set; } = new();
 
     [ComRegisterFunction()]
     public static void RegisterFunction(Type t)
@@ -162,37 +114,26 @@ public class NaheFitTable : ISwAddin
 
     }
 
-    #endregion
-
-    #region ISwAddin Implementation
-
     public bool ConnectToSW(object ThisSW, int cookie)
     {
-        bool ConnectToSWRet = default;
         var settingsLoader = new SettingsLoader();
         settingsLoader.ReloadSettings();
         this.Settings = settingsLoader.Settings;
 
-        var pt = new PassungsTabelleGenerator(settingsLoader.Settings, settingsLoader.TableSettings);
+       this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader.Settings, settingsLoader.TableSettings);
 
 
-        this.ISwApp = (SldWorks)ThisSW;
-        this.addinID = cookie;
+        this.ISldWorksApp = (SldWorks)ThisSW;
 
-        // Ini Datei lesen
-        this.macro_pfad = this.GetAppPath();
-        this.Setup_pfad = this.GetSetupPath();
-
-        this.CommandHandler = new CommandHandler(this.ISwApp, cookie);
+        // Setup the commands.
+        this.CommandHandler = new CommandHandler(this.ISldWorksApp, cookie);
         this.CommandHandler.AddCommands();
 
         // Setup the Event Handlers
-        this.SwEventPtr = this.ISwApp;
-        this.openDocs = new();
-        this.AttachEventHandlers();
+        this.EventHandler = new EventHandler(this.ISldWorksApp, this);
+        this.EventHandler.AttachEventHandlers();
 
-        ConnectToSWRet = true;
-        return ConnectToSWRet;
+        return true;
     }
 
     public bool DisconnectFromSW()
@@ -200,15 +141,15 @@ public class NaheFitTable : ISwAddin
         bool DisconnectFromSWRet = default;
 
         this.CommandHandler?.RemoveCommandMgr();
+        this.CommandHandler?.Dispose();
+        this.CommandHandler = null;
 
-        // RemovePMP()
-        this.DetachEventHandlers();
+        this.EventHandler?.DetachEventHandlers();
+        this.EventHandler = null;
 
-        Marshal.ReleaseComObject(this.iCmdMgr);
-        this.iCmdMgr = null;
-        Marshal.ReleaseComObject(this.ISwApp);
-        this.ISwApp = null;
-        // The addin _must_ call GC.Collect() here in order to retrieve all managed code pointers 
+        Marshal.ReleaseComObject(this.ISldWorksApp);
+        this.ISldWorksApp = null;
+
         GC.Collect();
         GC.WaitForPendingFinalizers();
 
@@ -218,173 +159,23 @@ public class NaheFitTable : ISwAddin
         DisconnectFromSWRet = true;
         return DisconnectFromSWRet;
     }
-    #endregion
-
-    #region Event Methods
-    public void AttachEventHandlers()
-    {
-        this.AttachSWEvents();
-
-        // Listen for events on all currently open docs
-        this.AttachEventsToAllDocuments();
-    }
-
-    public void DetachEventHandlers()
-    {
-        this.DetachSWEvents();
-
-        // Close events on all currently open docs
-        foreach (var item in this.openDocs)
-        {
-            item.Value.DetachEventHandlers();
-        }
-
-        this.openDocs.Clear();
-    }
-
-    public void AttachSWEvents()
-    {
-        try
-        {
-            this.ISwApp.FileNewNotify2 += this.SldWorks_FileNewNotify2;
-            this.ISwApp.FileOpenPostNotify += this.SldWorks_FileOpenPostNotify;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-    }
-
-    public void DetachSWEvents()
-    {
-        try
-        {
-            this.ISwApp.FileNewNotify2 -= this.SldWorks_FileNewNotify2;
-            this.ISwApp.FileOpenPostNotify -= this.SldWorks_FileOpenPostNotify;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-        }
-    }
-
-    public void AttachEventsToAllDocuments()
-    {
-        ModelDoc2 modDoc;
-        modDoc = (ModelDoc2)this.ISwApp.GetFirstDocument();
-        while (modDoc is not null)
-        {
-            if (!this.openDocs.ContainsKey(modDoc))
-            {
-                this.AttachModelDocEventHandler(modDoc);
-            }
-            modDoc = (ModelDoc2)modDoc.GetNext();
-        }
-    }
-
-    public bool AttachModelDocEventHandler(ModelDoc2 modDoc)
-    {
-        if (modDoc is null)
-        {
-            return false;
-        }
-
-        if (this.openDocs.ContainsKey(modDoc))
-        {
-            return false;
-        }
-
-        DocumentEventHandler? docHandler = null;
-        switch (modDoc.GetType())
-        {
-            case (int)swDocumentTypes_e.swDocPART:
-
-                docHandler = new PartEventHandler(this.ISwApp, this, modDoc);
-                break;
-
-            case (int)swDocumentTypes_e.swDocASSEMBLY:
-
-                docHandler = new AssemblyEventHandler(this.ISwApp, this, modDoc);
-                break;
-
-            case (int)swDocumentTypes_e.swDocDRAWING:
-
-                docHandler = new DrawingEventHandler(this.ISwApp, this, modDoc);
-                break;
-            default:
-                break;
-        }
-
-        if (docHandler is not null)
-        {
-            docHandler.AttachEventHandlers();
-            this.openDocs.Add(modDoc, docHandler);
-        }
-
-        return default;
-    }
-
-    public void DetachModelEventHandler(ModelDoc2 modDoc)
-    {
-        DocumentEventHandler docHandler;
-        docHandler = (DocumentEventHandler)this.openDocs[modDoc];
-        this.openDocs.Remove(modDoc);
-    }
-    #endregion
-
-    #region Event Handlers
-
-    public int SldWorks_FileNewNotify2(object newDoc, int doctype, string templateName)
-    {
-        this.AttachEventsToAllDocuments();
-        return default;
-    }
-
-    public int SldWorks_FileOpenPostNotify(string FileName)
-    {
-        this.AttachEventsToAllDocuments();
-        return default;
-    }
-
-    #endregion
-
-    #region UI Callbacks
-
-    public string GetAppPath()
-    {
-        string GetAppPathRet = default;
-        string path;
-        path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        GetAppPathRet = path;
-        return GetAppPathRet;
-    }
-
-
-    // Function   GetSetupPath
-    // Paramter:  keine
-    // Ergebnis:  liefert den Pfad der Setup-Datei
-    public string GetSetupPath()
-    {
-        string? path;
-        path = Registry.LocalMachine.GetValue(@"Software\nahe", "SetupPfad") as string;
-        if (path is null)
-        {
-            path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        }
-
-        return path;
-    }
+    
+    internal void Execute(DrawingDoc drawing) 
+        => this.PassungsTabelleGenerator?.Execute(drawing);
 
     internal void ExecuteOnSaveNotify(DrawingDoc drawing)
     {
-        throw new NotImplementedException();
+        if (this.Settings.Eventgesteuert && this.Settings.Event_BevorSave)
+        {
+            this.Execute(drawing);
+        }
     }
 
     internal void ExecuteOnRegenPostNotify(DrawingDoc drawing)
     {
-        throw new NotImplementedException();
+        if (this.Settings.Eventgesteuert && this.Settings.Event_AfterRegen)
+        {
+            this.Execute(drawing);
+        }
     }
-
-    #endregion
-
 }
