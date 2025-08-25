@@ -7,12 +7,8 @@ namespace Passungstabelle.CSharp;
 using SolidWorks.Interop.sldworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 
-internal class PassungstabelleGenerator(GeneralSettings settings, TableSettings tableSettings)
+internal class PassungsTabelleGenerator(GeneralSettings settings, TableSettings tableSettings)
 {
     private readonly GeneralSettings settings = settings;
     private readonly TableSettings tableSettings = tableSettings;
@@ -38,7 +34,7 @@ internal class PassungstabelleGenerator(GeneralSettings settings, TableSettings 
     public void Execute(IDrawingDoc drawing, ISheet sheet)
     {
         this.RemoveTable(drawing, sheet);
-        var passungen = this.CollectPassungen(sheet);
+        var passungen = this.CollectPassungen(drawing, sheet);
     }
 
     private void AlleLöschen(IDrawingDoc drawing)
@@ -60,8 +56,11 @@ internal class PassungstabelleGenerator(GeneralSettings settings, TableSettings 
         }
     }
 
-    private List<PassungEntity> CollectPassungen(ISheet sheet)
+    private TabellenZeile[] CollectPassungen(IDrawingDoc drawing, ISheet sheet)
     {
-
+        var sheetAnalyzer = new SheetAnalyser(drawing, sheet);
+        var collection = new PassungEntityCollection();
+        sheetAnalyzer.GetPassungsEntities(ref collection);
+        return collection.BuildTable();
     }
 }

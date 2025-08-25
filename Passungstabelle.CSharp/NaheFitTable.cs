@@ -59,9 +59,7 @@ public class NaheFitTable : ISwAddin
     public const int mainItemID3 = 31301;
     public const int flyoutGroupID = 91;
 
-    public bool eventgesteuert = false;
-    public bool Event_AfterRegen = false;
-    public bool Event_BevorSave = false;
+    private PassungsTabelleGenerator PassungsTabelleGenerator { get; }
 
     // Public Properties
     public SldWorks SwApp
@@ -87,6 +85,8 @@ public class NaheFitTable : ISwAddin
             return this.openDocs;
         }
     }
+
+    public GeneralSettings Settings { get; private set; }
     #endregion
 
     #region SolidWorks Registration
@@ -168,7 +168,11 @@ public class NaheFitTable : ISwAddin
     public bool ConnectToSW(object ThisSW, int Cookie)
     {
         bool ConnectToSWRet = default;
-        var pt = new PassungstabellenHandler();
+        var settingsLoader = new SettingsLoader();
+        settingsLoader.ReloadSettings();
+        this.Settings = settingsLoader.Settings;
+
+        var pt = new PassungsTabelleGenerator(settingsLoader.Settings, settingsLoader.TableSettings);
 
 
         this.ISwApp = (SldWorks)ThisSW;
@@ -177,22 +181,6 @@ public class NaheFitTable : ISwAddin
         // Ini Datei lesen
         this.macro_pfad = this.GetAppPath();
         this.Setup_pfad = this.GetSetupPath();
-        pt.Macro_pfad = this.macro_pfad;
-        pt.Setup_pfad = this.Setup_pfad;
-
-        // Nur wenn die Setup-Datei gefunden wird
-        if (pt.Check_for_setup())
-        {
-            // Kann auch der Wert für die Event-Steuerung gesetz werden
-            this.eventgesteuert = Conversions.ToBoolean(pt.Attr_generell.Eventgesteuert);
-            if (this.eventgesteuert == true)
-            {
-                this.Event_AfterRegen = Conversions.ToBoolean(pt.Attr_generell.Event_AfterRegen);
-                this.Event_BevorSave = Conversions.ToBoolean(pt.Attr_generell.Event_BevorSave);
-            }
-        }
-
-        pt = null;
 
         // Setup callbacks
         this.ISwApp.SetAddinCallbackInfo(0, this, this.addinID);
@@ -563,7 +551,6 @@ public class NaheFitTable : ISwAddin
 
     public void ErstelleTabelle()
     {
-        var fittable = new PassungstabellenHandler();
         var cinfo = Thread.CurrentThread.CurrentUICulture;
 
         if (cinfo.TwoLetterISOLanguageName != "de")
@@ -577,7 +564,7 @@ public class NaheFitTable : ISwAddin
 
         Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 
-        fittable.Main(this.ISwApp);
+        // todo: execute
     }
 
     public string GetAppPath()
@@ -603,6 +590,16 @@ public class NaheFitTable : ISwAddin
         }
 
         return path;
+    }
+
+    internal void ExecuteOnSaveNotify(DrawingDoc drawing)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ExecuteOnRegenPostNotify(DrawingDoc drawing)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion

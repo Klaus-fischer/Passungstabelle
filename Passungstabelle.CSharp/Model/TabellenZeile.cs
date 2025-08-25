@@ -2,9 +2,9 @@
 
 using System;
 
-public class TabellenZeile : IComparable<TabellenZeile>, IEquatable<TabellenZeile>
+public class TabellenZeile
 {
-    public TabellenZeile(double maß, string passung, double toleranzO, double toleranzU, bool hole, double schichtstärke)
+    internal TabellenZeile(double maß, string passung, double toleranzO, double toleranzU, PassungsType type)
     {
         this.Maß = maß;
         this.Passung = passung;
@@ -13,11 +13,8 @@ public class TabellenZeile : IComparable<TabellenZeile>, IEquatable<TabellenZeil
         this.AbmaßO = maß + toleranzO;
         this.AbmaßU = maß + toleranzU;
         this.AbmaßToleranzMitte = maß + (toleranzO + toleranzU) / 2;
-        this.Type = hole ? PassungsType.Hole : PassungsType.Shaft;
+        this.Type = type;
 
-        this.VorbearbeitungAbmaßO = hole ? AbmaßO + 2 * schichtstärke : AbmaßO - 2 * schichtstärke;
-        this.VorbearbeitungAbmaßU = hole ? AbmaßU + 2 * schichtstärke : AbmaßU - 2 * schichtstärke;
-        this.VorbearbeitungAbmaßToleranzMitte = AbmaßU + (AbmaßO - AbmaßU) / 2.0;
         this.MaßPassung = $"{maß:0.########} {passung}";
     }
 
@@ -39,53 +36,40 @@ public class TabellenZeile : IComparable<TabellenZeile>, IEquatable<TabellenZeil
 
     public double AbmaßToleranzMitte { get; }
 
-    public double VorbearbeitungAbmaßO { get; }
+    public double VorbearbeitungAbmaßO (double schichtstärke)
+    {
+        return this.Type == PassungsType.Hole ? AbmaßO + 2 * schichtstärke : AbmaßO - 2 * schichtstärke;
+    }
 
-    public double VorbearbeitungAbmaßU { get; }
+    public double VorbearbeitungAbmaßU(double schichtstärke) {
+        return this.Type == PassungsType.Hole ? AbmaßU + 2 * schichtstärke : AbmaßU - 2 * schichtstärke;
+    }
 
-    public double VorbearbeitungAbmaßToleranzMitte { get; }
+    public double VorbearbeitungAbmaßToleranzMitte(double schichtstärke)
+    {
+        return AbmaßU + (AbmaßO - AbmaßU) / 2.0;
+    }
 
     public PassungsType Type { get; set; } = PassungsType.Hole;
 
+    [Obsolete]
     public string Name { get; internal set; }
 
     public string Zone { get; internal set; }
 
+    [Obsolete]
     public int Anzahl { get; internal set; }
 
-    /// <summary>
-    /// Vergleichsfunktion zum Sortieren
-    /// </summary>
-    public int CompareTo(TabellenZeile? other)
+    public static explicit operator TabellenZeile(PassungEntity entity)
     {
-        return this.Maß.CompareTo(other?.Maß);
-    }
-
-    /// <summary>
-    /// Vergleichsfunktion für eindeutige Einträge
-    /// </summary>
-    public bool Equals(TabellenZeile? other)
-    {
-        if (other is null)
+        return new TabellenZeile(
+            entity.Maß,
+            entity.Passung,
+            entity.ToleranzO,
+            entity.ToleranzU,
+            entity.PassungsType)
         {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        return this.Maß == other.Maß && this.Passung == other.Passung;
+            Zone = string.Join(", ", entity.Zone),
+        };
     }
-
-    // Hashcode für eindeutige Einträge
-    public override int GetHashCode()
-        => HashCode.Combine(this.Maß, this.Passung);
-}
-
-public enum PassungsType
-{
-    Hole,
-    Shaft,
 }

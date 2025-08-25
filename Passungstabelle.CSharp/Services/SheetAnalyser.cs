@@ -7,32 +7,32 @@ namespace Passungstabelle.CSharp;
 
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Windows.Automation.Peers;
 
 internal class SheetAnalyser(IDrawingDoc drawing, ISheet sheet)
 {
     private readonly IDrawingDoc drawing = drawing;
     private readonly ISheet sheet = sheet;
 
-    public IEnumerable<PassungEntity> GetPassungsEntities()
+    public void GetPassungsEntities(ref PassungEntityCollection collection)
     {
         this.drawing.ActivateSheet(sheet.GetName());
 
-        return drawing.GetAllViews().SelectMany(this.GetPassungsEntities);
+        foreach (var view in drawing.GetAllViews())
+        {
+            this.GetPassungsEntities(view, ref collection);
+        }
     }
 
-    private IEnumerable<PassungEntity> GetPassungsEntities(IView view)
+    private void GetPassungsEntities(IView view, ref PassungEntityCollection collection)
     {
-        return this.GetPassungenFromDimensions(view)
-            .Union(this.GetPassungenFromHoleTables(view));
+        this.GetPassungenFromDimensions(view, ref collection);
+        this.GetPassungenFromHoleTables(view, ref collection);
     }
 
-
-    private IEnumerable<PassungEntity> GetPassungenFromDimensions(IView view)
+    private void GetPassungenFromDimensions(IView view, ref PassungEntityCollection collection)
     {
-        List<PassungEntity> passungen = new List<PassungEntity>();
         IDisplayDimension[] dimensions = view.GetDisplayDimensions().AsArrayOfType<IDisplayDimension>();
 
         foreach (var displayDimension in dimensions)
@@ -80,52 +80,104 @@ internal class SheetAnalyser(IDrawingDoc drawing, ISheet sheet)
                 zone = displayDimension.GetZoneFromDisplayDimension(view, this.sheet);
 
                 // Passung und Toleranzen ermitteln
-                passungen.AddRange(GetTolerancesFromDimension(dimension, prefix, zone));
+                collection.AddPassungFromDimension(dimension, true, prefix, zone);
+                collection.AddPassungFromDimension(dimension, false, prefix, zone);
 
                 // Prüfung ob es sich um eine Bohrungsbeschreibung handelt
                 var calloutVariables = displayDimension.GetHoleCalloutVariables().AsArrayOfType<ICalloutVariable>();
 
                 // Wenn Bohrungs-Beschreibungs-Variablen gefunden wurden
-                passungen.AddRange(calloutVariables.GetTolerances(prefix, zone));
+                collection.AddPassungFromCallOut(calloutVariables, prefix, zone);
+            }
+        }
+    }
+
+    private void GetPassungenFromHoleTables(IView view, ref PassungEntityCollection collection)
+    {
+        ITableAnnotation[] tables = view.GetTableAnnotations().AsArrayOfType<ITableAnnotation>();
+
+        foreach (var table in tables)
+        {
+            this.GetPassungenFromTable(view, table, ref collection);
+        }
+    }
+
+    private void GetPassungenFromTable(IView view, ITableAnnotation table, ref PassungEntityCollection collection)
+    {
+        if (table.Type != (int)swTableAnnotationType_e.swTableAnnotation_HoleChart ||
+            table is not HoleTable holeTable)
+        {
+            return;
+        }
+
+        this.GetPassungenFromHoleTable(view, holeTable, ref collection);
+    }
+
+    private void GetPassungenFromHoleTable(IView view, IHoleTable holeTable, ref PassungEntityCollection collection)
+    {
+        var annotations = holeTable.GetTableAnnotations().AsArrayOfType<IHoleTableAnnotation>();
+
+        var feat = holeTable.GetFeature();
+        var displayDimension = feat.GetFirstDisplayDimension().As<DisplayDimension>();
+        int index = 0;
+
+        var zonenContainer = this.GetZonen(view, holeTable);
+
+        int rowIndex = 1;
+        while (displayDimension is not null)
+        {
+            string prefix = "";
+            if (displayDimension.Type2 == (int)swDimensionType_e.swDiameterDimension)
+            {
+                prefix = "Ø";
+            }
+
+            Dimension dimension = displayDimension.GetDimension2(0);
+
+            var zoneKey = holeTable.HoleTag[rowIndex];
+            var zoneArray = zonenContainer.ContainsKey(zoneKey) ? zonenContainer[zoneKey].ToArray() : [];
+            collection.AddPassungFromDimension(dimension, true, prefix, zoneArray);
+
+            // Prüfung ob es sich um eine Bohrungsbeschreibung handelt
+            var holeVariables = displayDimension.GetHoleCalloutVariables().AsArrayOfType<ICalloutVariable>();
+
+            collection.AddPassungFromCallOut(holeVariables, prefix, zoneArray);
+
+            displayDimension = feat.GetNextDisplayDimension(displayDimension).As<DisplayDimension>();
+            index++;
+        }
+    }
+
+    private Dictionary<string, List<string>> GetZonen(IView view, IHoleTable holeTable)
+    {
+        //var view = holeTable.GetFeature().GetOwnerFeature().GetSpecificFeature2().As<IView>()
+        if (holeTable.As<ITableAnnotation>() is not ITableAnnotation table)
+        {
+            return [];
+        }
+
+        var result = new Dictionary<string, List<string>>();
+
+        for (int rowIndex = 1; rowIndex < table.RowCount - 1; rowIndex++)
+        {
+            result.Add(holeTable.HoleTag[rowIndex], []);
+        }
+
+        var notes = view.GetNotes().AsArrayOfType<INote>();
+
+        foreach (var note in notes)
+        {
+            if (result.TryGetValue(note.PropertyLinkedText, out var zones))
+            {
+                var point = note.GetTextPoint2().As<MathPoint>();
+                var zone = point?.GetZone(view.Sheet);
+                if (zone is not null)
+                {
+                    zones.Add(zone);
+                }
             }
         }
 
-        return passungen;
+        return result;
     }
-
-    private IEnumerable<PassungEntity> GetTolerancesFromDimension(IDimension dimension, string prefix, string zone)
-    {
-        // Toleranz holen
-        var tolerance = dimension.Tolerance;
-
-        // Nur wenn es sich auch um eine Passungsangabe handelt, wird ausgewertet
-        if (tolerance.Type != (int)swTolType_e.swTolFIT &&
-            tolerance.Type != (int)swTolType_e.swTolFITTOLONLY &&
-            tolerance.Type != (int)swTolType_e.swTolFITWITHTOL)
-        {
-            yield break;
-        }
-
-        var holeFit = tolerance.GetHoleFitValue();
-        var shaftFit = tolerance.GetShaftFitValue();
-
-        // Toleranzen von Bohrungspassung
-        if (!string.IsNullOrEmpty(holeFit))
-        {
-            yield return dimension.GetPassung(true, prefix, zone);
-        }
-
-        if (!string.IsNullOrEmpty(shaftFit))
-        {
-            yield return dimension.GetPassung(false, prefix, zone);
-        }
-
-    }
-
-    private IEnumerable<PassungEntity> GetPassungenFromHoleTables(IView view)
-    {
-        var analyzer = new HoleTableAnalyzer(view);
-        return analyzer.GetPassungen();
-    }
-
 }

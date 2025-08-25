@@ -5,10 +5,10 @@
 namespace Passungstabelle.CSharp;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Windows.Controls;
 
-internal class PassungEntity : IEquatable<PassungEntity>
+public class PassungEntity : IEquatable<PassungEntity>, IComparable<PassungEntity>
 {
     public string Prefix { get; set; } = string.Empty;
 
@@ -32,6 +32,22 @@ internal class PassungEntity : IEquatable<PassungEntity>
         }
 
         return Prefix == other.Prefix && Maß == other.Maß && Passung == other.Passung;
+    }
+
+    public int CompareTo(PassungEntity? other)
+    {
+        var result = this.Maß.CompareTo(other?.Maß);
+        if (result == 0)
+        {
+            result = this.Prefix.CompareTo(other?.Prefix);
+        }
+
+        if (result == 0)
+        {
+            result =  this.Passung.CompareTo(other?.Passung);
+        }
+
+        return result;
     }
 
     public override int GetHashCode()

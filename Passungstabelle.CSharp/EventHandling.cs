@@ -7,7 +7,7 @@ namespace Passungstabelle.CSharp;
 // Base class for model event handlers
 public class DocumentEventHandler
 {
-    protected readonly Dictionary<ModelView,DocView> openModelViews = new ();
+    protected readonly Dictionary<ModelView, DocView> openModelViews = new();
     protected readonly NaheFitTable userAddin;
     protected readonly ModelDoc2 iDocument;
     protected readonly SldWorks iSwApp;
@@ -66,7 +66,7 @@ public class DocumentEventHandler
         if (this.openModelViews.TryGetValue(mView, out var docView))
         {
             docView.DetachEventHandlers();
-            this.openModelViews.Remove(mView);          
+            this.openModelViews.Remove(mView);
         }
 
     }
@@ -94,7 +94,7 @@ public class PartEventHandler : DocumentEventHandler
     }
 
     public PartEventHandler(SldWorks sw, NaheFitTable addin, ModelDoc2 model)
-        :base(sw, addin, model) 
+        : base(sw, addin, model)
     {
         this.IPart = (PartDoc)model;
     }
@@ -151,7 +151,7 @@ public class AssemblyEventHandler : DocumentEventHandler
     }
 
     public AssemblyEventHandler(SldWorks sw, NaheFitTable addin, ModelDoc2 model)
-        :base(sw, addin, model)
+        : base(sw, addin, model)
     {
         this._IAssembly = (AssemblyDoc)model;
 
@@ -216,47 +216,27 @@ public class DrawingEventHandler : DocumentEventHandler
 
 
     public DrawingEventHandler(SldWorks sw, NaheFitTable addin, ModelDoc2 model)
-        :base(sw, addin, model)
+        : base(sw, addin, model)
     {
         this.IDrawing = (DrawingDoc)model;
     }
 
     public override bool AttachEventHandlers()
     {
-        // AddHandler iDrawing.DestroyNotify, AddressOf Me.DrawingDoc_DestroyNotify
-        // AddHandler IDrawing.NewSelectionNotify, AddressOf Me.DrawingDoc_NewSelectionNotify
-        if (this.userAddin.eventgesteuert == true)
-        {
-            if (this.userAddin.Event_AfterRegen == true)
-            {
-                this.IDrawing.RegenPostNotify += this.DrawingDoc_RegenPostNotify;
-            }
-            if (this.userAddin.Event_BevorSave == true)
-            {
-                this.IDrawing.FileSaveNotify += this.DrawingDocEvents_FileSaveNotify;
-                this.IDrawing.FileSaveAsNotify2 += this.DrawingDocEvents_FileSaveNotify;
-            }
+        this.IDrawing.RegenPostNotify += this.DrawingDoc_RegenPostNotify;
 
-        }
+        this.IDrawing.FileSaveNotify += this.DrawingDocEvents_FileSaveNotify;
+        this.IDrawing.FileSaveAsNotify2 += this.DrawingDocEvents_FileSaveNotify;
 
         return default;
-        // *ConnectModelViews()
     }
 
     public override bool DetachEventHandlers()
     {
-        if (this.userAddin.eventgesteuert == true)
-        {
-            if (this.userAddin.Event_AfterRegen == true)
-            {
-                this.IDrawing.RegenPostNotify -= this.DrawingDoc_RegenPostNotify;
-            }
-            if (this.userAddin.Event_AfterRegen == true)
-            {
-                this.IDrawing.FileSaveNotify -= this.DrawingDocEvents_FileSaveNotify;
-                this.IDrawing.FileSaveAsNotify2 -= this.DrawingDocEvents_FileSaveNotify;
-            }
-        }
+        this.IDrawing.RegenPostNotify -= this.DrawingDoc_RegenPostNotify;
+        this.IDrawing.FileSaveNotify -= this.DrawingDocEvents_FileSaveNotify;
+        this.IDrawing.FileSaveAsNotify2 -= this.DrawingDocEvents_FileSaveNotify;
+
         this.userAddin.DetachModelEventHandler(this.iDocument);
         return default;
     }
@@ -269,17 +249,13 @@ public class DrawingEventHandler : DocumentEventHandler
 
     public int DrawingDoc_RegenPostNotify()
     {
-        var Fittable = new PassungstabellenHandler();
-
-        Fittable.Main(this.iSwApp, (ModelDoc2)this.IDrawing);
+        this.userAddin.ExecuteOnRegenPostNotify(this.IDrawing);
         return 0;
     }
 
     public int DrawingDocEvents_FileSaveNotify(string FileName)
     {
-        var Fittable = new PassungstabellenHandler();
-
-        Fittable.Main(this.iSwApp, (ModelDoc2)this.IDrawing);
+        this.userAddin.ExecuteOnSaveNotify(this.IDrawing);
 
         return 0;
     }

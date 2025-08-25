@@ -49,7 +49,7 @@ public class LogFile
 
         if (tempattr)
         {
-            string logFilePath = Path.Combine(LogPfad, Definitionen.LOGName);
+            string logFilePath = Path.Combine(LogPfad, "Logfile.txt");
             using StreamWriter writer = new(logFilePath, true);
             string entry = $"{DateTime.Now}\t";
 
