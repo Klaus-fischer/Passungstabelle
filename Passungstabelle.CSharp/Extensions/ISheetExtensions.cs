@@ -12,7 +12,6 @@ using System.Runtime.CompilerServices;
 
 internal static class ISheetExtensions
 {
-    private const double factor = 1000;
 
     public static IEnumerable<ISheet> GetSheets(this IDrawingDoc drawing)
     {
@@ -33,6 +32,11 @@ internal static class ISheetExtensions
 
             view = swView.GetNextView();
         }
+    }
+
+    public static string? GetZone(this ISheet sheet, double[] array)
+    {
+        return sheet.GetDrawingZone(array[0], array[1]);
     }
 
     public static bool CheckForDiameter(this IDisplayDimension displayDimension)

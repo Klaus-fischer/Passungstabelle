@@ -4,3 +4,5 @@ obj
 /Passungstabelle/Passungstabelle.vbproj.user
 Debug
 Release
+*.user
+~*.*

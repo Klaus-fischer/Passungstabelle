@@ -15,20 +15,20 @@ internal class PassungEntityCollection
 
     private readonly Dictionary<string, PassungEntity> passungsEntities = new Dictionary<string, PassungEntity>();
 
+    public void Clear() => passungsEntities.Clear();
+
     public void AddPassungFromDimension(IDimension dimension, bool isHole, string prefix, params string[] zonen)
     {
         var tolerance = dimension.Tolerance;
+        var holeFit = tolerance.GetHoleFitValue();
+        var shaftFit = tolerance.GetShaftFitValue();
 
-        // Nur wenn es sich auch um eine Passungsangabe handelt, wird ausgewertet
-        if (tolerance.Type != (int)swTolType_e.swTolFIT &&
-            tolerance.Type != (int)swTolType_e.swTolFITTOLONLY &&
-            tolerance.Type != (int)swTolType_e.swTolFITWITHTOL)
+        var passung = isHole ? holeFit : shaftFit;
+
+        if (string.IsNullOrWhiteSpace(passung))
         {
             return;
         }
-
-        var holeFit = tolerance.GetHoleFitValue();
-        var shaftFit = tolerance.GetShaftFitValue();
 
         if (isHole)
         {
@@ -42,7 +42,7 @@ internal class PassungEntityCollection
         this.AddPassung(
             prefix,
             dimension.GetSystemValue2("") * factor,
-            isHole ? holeFit : shaftFit,
+            passung,
             tolerance.GetMaxValue() * factor,
             tolerance.GetMinValue() * factor,
             isHole,
@@ -100,6 +100,11 @@ internal class PassungEntityCollection
 
     private void AddPassung(string prefix, double maß, string passung, double toleranzO, double toleranzU, bool isHole, string[] zonen)
     {
+        if (string.IsNullOrWhiteSpace(passung))
+        {
+            return;
+        }
+
         var identifier = $"{prefix}{maß:0.###} {passung}";
         if (!this.passungsEntities.TryGetValue(identifier, out var passungsEntity))
         {
@@ -138,7 +143,7 @@ internal class PassungEntityCollection
 
     private bool ValidatePassung(PassungEntity entity)
     {
-        if (entity.Passung != "" & entity.ToleranzO == 0.0 & entity.ToleranzU == 0.0)
+        if (entity.Passung != "" && entity.ToleranzO == 0.0 && entity.ToleranzU == 0.0)
         {
             //Log.WriteInfo(My.Resources.LeerePassungsWerte, entity.Maß, entity.Passung);
 

@@ -4,6 +4,8 @@
 
 namespace Passungstabelle.CSharp
 {
+    using System;
+    using System.Collections;
     using System.Linq;
 
     internal static class ObjectExtensions
@@ -23,6 +25,11 @@ namespace Passungstabelle.CSharp
             if (obj is null)
             {
                 return [];
+            }
+
+            if (obj is IEnumerable enumerable)
+            {
+                return enumerable.OfType<T>().ToArray();
             }
 
             if (obj is not object[] array)

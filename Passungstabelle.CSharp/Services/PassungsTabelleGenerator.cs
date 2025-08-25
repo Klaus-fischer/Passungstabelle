@@ -59,8 +59,6 @@ internal class PassungsTabelleGenerator(GeneralSettings settings, TableSettings 
     private TabellenZeile[] CollectPassungen(IDrawingDoc drawing, ISheet sheet)
     {
         var sheetAnalyzer = new SheetAnalyser(drawing, sheet);
-        var collection = new PassungEntityCollection();
-        sheetAnalyzer.GetPassungsEntities(ref collection);
-        return collection.BuildTable();
+        return sheetAnalyzer.GetPassungsEntities();
     }
 }
