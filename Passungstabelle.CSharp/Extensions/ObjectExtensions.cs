@@ -30,7 +30,7 @@ namespace Passungstabelle.CSharp
                 return [];
             }
 
-            return array.AsArrayOfType<T>().ToArray();
+            return array.OfType<T>().ToArray();
         }
     }
 }
