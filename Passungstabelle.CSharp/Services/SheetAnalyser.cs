@@ -147,13 +147,13 @@ internal class SheetAnalyser(IDrawingDoc drawing, ISheet sheet)
         int rowIndex = 1;
         while (displayDimension is not null)
         {
-            string prefix = "";
-            if (displayDimension.Type2 == (int)swDimensionType_e.swDiameterDimension)
+            if (this.IsPassung(displayDimension, out _, out var dimension))
             {
-                prefix = "Ø";
+                displayDimension = feat.GetNextDisplayDimension(displayDimension).As<DisplayDimension>();
+                continue;
             }
 
-            Dimension dimension = displayDimension.GetDimension2(0);
+            string prefix = displayDimension.Type2 == (int)swDimensionType_e.swDiameterDimension ? "Ø" : "";
 
             var zoneKey = holeTable.HoleTag[rowIndex];
             var zoneArray = zonenContainer.ContainsKey(zoneKey) ? zonenContainer[zoneKey].ToArray() : [];

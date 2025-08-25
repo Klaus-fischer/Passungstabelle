@@ -92,7 +92,7 @@ internal class PassungEntityCollection
         swCalloutVariable.ShaftFit = isHole ? string.Empty : shaftFit;
         swCalloutVariable.HoleFit = isHole ? holeFit : string.Empty;
 
-        this.AddPassung(prefix, maß, passung, swCalloutVariable.ToleranceMax, swCalloutVariable.ToleranceMin, isHole, zonen);
+        this.AddPassung(prefix, maß, passung, swCalloutVariable.ToleranceMax * factor, swCalloutVariable.ToleranceMin * factor, isHole, zonen);
 
         swCalloutVariable.HoleFit = holeFit;
         swCalloutVariable.ShaftFit = shaftFit;

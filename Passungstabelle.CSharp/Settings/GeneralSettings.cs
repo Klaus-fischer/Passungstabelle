@@ -28,7 +28,7 @@ public class GeneralSettings
 
     public int RundenAuf { get; internal set; } = 8;
 
-    public double SchichtStärke { get; internal set; } = 0;
+    public double SchichtStärke { get; internal set; } = 0.015;
 
     public bool SchichtStärkeAbfragen { get; set; } = false;
 

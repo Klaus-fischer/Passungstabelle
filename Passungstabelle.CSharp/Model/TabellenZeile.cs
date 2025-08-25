@@ -1,7 +1,9 @@
 ﻿namespace Passungstabelle.CSharp;
 
 using System;
+using System.Diagnostics;
 
+[DebuggerDisplay("{Prefix}{Maß:0.###} {Passung}")]
 public class TabellenZeile
 {
     internal TabellenZeile(double maß, string passung, double toleranzO, double toleranzU, PassungsType type)
@@ -14,8 +16,6 @@ public class TabellenZeile
         this.AbmaßU = maß + toleranzU;
         this.AbmaßToleranzMitte = maß + (toleranzO + toleranzU) / 2;
         this.Type = type;
-
-        this.MaßPassung = $"{maß:0.########} {passung}";
     }
 
     public string Prefix { get; set; } = string.Empty;
@@ -24,7 +24,12 @@ public class TabellenZeile
 
     public string Passung { get; } = string.Empty;
 
-    public string MaßPassung { get; set; } = string.Empty;
+    public string MaßPassung(bool includePlusSign)
+    {
+        return includePlusSign
+            ? $"{this.Prefix}{this.Maß:+0.###} {this.Passung}"
+            : $"{this.Prefix}{this.Maß:0.###} {this.Passung}";
+    }
 
     public double ToleranzO { get; }
 
@@ -36,12 +41,13 @@ public class TabellenZeile
 
     public double AbmaßToleranzMitte { get; }
 
-    public double VorbearbeitungAbmaßO (double schichtstärke)
+    public double VorbearbeitungAbmaßO(double schichtstärke)
     {
         return this.Type == PassungsType.Hole ? AbmaßO + 2 * schichtstärke : AbmaßO - 2 * schichtstärke;
     }
 
-    public double VorbearbeitungAbmaßU(double schichtstärke) {
+    public double VorbearbeitungAbmaßU(double schichtstärke)
+    {
         return this.Type == PassungsType.Hole ? AbmaßU + 2 * schichtstärke : AbmaßU - 2 * schichtstärke;
     }
 
@@ -69,6 +75,7 @@ public class TabellenZeile
             entity.ToleranzU,
             entity.PassungsType)
         {
+            Prefix = entity.Prefix,
             Zone = string.Join(", ", entity.Zone),
         };
     }

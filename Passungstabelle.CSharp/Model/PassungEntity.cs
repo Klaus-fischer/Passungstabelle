@@ -7,7 +7,9 @@ namespace Passungstabelle.CSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
+[DebuggerDisplay("{Prefix}{Maß} {Passung}")]
 public class PassungEntity : IEquatable<PassungEntity>, IComparable<PassungEntity>
 {
     public string Prefix { get; set; } = string.Empty;
