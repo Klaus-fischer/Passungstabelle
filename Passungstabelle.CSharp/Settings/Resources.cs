@@ -40,12 +40,12 @@ internal static class Resources
     internal static string _Abmessungen_von_ersten_definierten_Format;
     internal static string Fertig;
 
-    public static string Maß { get; internal set; }
-    public static string Bohrungsbeschreibung { get; internal set; }
-    public static string Kein_Format_mit_den_Abmessungen { get; internal set; }
-    public static string Passungstabelle_Add_In_für_SolidWorks { get; internal set; }
-    public static string Passungstabelle { get; internal set; }
-    public static string Passungstabelle_Setup { get; internal set; }
-    public static string Passungstabelle_Hilfe { get; internal set; }
-    public static string HtmlHelpPfad { get; internal set; }
+    public static string Maß { get; internal set; } = "Maß";
+    public static string Bohrungsbeschreibung { get; internal set; } = "Bohrungsbeschreibung";
+    public static string Kein_Format_mit_den_Abmessungen { get; internal set; } = "Kein Format mit den Abmessungen";
+    public static string Passungstabelle_Add_In_für_SolidWorks { get; internal set; } = "Passungstabelle Add-In für SolidWorks";
+    public static string Passungstabelle { get; internal set; } = "Passungstabelle";
+    public static string Passungstabelle_Setup { get; internal set; } = "Passungstabelle Setup";
+    public static string Passungstabelle_Hilfe { get; internal set; } = "Passungstabelle Hilfe";
+    public static string HtmlHelpPfad { get; internal set; } = "HtmlHelpPfad";
 }
