@@ -273,7 +273,7 @@ public class CommandHandler : IDisposable
             return;
         }
 
-        this.addIn.Execute(openDoc);
+        this.addIn.ExecuteOnCurrentSheet(openDoc);
     }
 
     public void Dispose()

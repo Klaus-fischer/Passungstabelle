@@ -126,7 +126,7 @@ public class NaheFitTable : ISwAddin
         this.ISldWorksApp = (SldWorks)ThisSW;
 
         // Setup the commands.
-        this.CommandHandler = new CommandHandler(this.ISldWorksApp, cookie);
+        this.CommandHandler = new CommandHandler(this.ISldWorksApp, cookie, this);
         this.CommandHandler.AddCommands();
 
         // Setup the Event Handlers
@@ -160,8 +160,16 @@ public class NaheFitTable : ISwAddin
         return DisconnectFromSWRet;
     }
     
-    internal void Execute(DrawingDoc drawing) 
-        => this.PassungsTabelleGenerator?.Execute(drawing);
+    internal void ExecuteOnCurrentSheet(DrawingDoc drawing)
+    {
+        if (drawing.GetCurrentSheet() is ISheet sheet)
+        {
+            this.PassungsTabelleGenerator?.Execute(drawing, sheet);
+            return;
+        }
+
+        this.PassungsTabelleGenerator?.Execute(drawing);
+    }
 
     internal void ExecuteOnSaveNotify(DrawingDoc drawing)
     {
@@ -178,4 +186,7 @@ public class NaheFitTable : ISwAddin
             this.Execute(drawing);
         }
     }
+    private void Execute(DrawingDoc drawing) 
+        => this.PassungsTabelleGenerator?.Execute(drawing);
+
 }
