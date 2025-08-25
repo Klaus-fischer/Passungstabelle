@@ -6,7 +6,9 @@ namespace Passungstabelle.CSharp;
 
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 internal static class ISheetExtensions
 {
@@ -64,112 +66,13 @@ internal static class ISheetExtensions
         return sheet.GetDrawingZone(dimPosition[0], dimPosition[1]);
     }
 
-    public static PassungEntity GetPassung(this IDimension dimension, bool isHole, string prefix, string? zone = null)
+    public static Version GetVersion(this ISldWorks sldWorks)
     {
-        var tolerance = dimension.Tolerance;
-        var holeFit = tolerance.GetHoleFitValue();
-        var shaftFit = tolerance.GetShaftFitValue();
-
-        if (isHole)
+        if (Version.TryParse(sldWorks.RevisionNumber(), out var version))
         {
-            tolerance.SetFitValues(holeFit, "");
-        }
-        else
-        {
-            tolerance.SetFitValues("", shaftFit);
+            return version;
         }
 
-        PassungEntity result = new()
-        {
-            Maß = dimension.GetSystemValue2("") * factor,
-            Passung = isHole ? holeFit : shaftFit,
-            Prefix = prefix,
-            PassungsType = isHole ? PassungsType.Hole : PassungsType.Shaft,
-            ToleranzO = tolerance.GetMaxValue() * factor,
-            ToleranzU = tolerance.GetMinValue() * factor
-        };
-
-        if (!string.IsNullOrEmpty(zone))
-        {
-            result.Zone.Add(zone);
-        }
-
-        tolerance.SetFitValues(holeFit, shaftFit);
-        return result;
+        return new Version();
     }
-
-    public static IEnumerable<PassungEntity> GetTolerances(this ICalloutVariable[] calloutVariables, string prefix, string? zone = null)
-    {
-        foreach (ICalloutVariable swCalloutVariable in calloutVariables)
-        {
-            if (swCalloutVariable.Type != (int)swCalloutVariableType_e.swCalloutVariableType_Length ||
-                swCalloutVariable is not CalloutLengthVariable swCalloutLengthVariable)
-            {
-                continue;
-            }
-
-            // Nur wenn es sich auch um eine Passungsangabe handelt, wird ausgewertet
-            if (swCalloutVariable.ToleranceType != (int)swTolType_e.swTolFIT &&
-                swCalloutVariable.ToleranceType != (int)swTolType_e.swTolFITTOLONLY &&
-                swCalloutVariable.ToleranceType != (int)swTolType_e.swTolFITWITHTOL)
-            {
-                continue;
-            }
-
-            var maß = swCalloutLengthVariable.Length * factor;
-            var holeFit = swCalloutVariable.HoleFit;
-            var shaftFit = swCalloutVariable.ShaftFit;
-
-            if (!string.IsNullOrWhiteSpace(holeFit))
-            {
-                var passung = swCalloutVariable.GetPassung(maß, true, prefix, zone);
-                if (passung != null)
-                {
-                    yield return passung;
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(shaftFit))
-            {
-                var passung = swCalloutVariable.GetPassung(maß, false, prefix, zone);
-                if (passung != null)
-                {
-                    yield return passung;
-                }
-            }
-        }
-    }
-
-    public static PassungEntity GetPassung(this ICalloutVariable swCalloutVariable, double maß, bool isHole, string prefix, string? zone = null)
-    {
-        var holeFit = swCalloutVariable.HoleFit;
-        var shaftFit = swCalloutVariable.ShaftFit;
-
-        var passung = isHole ? holeFit : shaftFit;
-
-        swCalloutVariable.ShaftFit = isHole ? string.Empty : shaftFit;
-        swCalloutVariable.HoleFit = isHole ? holeFit : string.Empty;
-
-        var result = new PassungEntity()
-        {
-
-            Maß = maß,
-            Passung = passung,
-            ToleranzO = swCalloutVariable.ToleranceMax,
-            ToleranzU = swCalloutVariable.ToleranceMin,
-            PassungsType = isHole ? PassungsType.Hole : PassungsType.Shaft,
-            Prefix = prefix,
-        };
-
-        swCalloutVariable.HoleFit = holeFit;
-        swCalloutVariable.ShaftFit = shaftFit;
-
-        if (!string.IsNullOrEmpty(zone))
-        {
-            result.Zone.Add(zone);
-        }
-
-        return result;
-    }
-
 }

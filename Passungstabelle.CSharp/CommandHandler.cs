@@ -9,13 +9,16 @@ using SolidWorks.Interop.swconst;
 using SolidWorksTools.File;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [Guid("5C8AC6DE-D5A9-4AEB-AA40-7D9F869B0622")]
 [ComVisible(true)]
 public class CommandHandler : IDisposable
 {
+    static readonly string RootPath = Path.GetDirectoryName(typeof(CommandHandler).Assembly.Location)!;
     public const int mainCmdGroupID = 3130;
     public const int mainItemID1 = 31300;
     public const int mainItemID2 = 31301;
@@ -38,7 +41,7 @@ public class CommandHandler : IDisposable
     public void AddCommands()
     {
         ICommandGroup cmdGroup;
-        using var bitmapHandler = new BitmapHandler(); ;
+        using var bitmapHandler = new BitmapHandler();
 
         int cmdIndex0;
         int cmdIndex1;
@@ -71,8 +74,18 @@ public class CommandHandler : IDisposable
             throw new NullReferenceException();
         }
 
-        cmdGroup.LargeIconList = bitmapHandler.CreateFileFromResourceBitmap("Passungstabellen.MainLarge.png", thisAssembly);
-        cmdGroup.SmallIconList = bitmapHandler.CreateFileFromResourceBitmap("Passungstabellen.MainSmall.png", thisAssembly);
+        if (this.sldWorks.GetVersion().Major >= 24)
+        {
+            string[] icons = [
+                Path.Combine(RootPath, "Icons", "MainSmall.png"),
+                Path.Combine(RootPath, "Icons", "MainLarge.png")];
+            cmdGroup.IconList = icons;
+        }
+        else
+        {
+            cmdGroup.LargeIconList = Path.Combine(RootPath, "Icons", "MainLarge.png");
+            cmdGroup.SmallIconList = Path.Combine(RootPath, "Icons", "MainSmall.png");
+        }
 
         int menuToolbarOption = (int)(swCommandItemType_e.swMenuItem | swCommandItemType_e.swToolbarItem);
 
