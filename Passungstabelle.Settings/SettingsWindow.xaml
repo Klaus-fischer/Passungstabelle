@@ -1,0 +1,13 @@
+﻿<Window x:Class="Passungstabelle.Settings.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Passungstabelle.Settings"
+        mc:Ignorable="d"
+        Title="{local:UiText WindowTitle}" Height="450" Width="800">
+    <Grid >
+        <RadioButton Content="de-DE" GroupName="Lang" HorizontalAlignment="Left" Margin="11,413,0,0" VerticalAlignment="Top" IsChecked="True" Checked="RadioButton_Checked" />
+        <RadioButton Content="en-US" GroupName="Lang" HorizontalAlignment="Left" Margin="76,414,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
+    </Grid>
+</Window>
