@@ -24,32 +24,14 @@ internal class PassungEntityCollection
         var shaftFit = tolerance.GetShaftFitValue();
 
         var passung = isHole ? holeFit : shaftFit;
-
-        if (string.IsNullOrWhiteSpace(passung))
+        double maß = dimension.GetSystemValue2("") * factor;
+        if (string.IsNullOrWhiteSpace(passung) ||
+            !PassungsRechner.TryGetAbmaß(maß, passung, out var toleranzU, out var toleranzO))
         {
             return;
         }
 
-        if (isHole)
-        {
-            tolerance.SetFitValues(holeFit, "");
-        }
-        else
-        {
-            tolerance.SetFitValues("", shaftFit);
-        }
-
-        this.AddPassung(
-            prefix,
-            dimension.GetSystemValue2("") * factor,
-            passung,
-            tolerance.GetMaxValue() * factor,
-            tolerance.GetMinValue() * factor,
-            isHole,
-            zonen);
-
-
-        tolerance.SetFitValues(holeFit, shaftFit);
+        this.AddPassung(prefix, maß, passung, toleranzO, toleranzU, isHole, zonen);
     }
 
     public void AddPassungFromCallOut(ICalloutVariable[] calloutVariables, string prefix, params string[] zonen)
@@ -84,18 +66,13 @@ internal class PassungEntityCollection
 
         var passung = isHole ? holeFit : shaftFit;
 
-        if (string.IsNullOrWhiteSpace(passung))
+        if (string.IsNullOrWhiteSpace(passung) ||
+            !PassungsRechner.TryGetAbmaß(maß, passung, out var toleranzU, out var toleranzO))
         {
             return;
         }
 
-        swCalloutVariable.ShaftFit = isHole ? string.Empty : shaftFit;
-        swCalloutVariable.HoleFit = isHole ? holeFit : string.Empty;
-
-        this.AddPassung(prefix, maß, passung, swCalloutVariable.ToleranceMax * factor, swCalloutVariable.ToleranceMin * factor, isHole, zonen);
-
-        swCalloutVariable.HoleFit = holeFit;
-        swCalloutVariable.ShaftFit = shaftFit;
+        this.AddPassung(prefix, maß, passung, toleranzO, toleranzU, isHole, zonen);
     }
 
     private void AddPassung(string prefix, double maß, string passung, double toleranzO, double toleranzU, bool isHole, string[] zonen)
