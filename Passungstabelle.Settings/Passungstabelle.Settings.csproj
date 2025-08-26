@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings.de.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator></Generator>
     </EmbeddedResource>
   </ItemGroup>
 

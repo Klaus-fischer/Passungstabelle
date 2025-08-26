@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SpracheHeader" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="TabFormatHeader" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="TabGeneralHeader" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="TabTableHeader" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="TabTemplateHeader" xml:space="preserve">
+    <value>Templates</value>
+  </data>
   <data name="WindowTitle" xml:space="preserve">
     <value>Fit Table - Settings</value>
   </data>

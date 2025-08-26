@@ -20,4 +20,15 @@ public partial class SettingsWindow : Window
             ResourceLocater.Current.ChangeLanguage(culture);
         }
     }
+
+    private void OnLanguageSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ComboBox cb)
+        {
+            if (cb.SelectedItem is ComboBoxItem selected && selected.Content is string language)
+            {
+                ResourceLocater.Current.ChangeLanguage(language);
+            }
+        }
+    }
 }
