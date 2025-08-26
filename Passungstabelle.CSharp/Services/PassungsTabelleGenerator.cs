@@ -9,7 +9,6 @@ using SolidWorks.Interop.sldworks;
 
 internal class PassungsTabelleGenerator(SettingsLoader  loader)
 {
-    private const double factor = 1000;
     private readonly SettingsLoader loader = loader;
     private readonly GeneralSettings settings = loader.Settings;
 
