@@ -1,0 +1,16 @@
+Ermittlung durch manipulation der Bemaßung
+CollectPassungen took: 2,9    InsertTable took 0,4s
+CollectPassungen took: 1,6    InsertTable took 0,2s
+CollectPassungen took: 1,5    InsertTable took 0,2s
+CollectPassungen took: 1,5    InsertTable took 0,2s
+CollectPassungen took: 1,5    InsertTable took 0,2s
+CollectPassungen took: 1,5    InsertTable took 0,2s
+
+Berechnung der Passung
+CollectPassungen took: 1,6    InsertTable took 0,4s
+CollectPassungen took: 0,2    InsertTable took 0,2s
+CollectPassungen took: 0,2    InsertTable took 0,2s
+CollectPassungen took: 0,2    InsertTable took 0,2s
+CollectPassungen took: 0,2    InsertTable took 0,2s
+CollectPassungen took: 0,2    InsertTable took 0,2s
+CollectPassungen took: 0,2    InsertTable took 0,2s
