@@ -6,17 +6,12 @@ namespace Passungstabelle.CSharp;
 
 using Passungstabelle.Settings;
 using SolidWorks.Interop.sldworks;
-using SolidWorks.Interop.swconst;
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows;
 
-internal class PassungsTabelleGenerator(GeneralSettings settings, TableSettings tableSettings)
+internal class PassungsTabelleGenerator(SettingsLoader  loader)
 {
     private const double factor = 1000;
-    private readonly GeneralSettings settings = settings;
-    private readonly TableSettings tableSettings = tableSettings;
+    private readonly SettingsLoader loader = loader;
+    private readonly GeneralSettings settings = loader.Settings;
 
     public void Execute(IDrawingDoc drawing)
     {
@@ -71,7 +66,10 @@ internal class PassungsTabelleGenerator(GeneralSettings settings, TableSettings 
 
     private void InsertTable(IModelDoc2 drawing, ISheet sheet, TabellenZeile[] zeilen)
     {
-        var tableWriter = new TableWriter(this.settings, this.tableSettings);
+        var tableSettings = loader.GetTableSettings(sheet);
+        var formatSettings = loader.GetFormat(sheet, tableSettings);
+
+        var tableWriter = new TableWriter(this.settings, tableSettings, formatSettings);
         tableWriter.InsertTable(drawing, sheet, zeilen);
     }
 }

@@ -121,7 +121,7 @@ public class NaheFitTable : ISwAddin
         settingsLoader.ReloadSettings();
         this.Settings = settingsLoader.Settings;
 
-       this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader.Settings, settingsLoader.TableSettings);
+       this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader);
 
 
         this.ISldWorksApp = (SldWorks)ThisSW;

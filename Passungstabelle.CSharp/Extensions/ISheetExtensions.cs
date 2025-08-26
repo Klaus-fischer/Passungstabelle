@@ -4,11 +4,13 @@
 
 namespace Passungstabelle.CSharp;
 
+using Passungstabelle.Settings;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 internal static class ISheetExtensions
 {
@@ -78,5 +80,39 @@ internal static class ISheetExtensions
         }
 
         return new Version();
+    }
+
+    /// <summary>
+    /// Gets the insert point in mm based on <see cref="ISheet.GetSize(ref double, ref double)"/>,
+    /// <see cref="FormatSettings.Margin"/> and <see cref="FormatSettings.Offset_X"/> / <see cref="FormatSettings.Offset_Y."/>
+    /// </summary>
+    /// <param name="sheet">The current sheet.</param>
+    /// <param name="settings">The format settings.</param>
+    /// <returns></returns>
+    public static Point GetInsertPoint(this ISheet sheet, FormatSettings settings)
+    {
+        var properties = sheet.GetProperties2().AsArrayOfType<double>();
+        var paperSize = new Size(properties[5] * 1000, properties[6] * 1000);
+        var rectangle = new Rect(paperSize).Shrink(settings.Margin);
+        var offset = settings.Offset;
+
+        return settings.InsertPoint switch
+        {
+            Einfügepunkt.BottomLeft => rectangle.TopLeft + offset,
+            Einfügepunkt.TopLeft => rectangle.BottomLeft + offset,
+            Einfügepunkt.BottomRight => rectangle.TopRight + offset,
+            Einfügepunkt.TopRight => rectangle.BottomRight + offset,
+            _ => rectangle.TopRight + offset,
+        };
+    }
+
+    private static Rect Shrink(this Rect rect, Thickness margin)
+    {
+        return new Rect(
+            rect.Left + margin.Left,
+            rect.Top + margin.Top,
+            Math.Max(0, rect.Width - margin.Left - margin.Right),
+            Math.Max(0, rect.Height - margin.Top - margin.Bottom)
+        );
     }
 }

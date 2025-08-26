@@ -8,15 +8,13 @@ using System.Windows;
 
 public class FormatSettings
 {
-    public SheetFormat Format { get; set; } = SheetFormat.A4H;
+    public SheetFormat Format { get; set; } = SheetFormat.A4V;
 
-    public Einfügepunkt Einfügepunkt { get; set; }
+    public Einfügepunkt InsertPoint { get; set; }
 
     public Thickness Margin { get; set; } = new Thickness(20, 10, 10, 10);
 
     public string MaxZone { get; set; } = "H6";
 
-    public double Offset_X { get; set; } = 0;
-
-    public double Offset_Y { get; set; } = 0;
+    public Vector Offset { get; set; }
 }

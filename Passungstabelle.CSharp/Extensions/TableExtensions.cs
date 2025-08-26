@@ -66,6 +66,6 @@ internal static class TableExtensions
             height += table.GetRowHeight(row);
         }
 
-        return new Size(width, height);
+        return new Size(width * 1000, height * 1000);
     }
 }

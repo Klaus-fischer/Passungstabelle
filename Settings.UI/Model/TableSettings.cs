@@ -15,12 +15,6 @@ public class TableSettings
 
     public LineWidth RahmenStrichStärke { get; internal set; } = LineWidth.Dick;
 
-    public Einfügepunkt InsertPoint { get; set; } = Einfügepunkt.TopRight;
-
-    public double Offset_X { get; set; } = 10;
-
-    public double Offset_Y { get; set; } = 10;
-
     public bool SpaltenBreiteAutomatisch { get; internal set; } = false;
 
     public TextFormat HeaderFormat { get; set; } = new TextFormat();
@@ -33,9 +27,9 @@ public class TableSettings
 
     public SpalteSettings Maß { get; } = new SpalteSettings() { Name = "Maß", Title = "Maß", Visible = true, Breite = 15, };
 
-    public SpalteSettings Passung { get; } = new SpalteSettings() { Name = "Passung", Title = "Passung", Visible = true, Breite = 15,  };
+    public SpalteSettings Passung { get; } = new SpalteSettings() { Name = "Passung", Title = "Passung", Visible = true, Breite = 15, };
 
-    public SpalteSettings MaßePassung { get; } = new SpalteSettings() { Name = "MaßePassung", Title = "MaßePassung", Visible = false, Breite = 20,  };
+    public SpalteSettings MaßePassung { get; } = new SpalteSettings() { Name = "MaßePassung", Title = "MaßePassung", Visible = false, Breite = 20, };
 
     public SpalteSettings Toleranz { get; } = new SpalteSettings() { Name = "Toleranz", Title = "Toleranz", Visible = true, Breite = 20, };
 
@@ -45,9 +39,9 @@ public class TableSettings
 
     public SpalteSettings VorbearbeitungsAbmaße { get; } = new SpalteSettings() { Name = "VorbearbeitungsAbmaße", Title = "VorbearbeitungsAbmaße", Visible = false, Breite = 20, };
 
-    public SpalteSettings VorbearbeitungsToleranzMitte { get; } = new SpalteSettings() { Name = "VorbearbeitungsToleranzMitte", Title = "VorbearbeitungsToleranzMitte", Visible = false, Breite = 20,  };
+    public SpalteSettings VorbearbeitungsToleranzMitte { get; } = new SpalteSettings() { Name = "VorbearbeitungsToleranzMitte", Title = "VorbearbeitungsToleranzMitte", Visible = false, Breite = 20, };
 
-    public SpalteSettings Anzahl { get; } = new SpalteSettings() { Name = "Anzahl", Title = "Anzahl", Visible = false, Breite = 20,  };
+    public SpalteSettings Anzahl { get; } = new SpalteSettings() { Name = "Anzahl", Title = "Anzahl", Visible = false, Breite = 20, };
 
     public SpalteSettings Zone { get; } = new SpalteSettings() { Name = "Zone", Title = "Zone", Visible = false, Breite = 20, };
 

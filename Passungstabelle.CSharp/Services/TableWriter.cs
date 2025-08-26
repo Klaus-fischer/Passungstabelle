@@ -12,11 +12,12 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 
-internal class TableWriter(GeneralSettings settings, TableSettings tableSettings)
+internal class TableWriter(GeneralSettings settings, TableSettings tableSettings, FormatSettings formatSettings)
 {
     private const double factor = 1000;
     private readonly GeneralSettings settings = settings;
     private readonly TableSettings tableSettings = tableSettings;
+    private readonly FormatSettings formatSettings = formatSettings;
     private readonly SpalteSettings[] spalten = tableSettings.Spalten.Where(o => o.Visible).ToArray();
 
     public double Schichtdicke { get; set; } = settings.SchichtStärke;
@@ -24,12 +25,13 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
     public void InsertTable(IModelDoc2 modelDoc, ISheet sheet, TabellenZeile[] zeilen)
     {
         var rows = (zeilen.Length * 2) + (this.tableSettings.HasMultiLineHeader ? 2 : 1);
+        var position = sheet.GetInsertPoint(this.formatSettings);
 
         var swTable = modelDoc.Extension.InsertGeneralTableAnnotation(
             false,
-            this.tableSettings.Offset_X / factor,
-            this.tableSettings.Offset_Y / factor,
-            (int)this.tableSettings.InsertPoint,
+            position.X / factor,
+            position.Y / factor,
+            (int)this.formatSettings.InsertPoint,
             "",
             rows,
             this.tableSettings.Spalten.Where(o => o.Visible).Count());
@@ -60,8 +62,8 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
 
         this.FormatColumnWidth(swTable);
 
-        var position = this.GetEinfügepunkt(swTable);
-        annotation.SetPosition2(position.X, position.Y, 0);
+        position = this.GetEinfügepunkt(swTable, position);
+        annotation.SetPosition2(position.X / factor, position.Y / factor, 0);
 
         annotation.Visible = (int)swAnnotationVisibilityState_e.swAnnotationVisible;
     }
@@ -226,24 +228,24 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
         return width + 0.001;
     }
 
-    private Point GetEinfügepunkt(TableAnnotation swTable)
+    private Point GetEinfügepunkt(TableAnnotation swTable, Point current)
     {
         var size = swTable.GetTableSize();
 
-        var offsetX = this.tableSettings.Offset_X / factor;
-        var offsetY = this.tableSettings.Offset_Y / factor;
+        var offsetX = current.X;
+        var offsetY = current.Y;
 
-        if (tableSettings.InsertPoint == Einfügepunkt.BottomLeft)
+        if (formatSettings.InsertPoint == Einfügepunkt.BottomLeft)
         {
             offsetY += size.Height;
         }
 
-        if (tableSettings.InsertPoint == Einfügepunkt.TopRight)
+        if (formatSettings.InsertPoint == Einfügepunkt.TopRight)
         {
             offsetX -= size.Width;
         }
 
-        if (tableSettings.InsertPoint == Einfügepunkt.BottomRight)
+        if (formatSettings.InsertPoint == Einfügepunkt.BottomRight)
         {
             offsetX -= size.Width;
             offsetY += size.Height;
