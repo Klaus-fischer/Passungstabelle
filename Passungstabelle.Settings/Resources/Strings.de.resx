@@ -174,4 +174,49 @@
   <data name="OptionSuppressMessages" xml:space="preserve">
     <value>Keine Meldungen anzeigen</value>
   </data>
+  <data name="GroupFormatSettingsHeader" xml:space="preserve">
+    <value>Formateinstellungen</value>
+  </data>
+  <data name="OptionNameHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="OptionSheetFormatHeader" xml:space="preserve">
+    <value>Blattformat</value>
+  </data>
+  <data name="GroupInsertPositionsHeader" xml:space="preserve">
+    <value>Einfügeposition</value>
+  </data>
+  <data name="OptionTopLeft" xml:space="preserve">
+    <value>oben links</value>
+  </data>
+  <data name="OptionTopRight" xml:space="preserve">
+    <value>oben rechts</value>
+  </data>
+  <data name="OptionBottomLeft" xml:space="preserve">
+    <value>unten links</value>
+  </data>
+  <data name="OptionBottomRight" xml:space="preserve">
+    <value>unten rechts</value>
+  </data>
+  <data name="GroupOffsetHeader" xml:space="preserve">
+    <value>Versatz</value>
+  </data>
+  <data name="GroupMarginHeader" xml:space="preserve">
+    <value>Seitenränder</value>
+  </data>
+  <data name="GroupZoneHeader" xml:space="preserve">
+    <value>Zonen</value>
+  </data>
+  <data name="GroupSavedFormatsHeader" xml:space="preserve">
+    <value>Gespeicherte Formate</value>
+  </data>
+  <data name="ButtonAddText" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="ButtonDeleteText" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="ButtonUpdateText" xml:space="preserve">
+    <value>Übernehmen</value>
+  </data>
 </root>

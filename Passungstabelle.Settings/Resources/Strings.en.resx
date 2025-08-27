@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="GroupCentralLocationHeader" xml:space="preserve">
-    <value>folder path to the settings:</value>
+    <value>Folder path to the settings:</value>
   </data>
   <data name="GroupLogLocationHeader" xml:space="preserve">
-    <value>folder path to the log files:</value>
+    <value>Folder path to the log files:</value>
   </data>
   <data name="GroupGeneralHeader" xml:space="preserve">
     <value>Common Settings</value>
@@ -173,5 +173,50 @@
   </data>
   <data name="OptionSuppressMessages" xml:space="preserve">
     <value>suppress warning messages</value>
+  </data>
+  <data name="GroupFormatSettingsHeader" xml:space="preserve">
+    <value>Format Settings</value>
+  </data>
+  <data name="OptionNameHeader" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="OptionSheetFormatHeader" xml:space="preserve">
+    <value>sheet format</value>
+  </data>
+  <data name="GroupInsertPositionsHeader" xml:space="preserve">
+    <value>Einfügeposition</value>
+  </data>
+  <data name="OptionTopLeft" xml:space="preserve">
+    <value>top left</value>
+  </data>
+  <data name="OptionTopRight" xml:space="preserve">
+    <value>top right</value>
+  </data>
+  <data name="OptionBottomLeft" xml:space="preserve">
+    <value>bottom left</value>
+  </data>
+  <data name="OptionBottomRight" xml:space="preserve">
+    <value>bottom right</value>
+  </data>
+  <data name="GroupOffsetHeader" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="GroupMarginHeader" xml:space="preserve">
+    <value>Page margin</value>
+  </data>
+  <data name="GroupZoneHeader" xml:space="preserve">
+    <value>Zonen</value>
+  </data>
+  <data name="GroupSavedFormatsHeader" xml:space="preserve">
+    <value>Saved formats</value>
+  </data>
+  <data name="ButtonAddText" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="ButtonDeleteText" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ButtonUpdateText" xml:space="preserve">
+    <value>Apply</value>
   </data>
 </root>

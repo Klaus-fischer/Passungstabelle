@@ -23,7 +23,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Formateinstellungen" >
+        <GroupBox Header="{local:UiText GroupFormatSettingsHeader}" >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -38,32 +38,32 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <GroupBox Header="Name" Grid.Column="0">
+                <GroupBox Header="{local:UiText OptionNameHeader}" Grid.Column="0">
                     <TextBox Text="{Binding Name}" Margin="25,2,5,2"/>
                 </GroupBox>
 
-                <GroupBox Header="Blattformat" Grid.Column="1">
+                <GroupBox Header="{local:UiText OptionSheetFormatHeader}" Grid.Column="1">
                     <ComboBox Margin="25,2,5,2" 
                               SelectedItem="{Binding SheetFormat}"
                               ItemsSource="{Binding Source={StaticResource BlattFormatItemsSource}}"/>
                 </GroupBox>
 
-                <GroupBox Header="Einfügeposition" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                <GroupBox Header="{local:UiText GroupInsertPositionsHeader}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                     <UniformGrid Columns="2" >
-                        <RadioButton Content="oben links"
+                        <RadioButton Content="{local:UiText OptionTopLeft}"
                                      IsChecked="{Binding InsertPoint, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static local:TableInsertPoint.TopLeft}}"
                                      Margin="5,4"
                                      />
-                        <RadioButton Content="oben rechts"  
+                        <RadioButton Content="{local:UiText OptionTopRight}"
                                      IsChecked="{Binding InsertPoint, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static local:TableInsertPoint.TopRight}}"
                                      Margin="5,4"
                                      FlowDirection="RightToLeft"
                                      />
-                        <RadioButton Content="unten links"
+                        <RadioButton Content="{local:UiText OptionBottomLeft}"
                                      IsChecked="{Binding InsertPoint, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static local:TableInsertPoint.BottomLeft}}"
                                      Margin="5,3"
                                      />
-                        <RadioButton Content="unten rechts" 
+                        <RadioButton Content="{local:UiText OptionBottomRight}"
                                      IsChecked="{Binding InsertPoint, Converter={StaticResource EnumConverter}, ConverterParameter={x:Static local:TableInsertPoint.BottomRight}}"
                                      Margin="5,3"  
                                      FlowDirection="RightToLeft"
@@ -71,7 +71,7 @@
                     </UniformGrid>
                 </GroupBox>
 
-                <GroupBox Header="Offset" Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2">
+                <GroupBox Header="{local:UiText GroupOffsetHeader}" Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2">
                     <UniformGrid Columns="2" Grid.IsSharedSizeScope="True">
                         <HeaderedContentControl Header="X: " 
                                                 Template="{StaticResource HorizontalHeader}" 
@@ -94,9 +94,9 @@
                 <GroupBox  Grid.Row="3" Grid.ColumnSpan="2" MinHeight="200">
                     <GroupBox.Header>
                         <TextBlock>
-                      <Run Text="Seitenränder" Background="LemonChiffon"/>
+                      <Run Text="{local:UiText GroupMarginHeader}" Background="LemonChiffon"/>
                       <Run Text="/"/>
-                      <Run Text="Zonen" Background="#FFC6FDC6"/>
+                      <Run Text="{local:UiText GroupZoneHeader}" Background="#FFC6FDC6"/>
                         </TextBlock>
                     </GroupBox.Header>
                     <Grid>
@@ -120,26 +120,26 @@
                 </GroupBox>
 
                 <DockPanel Grid.Row="5" Grid.ColumnSpan="2" LastChildFill="False">
-                    <Button Content="Entfernen" 
+                    <Button Content="{local:UiText ButtonDeleteText}" 
                             Command="{Binding DeleteCommand}"
                             Margin="5" MinWidth="100"
                             Foreground="Crimson" 
                             />
-                    <Button Content="Hinzufügen"
-                            Command="{Binding AddCommand}"   
+                    <Button Content="{local:UiText ButtonAddText}"
+                            Command="{Binding AddCommand}"
                             Margin="5" MinWidth="100" 
                             Foreground="Teal" 
                             DockPanel.Dock="Right"
                             />
-                    <Button Content="Übernehmen" 
-                            Command="{Binding UpdateCommand}" 
+                    <Button Content="{local:UiText ButtonUpdateText}"
+                            Command="{Binding UpdateCommand}"
                             Margin="5" MinWidth="100"
                             DockPanel.Dock="Right"
                             />
                 </DockPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Gespeicherte Formate" Grid.Column="1">
+        <GroupBox Header="{local:UiText GroupSavedFormatsHeader}" Grid.Column="1">
             <ListBox SelectedItem="{Binding SelectedFormat}"
                      ItemsSource="{Binding FormatCollection}"
                      SelectionMode="Single">
