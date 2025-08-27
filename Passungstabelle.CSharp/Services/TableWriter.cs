@@ -235,17 +235,17 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
         var offsetX = current.X;
         var offsetY = current.Y;
 
-        if (formatSettings.InsertPoint == Einfügepunkt.BottomLeft)
+        if (formatSettings.InsertPoint == TableInsertPoint.BottomLeft)
         {
             offsetY += size.Height;
         }
 
-        if (formatSettings.InsertPoint == Einfügepunkt.TopRight)
+        if (formatSettings.InsertPoint == TableInsertPoint.TopRight)
         {
             offsetX -= size.Width;
         }
 
-        if (formatSettings.InsertPoint == Einfügepunkt.BottomRight)
+        if (formatSettings.InsertPoint == TableInsertPoint.BottomRight)
         {
             offsetX -= size.Width;
             offsetY += size.Height;

@@ -6,7 +6,7 @@ namespace Passungstabelle.Settings;
 
 using SolidWorks.Interop.swconst;
 
-public enum Einfügepunkt
+public enum TableInsertPoint
 {
     TopLeft = swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_TopLeft,
     TopRight = swBOMConfigurationAnchorType_e.swBOMConfigurationAnchor_TopRight,

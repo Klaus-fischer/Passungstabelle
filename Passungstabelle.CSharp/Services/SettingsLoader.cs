@@ -31,7 +31,7 @@ internal class SettingsLoader
         return new FormatSettings()
         {
             Format = format,
-            InsertPoint = Einfügepunkt.TopRight,
+            InsertPoint = TableInsertPoint.TopRight,
             MaxZone = GetMaxZone(format),
         };
     }

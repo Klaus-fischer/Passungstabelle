@@ -10,7 +10,7 @@ public class FormatSettings
 {
     public SheetFormat Format { get; set; } = SheetFormat.A4V;
 
-    public Einfügepunkt InsertPoint { get; set; }
+    public TableInsertPoint InsertPoint { get; set; }
 
     public Thickness Margin { get; set; } = new Thickness(20, 10, 10, 10);
 

@@ -98,10 +98,10 @@ internal static class ISheetExtensions
 
         return settings.InsertPoint switch
         {
-            Einfügepunkt.BottomLeft => rectangle.TopLeft + offset,
-            Einfügepunkt.TopLeft => rectangle.BottomLeft + offset,
-            Einfügepunkt.BottomRight => rectangle.TopRight + offset,
-            Einfügepunkt.TopRight => rectangle.BottomRight + offset,
+            TableInsertPoint.BottomLeft => rectangle.TopLeft + offset,
+            TableInsertPoint.TopLeft => rectangle.BottomLeft + offset,
+            TableInsertPoint.BottomRight => rectangle.TopRight + offset,
+            TableInsertPoint.TopRight => rectangle.BottomRight + offset,
             _ => rectangle.TopRight + offset,
         };
     }
