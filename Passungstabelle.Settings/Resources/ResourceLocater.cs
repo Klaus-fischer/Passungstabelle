@@ -2,15 +2,14 @@
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
-using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Resources;
-using System.Windows;
-
+using System.Runtime.CompilerServices;
 
 namespace Passungstabelle.Settings;
 
-internal class ResourceLocater
+internal class ResourceLocater : INotifyPropertyChanged
 {
     public static ResourceLocater Current { get; } = new ResourceLocater();
 
@@ -19,18 +18,9 @@ internal class ResourceLocater
     public static ResourceManager ResourceManager { get; }
         = new ResourceManager("Passungstabelle.Settings.Resources.Strings", typeof(UiTextExtension).Assembly);
 
-    public static void AddHandler(EventHandler<LanguageEventArgs> handler)
-    {
-        WeakEventManager<ResourceLocater, LanguageEventArgs>.AddHandler(Current, nameof(OnLanguageChange), handler);
-    }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    public static void RemoveHandler(EventHandler<LanguageEventArgs> handler)
-    {
-        WeakEventManager<ResourceLocater, LanguageEventArgs>.RemoveHandler(Current, nameof(OnLanguageChange), handler);
-    }
-
-    public event EventHandler<LanguageEventArgs>? OnLanguageChange;
-
+    [IndexerName("Item")]
     public string this[string key]
     {
         get => ResourceManager.GetString(key) ?? string.Empty;
@@ -39,13 +29,7 @@ internal class ResourceLocater
     public void ChangeLanguage(string language)
     {
         CultureInfo.CurrentUICulture = new CultureInfo(language);
-        var args = new LanguageEventArgs(language);
-        this.OnLanguageChange?.Invoke(this, args);
+        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Item[]"));
     }
-}
-
-public class LanguageEventArgs(string language) : EventArgs
-{
-    public string Language { get; } = language;
 }
 

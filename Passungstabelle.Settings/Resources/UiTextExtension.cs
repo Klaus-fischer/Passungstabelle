@@ -6,40 +6,67 @@ namespace Passungstabelle.Settings;
 
 using System;
 using System.ComponentModel;
-using System.Globalization;
-using System.Resources;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-public class UiTextExtension : MarkupExtension, INotifyPropertyChanged
+public enum UiText
 {
-    private readonly static PropertyChangedEventArgs ValuePropertyChangedArgs = new(nameof(Value));
+    ButtonAddText,
+    ButtonDeleteText,
+    ButtonUpdateText,
+    GroupCentralLocationHeader,
+    GroupFormatSettingsHeader,
+    GroupGeneralHeader,
+    GroupInsertPositionsHeader,
+    GroupLogLocationHeader,
+    GroupMarginHeader,
+    GroupOffsetHeader,
+    GroupSavedFormatsHeader,
+    GroupUsersettingsHeader,
+    GroupZoneHeader,
+    OptionAfterRebuild,
+    OptionBeforeSave,
+    OptionBottomLeft,
+    OptionBottomRight,
+    OptionCreateLogFile,
+    OptionNameHeader,
+    OptionOnlyOnFirstSheet,
+    OptionRemoveAtAllPages,
+    OptionSheetFormatHeader,
+    OptionSuppressMessages,
+    OptionTopLeft,
+    OptionTopRight,
+    OptionUseCentralLocation,
+    OptionUseEvents,
+    OptionUsePlusSign,
+    SpracheHeader,
+    TabFormatHeader,
+    TabGeneralHeader,
+    TabTableHeader,
+    TabTemplateHeader,
+    WindowTitle,
+}
 
-    public UiTextExtension(string key)
+public class UiTextExtension : MarkupExtension
+{
+    public UiTextExtension(UiText key)
     {
         this.Key = key;
-        ResourceLocater.AddHandler(this.OnLanguageChanged);
-    }
-
-    private void OnLanguageChanged(object? sender, LanguageEventArgs e)
-    {
-        this.PropertyChanged?.Invoke(this, ValuePropertyChangedArgs);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public string Key { get; set; }
-
-    public string Value => ResourceLocater.Current[Key];
+    public UiText Key { get; set; }
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        var binding = new Binding(nameof(Value))
+        var binding = new Binding($"[{Key}]")
         {
-            Source = this,
+            Source = ResourceLocater.Current,
             Mode = BindingMode.OneWay
         };
 
         return binding.ProvideValue(serviceProvider);
     }
 }
+
