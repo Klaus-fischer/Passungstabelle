@@ -117,6 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="GroupCentralLocationHeader" xml:space="preserve">
+    <value>Ordnerpfad zu den Einstellungen:</value>
+  </data>
+  <data name="GroupLogLocationHeader" xml:space="preserve">
+    <value>Pfad zur Logdatei:</value>
+  </data>
+  <data name="GroupGeneralHeader" xml:space="preserve">
+    <value>Allgemeine Einstellungen</value>
+  </data>
+  <data name="GroupUsersettingsHeader" xml:space="preserve">
+    <value>Benutzereinstellungen</value>
+  </data>
+  <data name="OptionCreateLogFile" xml:space="preserve">
+    <value>Log Datei erzeugen</value>
+  </data>
+  <data name="OptionOnlyOnFirstSheet" xml:space="preserve">
+    <value>Passungstabelle nur auf erstem Blatt erzeugen</value>
+  </data>
+  <data name="OptionRemoveAtAllPages" xml:space="preserve">
+    <value>Passungstabelle auf allen Blättern löschen</value>
+  </data>
+  <data name="OptionUseCentralLocation" xml:space="preserve">
+    <value>Zentraler Speicherort für Einstellungen verwenden</value>
+  </data>
+  <data name="OptionUsePlusSign" xml:space="preserve">
+    <value>PLUS-Zeichen bei positiven Toleranzen anzeigen</value>
+  </data>
   <data name="SpracheHeader" xml:space="preserve">
     <value>Sprache</value>
   </data>
@@ -134,5 +161,17 @@
   </data>
   <data name="WindowTitle" xml:space="preserve">
     <value>Passungstabelle - Einstellungen</value>
+  </data>
+  <data name="OptionUseEvents" xml:space="preserve">
+    <value>Tabelle automatisch erzeugen</value>
+  </data>
+  <data name="OptionAfterRebuild" xml:space="preserve">
+    <value>nach Neuaufbau [STRG]+[Q]</value>
+  </data>
+  <data name="OptionBeforeSave" xml:space="preserve">
+    <value>vor dem Speichern</value>
+  </data>
+  <data name="OptionSuppressMessages" xml:space="preserve">
+    <value>Keine Meldungen anzeigen</value>
   </data>
 </root>

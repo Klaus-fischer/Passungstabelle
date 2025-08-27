@@ -7,7 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=local:GeneralViewModel, IsDesignTimeCreatable=True}"
-             
              >
     <StackPanel>
         <GroupBox Header="{local:UiText SpracheHeader}">
@@ -17,11 +16,11 @@
                       MinWidth="100" Margin="20,0"
                       />
         </GroupBox>
-        <GroupBox Header="Allgemeine Einstellungen">
+        <GroupBox Header="{local:UiText GroupGeneralHeader}">
             <StackPanel>
-                <CheckBox Content="Zentraler Speicherort für Einstellungen verwenden"
+                <CheckBox Content="{local:UiText OptionUseCentralLocation}"
                           IsChecked="{Binding UseCentralLocation}"/>
-                <HeaderedContentControl Header="Ordnerpfad zu den Einstellungen:"
+                <HeaderedContentControl Header="{local:UiText GroupCentralLocationHeader}"
                                         IsEnabled="{Binding UseCentralLocation}"
                                         Margin="25,2,5,2">
                     <DockPanel>
@@ -29,22 +28,22 @@
                         <TextBox Text="{Binding CentralLocation}"/>
                     </DockPanel>
                 </HeaderedContentControl>
-                <CheckBox Content="PLUS-Zeichen anzeigen" 
+                <CheckBox Content="{local:UiText OptionUsePlusSign}" 
                           IsChecked="{Binding UsePlusSign}"
                           />
-                <CheckBox Content="Passungstabelle nur auf erstem Blatt erzeugen"
+                <CheckBox Content="{local:UiText OptionOnlyOnFirstSheet}"
                           IsChecked="{Binding OnlyAtFirstSheet}"
                           />
-                <CheckBox Content="Passungstabelle auf allen Blättern löschen"
+                <CheckBox Content="{local:UiText OptionRemoveAtAllPages}"
                           IsChecked="{Binding RemoveAtAllPages}"
                           />
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Benutzereinstellungen">
+        <GroupBox Header="{local:UiText GroupUsersettingsHeader}">
             <StackPanel>
-                <CheckBox Content="Log Datei erzeugen" 
+                <CheckBox Content="{local:UiText OptionCreateLogFile}"
                           IsChecked="{Binding CreateLogFile}"/>
-                <HeaderedContentControl Header="Pfad zur Logdatei:"
+                <HeaderedContentControl Header="{local:UiText GroupLogLocationHeader}"
                                         IsEnabled="{Binding CreateLogFile}"
                                         Margin="25,2,5,2">
                     <DockPanel>
@@ -52,20 +51,20 @@
                         <TextBox Text="{Binding LogFilePath}"/>
                     </DockPanel>
                 </HeaderedContentControl>
-                <CheckBox Content="Tabelle automatisch erzeugen"
+                <CheckBox Content="{local:UiText OptionUseEvents}"
                           IsChecked="{Binding UseEvents}"
                           />
-                <RadioButton Content="nach Neuaufbau (Strg+Q)" 
+                <RadioButton Content="{local:UiText OptionAfterRebuild}" 
                              IsChecked="{Binding RecalculateAfterRebuild}"
                              IsEnabled="{Binding UseEvents}"
                              Margin="25,2"
                              />
-                <RadioButton Content="vor dem Speichern" 
+                <RadioButton Content="{local:UiText OptionBeforeSave}" 
                              IsChecked="{Binding RecalculateBeforeSave}"
                              IsEnabled="{Binding UseEvents}"
                              Margin="25,2"
                              />
-                <CheckBox Content="Keine Meldungen Anzeigen"
+                <CheckBox Content="{local:UiText OptionSuppressMessages}"
                           IsChecked="{Binding SuppressMessages}"
                           />
             </StackPanel>
