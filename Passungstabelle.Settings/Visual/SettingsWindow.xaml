@@ -1,0 +1,67 @@
+﻿<Window x:Class="Passungstabelle.Settings.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Passungstabelle.Settings"
+        mc:Ignorable="d"
+        Title="{local:UiText WindowTitle}" Height="450" Width="800">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl TabStripPlacement="Left">
+            <TabItem Header="{local:UiText TabGeneralHeader}">
+                <StackPanel>
+                    <GroupBox Header="{local:UiText SpracheHeader}">
+                        <ComboBox HorizontalAlignment="Left" MinWidth="100" Margin="20,0" SelectionChanged="OnLanguageSelected">
+                            <ComboBoxItem Content="de-DE" IsSelected="True"/>
+                            <ComboBoxItem Content="en-US"/>
+                        </ComboBox>
+                    </GroupBox>
+                    <GroupBox Header="Allgemeine Einstellungen">
+                        <StackPanel>
+                            <CheckBox Content="Zentraler Speicherort für Einstellungen verwenden"/>
+                            <HeaderedContentControl Header="Ordnerpfad zu den Einstellungen:" Margin="25,2,5,2">
+                                <DockPanel>
+                                    <Button Content="&#x1F50D;" DockPanel.Dock="Right"/>
+                                    <TextBox Text="C:\PDM\Einstellungen\Passungstabelle"/>
+                                </DockPanel>
+                            </HeaderedContentControl>
+                            <CheckBox Content="PLUS-Zeichen anzeigen" />
+                            <CheckBox Content="Passungstabelle nur auf erstem Blatt erzeugen"/>
+                            <CheckBox Content="Passungstabelle auf allen Blättern löschen"/>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Benutzereinstellungen">
+                        <StackPanel>
+                            <CheckBox Content="Log Datei erzeugen" />
+                            <HeaderedContentControl Header="Pfad zur Logdatei:" Margin="25,2,5,2">
+                                <DockPanel>
+                                    <Button Content="&#x1F50D;" DockPanel.Dock="Right"/>
+                                    <TextBox Text="%temp%/Passungstabelle.log"/>
+                                </DockPanel>
+                            </HeaderedContentControl>
+                            <CheckBox Content="Tabelle automatisch erzeugen"/>
+                            <RadioButton Content="nach Neuaufbau (Strg+Q)" Margin="25,2"/>
+                            <RadioButton Content="vor dem Speichern" Margin="25,2"/>
+                            <CheckBox Content="Keine Meldungen Anzeigen"/>
+                        </StackPanel>
+                    </GroupBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="{local:UiText TabFormatHeader}" >
+                <local:FormatControl/>
+            </TabItem>
+            <TabItem Header="{local:UiText TabTableHeader}"/>
+            <TabItem Header="{local:UiText TabTemplateHeader}"/>
+        </TabControl>
+        <DockPanel Grid.Row="1" LastChildFill="False">
+            <Button Content="Ini-Datei Importieren" Margin="5" Padding="10,5"/>
+            <Button Content="Setup.XML Importieren" Margin="5" Padding="10,5"/>
+            <Button Content="Speichern" Margin="5" Padding="10,5" DockPanel.Dock="Right" IsDefault="True" MinWidth="100"/>
+            <Button Content="Laden" Margin="5" Padding="10,5" DockPanel.Dock="Right" MinWidth="100"/>
+        </DockPanel>
+    </Grid>
+</Window>

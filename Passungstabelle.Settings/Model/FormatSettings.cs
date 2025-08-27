@@ -8,6 +8,8 @@ using System.Windows;
 
 public class FormatSettings
 {
+    public string Name { get; set; } = "Default_A4V";
+
     public SheetFormat Format { get; set; } = SheetFormat.A4V;
 
     public TableInsertPoint InsertPoint { get; set; }

@@ -11,14 +11,7 @@ public partial class SettingsWindow : Window
     public SettingsWindow()
     {
         InitializeComponent();
-    }
-
-    private void RadioButton_Checked(object sender, RoutedEventArgs e)
-    {
-        if (sender is RadioButton rb && rb.Content is string culture)
-        {
-            ResourceLocater.Current.ChangeLanguage(culture);
-        }
+        this.DataContext = new MainViewModel();
     }
 
     private void OnLanguageSelected(object sender, SelectionChangedEventArgs e)
