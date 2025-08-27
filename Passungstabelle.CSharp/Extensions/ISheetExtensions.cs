@@ -14,7 +14,36 @@ using System.Windows;
 
 internal static class ISheetExtensions
 {
+    public static SheetFormat GetSheetFormat(this ISheet sheet)
+    {
+        var properties = sheet.GetProperties2().AsArrayOfType<double>();
 
+        var result = (swDwgPaperSizes_e)properties[0] switch
+        {
+            swDwgPaperSizes_e.swDwgPaperA0size => SheetFormat.A0,
+            swDwgPaperSizes_e.swDwgPaperA1size => SheetFormat.A1,
+            swDwgPaperSizes_e.swDwgPaperA2size => SheetFormat.A2,
+            swDwgPaperSizes_e.swDwgPaperA3size => SheetFormat.A3,
+            swDwgPaperSizes_e.swDwgPaperA4size => SheetFormat.A4,
+            swDwgPaperSizes_e.swDwgPaperA4sizeVertical => SheetFormat.A4V,
+            _ => SheetFormat.All,
+        };
+
+        if (result == SheetFormat.All)
+        {
+            result = properties[5] switch
+            {
+                < 0.210 + 0.005 => SheetFormat.A4V,
+                < 0.297 + 0.005 => SheetFormat.A4,
+                < 0.420 + 0.005 => SheetFormat.A3,
+                < 0.594 + 0.005 => SheetFormat.A2,
+                < 0.841 + 0.005 => SheetFormat.A1,
+                _ => SheetFormat.A0,
+            };
+        }
+
+        return result;
+    }
     public static IEnumerable<ISheet> GetSheets(this IDrawingDoc drawing)
     {
         var sheetNames = drawing.GetSheetNames().AsArrayOfType<string>();

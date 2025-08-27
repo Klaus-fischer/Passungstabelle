@@ -220,7 +220,7 @@
     <value>Apply</value>
   </data>
   <data name="SwUiCommandText" xml:space="preserve">
-    <value>Passungstabelle</value>
+    <value>Fit-Table</value>
   </data>
   <data name="SwUiHelpCommandText" xml:space="preserve">
     <value>Help</value>

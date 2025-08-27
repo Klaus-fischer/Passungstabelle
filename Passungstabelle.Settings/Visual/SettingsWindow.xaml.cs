@@ -13,4 +13,6 @@ public partial class SettingsWindow : Window
         InitializeComponent();
         this.DataContext = new MainViewModel();
     }
+
+    public MainViewModel ViewModel => (MainViewModel)this.DataContext;
 }

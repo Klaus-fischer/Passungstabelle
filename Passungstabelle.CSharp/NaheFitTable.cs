@@ -26,7 +26,7 @@ public class NaheFitTable : ISwAddin
     }
 
 
-    internal CommandHandler? CommandHandler {get; private set;}
+    internal CommandHandler? CommandHandler { get; private set; }
 
     internal EventHandler? EventHandler { get; private set; }
 
@@ -117,11 +117,8 @@ public class NaheFitTable : ISwAddin
 
     public bool ConnectToSW(object ThisSW, int cookie)
     {
-        var settingsLoader = new SettingsLoader();
-        settingsLoader.ReloadSettings();
-        this.Settings = settingsLoader.Settings;
-
-       this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader);
+        this.ReloadSettings();
+        this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader);
 
         this.ISldWorksApp = (SldWorks)ThisSW;
 
@@ -159,7 +156,15 @@ public class NaheFitTable : ISwAddin
         DisconnectFromSWRet = true;
         return DisconnectFromSWRet;
     }
-    
+
+
+    internal void ReloadSettings()
+    {
+        var settingsLoader = new SettingsLoader();
+        settingsLoader.ReloadSettings();
+        this.Settings = settingsLoader.Settings;
+    }
+
     internal void ExecuteOnCurrentSheet(DrawingDoc drawing)
     {
         if (drawing.GetCurrentSheet() is ISheet sheet)
@@ -186,7 +191,7 @@ public class NaheFitTable : ISwAddin
             this.Execute(drawing);
         }
     }
-    private void Execute(DrawingDoc drawing) 
+    private void Execute(DrawingDoc drawing)
         => this.PassungsTabelleGenerator?.Execute(drawing);
 
 }

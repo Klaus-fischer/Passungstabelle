@@ -9,7 +9,7 @@ using System.Linq;
 
 public class TableSettings
 {
-    public string SchemaName { get; internal set; } = "DE";
+    public string SchemaName { get; internal set; } = "Default";
 
     public LineWidth RasterStrichStärke { get; internal set; } = LineWidth.Dünn;
 

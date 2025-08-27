@@ -3,20 +3,4 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Passungstabelle.Settings"
              StartupUri="/Visual/SettingsWindow.xaml">
-    <Application.Resources>
-        <ControlTemplate x:Key="HorizontalHeader" TargetType="HeaderedContentControl">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="Header"/>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <ContentPresenter ContentSource="Header" VerticalAlignment="Center"/>
-                <ContentPresenter ContentSource="Content" Margin="{TemplateBinding Padding}" Grid.Column="1"/>
-            </Grid>
-        </ControlTemplate>
-
-        <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-    </Application.Resources>
 </Application>

@@ -127,6 +127,7 @@ public class FormatViewModel : BaseViewModel
         var format = this.CreateFormat();
 
         this.FormatCollection.Add(format);
+        this.SelectedFormat = format;
     }
 
     private void OnUpdateFormat()

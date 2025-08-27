@@ -25,7 +25,10 @@
         <DockPanel Grid.Row="1" LastChildFill="False">
             <Button Content="Ini-Datei Importieren" Margin="5" Padding="10,5"/>
             <Button Content="Setup.XML Importieren" Margin="5" Padding="10,5"/>
-            <Button Content="Speichern" Margin="5" Padding="10,5" DockPanel.Dock="Right" IsDefault="True" MinWidth="100"/>
+            <Button Content="Speichern"
+                    Command="{Binding SaveAllCommand}"
+                    Margin="5" Padding="10,5" MinWidth="100"
+                    DockPanel.Dock="Right" IsDefault="True" />
             <Button Content="Laden" Margin="5" Padding="10,5" DockPanel.Dock="Right" MinWidth="100"/>
         </DockPanel>
     </Grid>

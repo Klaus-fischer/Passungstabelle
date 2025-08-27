@@ -10,6 +10,7 @@ using SolidWorks.Interop.swconst;
 using SolidWorksTools.File;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -211,29 +212,18 @@ public class CommandHandler : IDisposable
 
     public void PassungsTabelleSetup()
     {
-        //// Thread.CurrentThread.CurrentCulture = New CultureInfo("en-US")
+        var currentCulture = CultureInfo.CurrentUICulture.Name;
+        var dialog = new SettingsWindow();
+        dialog.ViewModel.Initialize();
+        dialog.ShowDialog();
 
-        //// CultureInfo.DefaultThreadCurrentCulture = New CultureInfo("en-US")
-        //var cinfo = Thread.CurrentThread.CurrentUICulture;
-        //// MsgBox("Aktuell info: " + cinfo.Name, vbOKOnly, "Meldung")
+        if (currentCulture != CultureInfo.CurrentUICulture.Name)
+        {
+            RemoveCommandMgr();
+            AddCommands();
+        }
 
-        //if (cinfo.TwoLetterISOLanguageName != "de")
-        //{
-        //    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-        //}
-        //else
-        //{
-        //    Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
-        //}
-
-        //var setupdlg = new SetupDialog() { Swapp = SwApp };
-        //// cinfo = Thread.CurrentThread.CurrentUICulture
-        //// MsgBox("info: " + cinfo.Name, vbOKOnly, "Meldung")
-        //Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-        //setupdlg.ShowDialog();
-        //setupdlg.Close();
-
-        //setupdlg = (SetupDialog)null;
+        this.addIn
     }
 
     public void PassungsTabelleHilfe()
