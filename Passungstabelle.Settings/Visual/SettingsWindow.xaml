@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Passungstabelle.Settings"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}"
         Title="{local:UiText WindowTitle}" Height="450" Width="800">
     <Grid >
         <Grid.RowDefinitions>
@@ -52,7 +53,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="{local:UiText TabFormatHeader}" >
-                <local:FormatControl/>
+                <local:FormatControl DataContext="{Binding Format}"/>
             </TabItem>
             <TabItem Header="{local:UiText TabTableHeader}"/>
             <TabItem Header="{local:UiText TabTemplateHeader}"/>

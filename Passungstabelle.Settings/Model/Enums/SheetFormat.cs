@@ -1,4 +1,4 @@
-﻿// <copyright file="FormatSettings" company="SIM Automation">
+﻿// <copyright file="FormatCollection" company="SIM Automation">
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 

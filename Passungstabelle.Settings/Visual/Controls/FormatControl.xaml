@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Passungstabelle.Settings"
              xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type={x:Type local:MainViewModel}}"
+             d:DataContext="{d:DesignInstance Type={x:Type local:FormatViewModel}, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <local:BoolToEnumConverter x:Key="EnumConverter"/>
@@ -18,40 +18,36 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
-    <StackPanel>
-        <GroupBox Header="Formateinstellungen" 
-                  DataContext="{Binding Format}"
-                  d:DataContext="{d:DesignInstance Type={x:Type local:FormatViewModel}, IsDesignTimeCreatable=True}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Formateinstellungen" >
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
                     <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <GroupBox Header="Blattformat" Grid.Column="2">
+                <GroupBox Header="Name" Grid.Column="0">
+                    <TextBox Text="{Binding Name}" Margin="25,2,5,2"/>
+                </GroupBox>
+
+                <GroupBox Header="Blattformat" Grid.Column="1">
                     <ComboBox Margin="25,2,5,2" 
                               SelectedItem="{Binding SheetFormat}"
                               ItemsSource="{Binding Source={StaticResource BlattFormatItemsSource}}"/>
                 </GroupBox>
-                <GroupBox Header="Name" Grid.Column="0" Grid.ColumnSpan="2">
-                    <TextBox Text="Default_A1" Margin="25,2,5,2"/>
-                </GroupBox>
-                <GroupBox Header="Einfügeposition" Grid.Row="1"  Grid.Column="2">
-                    <StackPanel Grid.IsSharedSizeScope="True">
-                        <HeaderedContentControl Header="Offset X: " Template="{StaticResource HorizontalHeader}" Padding="2">
-                            <TextBox Text="{Binding OffsetX}" VerticalContentAlignment="Center"/>
-                        </HeaderedContentControl>
-                        <HeaderedContentControl Header="Offset Y: " Template="{StaticResource HorizontalHeader}" Padding="2">
-                            <TextBox Text="{Binding OffsetY}" VerticalContentAlignment="Center"/>
-                        </HeaderedContentControl>
-                    </StackPanel>
-                </GroupBox>
+
                 <GroupBox Header="Einfügeposition" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                     <UniformGrid Columns="2" >
                         <RadioButton Content="oben links"
@@ -75,7 +71,27 @@
                     </UniformGrid>
                 </GroupBox>
 
-                <GroupBox  Grid.Column="3" Grid.RowSpan="2">
+                <GroupBox Header="Offset" Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2">
+                    <UniformGrid Columns="2" Grid.IsSharedSizeScope="True">
+                        <HeaderedContentControl Header="X: " 
+                                                Template="{StaticResource HorizontalHeader}" 
+                                                Margin="5"
+                                                Padding="8,0,0,0">
+                            <TextBox Text="{Binding OffsetX}" 
+                                     VerticalContentAlignment="Center"/>
+                        </HeaderedContentControl>
+                        <HeaderedContentControl Header="Y: "
+                                                Template="{StaticResource HorizontalHeader}"
+                                                Margin="5"
+                                                Padding="8,0,0,0"
+                                                >
+                            <TextBox Text="{Binding OffsetY}" 
+                                     VerticalContentAlignment="Center"/>
+                        </HeaderedContentControl>
+                    </UniformGrid>
+                </GroupBox>
+
+                <GroupBox  Grid.Row="3" Grid.ColumnSpan="2" MinHeight="200">
                     <GroupBox.Header>
                         <TextBlock>
                       <Run Text="Seitenränder" Background="LemonChiffon"/>
@@ -86,7 +102,7 @@
                     <Grid>
                         <Rectangle Margin="47,25"  Stroke="DimGray" StrokeThickness="1" 
                                    HorizontalAlignment="Left" VerticalAlignment="Top"
-                                   Fill="LightGray" Width="20" Height="15" 
+                                   Fill="LightGray" Width="30" Height="20" 
                                    DataContext="{Binding InsertPoint, Mode=OneWay}"
                                    DataContextChanged="OnPreviewDataContextChanged" Grid.Column="1"
                                    />
@@ -102,7 +118,46 @@
                         <TextBox Width="40" Margin="5" Text="{Binding MaxZone}" VerticalAlignment="Bottom" HorizontalAlignment="Right"  HorizontalContentAlignment="Center" Background="#FFC6FDC6"/>
                     </Grid>
                 </GroupBox>
+
+                <DockPanel Grid.Row="5" Grid.ColumnSpan="2" LastChildFill="False">
+                    <Button Content="Entfernen" 
+                            Command="{Binding DeleteCommand}"
+                            Margin="5" MinWidth="100"
+                            Foreground="Crimson" 
+                            />
+                    <Button Content="Hinzufügen"
+                            Command="{Binding AddCommand}"   
+                            Margin="5" MinWidth="100" 
+                            Foreground="Teal" 
+                            DockPanel.Dock="Right"
+                            />
+                    <Button Content="Übernehmen" 
+                            Command="{Binding UpdateCommand}" 
+                            Margin="5" MinWidth="100"
+                            DockPanel.Dock="Right"
+                            />
+                </DockPanel>
             </Grid>
         </GroupBox>
-    </StackPanel>
+        <GroupBox Header="Gespeicherte Formate" Grid.Column="1">
+            <ListBox SelectedItem="{Binding SelectedFormat}"
+                     ItemsSource="{Binding FormatCollection}"
+                     SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:FormatSettings">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="100"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="12" Margin="10,5" />
+                            <TextBlock Grid.Column="1" Text="{Binding SheetFormat}"        Margin="10,5"/>
+                            <TextBlock Grid.Column="2" Text="{Binding InsertPoint}"        Margin="10,5"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
+    </Grid>
 </UserControl>

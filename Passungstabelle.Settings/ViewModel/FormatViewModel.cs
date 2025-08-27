@@ -3,6 +3,9 @@
 // </copyright>
 
 using System;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Passungstabelle.Settings;
 
@@ -17,6 +20,14 @@ public class FormatViewModel : BaseViewModel
     private double marginLeft = default;
     private double marginRight = default;
     private double marginBottom = default;
+    private FormatSettings? selectedFormat = new();
+
+    public FormatViewModel()
+    {
+        this.AddCommand = new RelayCommand(OnAddFormat);
+        this.UpdateCommand = new RelayCommand(OnUpdateFormat);
+        this.DeleteCommand = new RelayCommand(OnDeleteFormat);
+    }
 
     public string Name
     {
@@ -74,5 +85,97 @@ public class FormatViewModel : BaseViewModel
         get => this.marginBottom;
         set => this.Set(ref marginBottom, value);
     }
-}
 
+    public ICommand AddCommand { get; set; } = RelayCommand.Empty;
+
+    public ICommand UpdateCommand { get; set; } = RelayCommand.Empty;
+
+    public ICommand DeleteCommand { get; set; } = RelayCommand.Empty;
+
+    public ObservableCollection<FormatSettings> FormatCollection { get; } = new ObservableCollection<FormatSettings>();
+
+    public FormatSettings? SelectedFormat
+    {
+        get => this.selectedFormat;
+        set => this.SelectFormat(value);
+    }
+
+    private void SelectFormat(FormatSettings? value)
+    {
+        this.selectedFormat = value;
+        OnPropertyChanged(nameof(SelectedFormat));
+
+        if (value is null)
+        {
+            return;
+        }
+
+        this.InsertPoint = value.InsertPoint;
+        this.Name = value.Name;
+        this.OffsetX = value.Offset.X;
+        this.OffsetY = value.Offset.Y;
+        this.MarginBottom = value.Margin.Bottom;
+        this.MarginLeft = value.Margin.Left;
+        this.MarginRight = value.Margin.Right;
+        this.MarginTop = value.Margin.Top;
+        this.MaxZone = value.MaxZone;
+        this.SheetFormat = value.SheetFormat;
+    }
+
+    private void OnAddFormat()
+    {
+        var format = this.CreateFormat();
+
+        this.FormatCollection.Add(format);
+    }
+
+    private void OnUpdateFormat()
+    {
+        if (this.selectedFormat is null)
+        {
+            return;
+        }
+
+        var index = this.FormatCollection.IndexOf(this.selectedFormat);
+        var format = this.CreateFormat();
+
+        this.FormatCollection.Insert(index, format);
+        this.FormatCollection.Remove(this.selectedFormat);
+        this.SelectedFormat = format;
+    }
+
+    private void OnDeleteFormat()
+    {
+        if (this.selectedFormat is null)
+        {
+            return;
+        }
+
+        var index = this.FormatCollection.IndexOf(this.selectedFormat);
+        this.FormatCollection.Remove(this.selectedFormat);
+
+        if (this.FormatCollection.Count == 0)
+        {
+            this.SelectedFormat = null;
+        }
+        else if (index < this.FormatCollection.Count)
+        {
+            this.SelectedFormat = this.FormatCollection[index];
+        }
+        else
+        {
+            this.SelectedFormat = this.FormatCollection[^1];
+        }
+    }
+
+    private FormatSettings CreateFormat() =>
+        new()
+        {
+            InsertPoint = this.InsertPoint,
+            Name = this.Name,
+            MaxZone = this.MaxZone,
+            SheetFormat = this.SheetFormat,
+            Offset = new Vector(this.OffsetX, this.OffsetY),
+            Margin = new Thickness(this.MarginBottom, this.MarginLeft, this.MarginRight, this.MarginTop),
+        };
+}

@@ -30,7 +30,7 @@ internal class SettingsLoader
         // ToDo: Load FromSettings
         return new FormatSettings()
         {
-            Format = format,
+            SheetFormat = format,
             InsertPoint = TableInsertPoint.TopRight,
             MaxZone = GetMaxZone(format),
         };
