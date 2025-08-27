@@ -10,6 +10,8 @@ internal class MainViewModel : BaseViewModel
     {
     }
 
+    public GeneralViewModel General { get; } = new();
+
     public FormatViewModel Format { get; } = new();
 }
 

@@ -1,0 +1,74 @@
+﻿<UserControl x:Class="Passungstabelle.Settings.GeneralControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Passungstabelle.Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=local:GeneralViewModel, IsDesignTimeCreatable=True}"
+             
+             >
+    <StackPanel>
+        <GroupBox Header="{local:UiText SpracheHeader}">
+            <ComboBox HorizontalAlignment="Left"
+                      SelectedValue="{Binding Language}"
+                      ItemsSource="{Binding AvailableLanguages}"
+                      MinWidth="100" Margin="20,0"
+                      />
+        </GroupBox>
+        <GroupBox Header="Allgemeine Einstellungen">
+            <StackPanel>
+                <CheckBox Content="Zentraler Speicherort für Einstellungen verwenden"
+                          IsChecked="{Binding UseCentralLocation}"/>
+                <HeaderedContentControl Header="Ordnerpfad zu den Einstellungen:"
+                                        IsEnabled="{Binding UseCentralLocation}"
+                                        Margin="25,2,5,2">
+                    <DockPanel>
+                        <Button Content="&#x1F50D;" DockPanel.Dock="Right" Click="SearchCommonLocation"/>
+                        <TextBox Text="{Binding CentralLocation}"/>
+                    </DockPanel>
+                </HeaderedContentControl>
+                <CheckBox Content="PLUS-Zeichen anzeigen" 
+                          IsChecked="{Binding UsePlusSign}"
+                          />
+                <CheckBox Content="Passungstabelle nur auf erstem Blatt erzeugen"
+                          IsChecked="{Binding OnlyAtFirstSheet}"
+                          />
+                <CheckBox Content="Passungstabelle auf allen Blättern löschen"
+                          IsChecked="{Binding RemoveAtAllPages}"
+                          />
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Benutzereinstellungen">
+            <StackPanel>
+                <CheckBox Content="Log Datei erzeugen" 
+                          IsChecked="{Binding CreateLogFile}"/>
+                <HeaderedContentControl Header="Pfad zur Logdatei:"
+                                        IsEnabled="{Binding CreateLogFile}"
+                                        Margin="25,2,5,2">
+                    <DockPanel>
+                        <Button Content="&#x1F50D;" DockPanel.Dock="Right" Click="SearchLogFilePath"/>
+                        <TextBox Text="{Binding LogFilePath}"/>
+                    </DockPanel>
+                </HeaderedContentControl>
+                <CheckBox Content="Tabelle automatisch erzeugen"
+                          IsChecked="{Binding UseEvents}"
+                          />
+                <RadioButton Content="nach Neuaufbau (Strg+Q)" 
+                             IsChecked="{Binding RecalculateAfterRebuild}"
+                             IsEnabled="{Binding UseEvents}"
+                             Margin="25,2"
+                             />
+                <RadioButton Content="vor dem Speichern" 
+                             IsChecked="{Binding RecalculateBeforeSave}"
+                             IsEnabled="{Binding UseEvents}"
+                             Margin="25,2"
+                             />
+                <CheckBox Content="Keine Meldungen Anzeigen"
+                          IsChecked="{Binding SuppressMessages}"
+                          />
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</UserControl>
