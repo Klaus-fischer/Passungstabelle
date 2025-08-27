@@ -69,8 +69,8 @@ public class NaheFitTable : ISwAddin
             addinkey.SetValue(null, 0);
             // addinkey.SetValue("Description", SWattr.Description)
             // addinkey.SetValue("Title", SWattr.Title)
-            addinkey.SetValue("Description", My.Resources.Passungstabelle_Add_In_für_SolidWorks);
-            addinkey.SetValue("Title", My.Resources.Passungstabelle);
+            addinkey.SetValue("Description", ResourceLocater.Current.SwAddinDescription);
+            addinkey.SetValue("Title", ResourceLocater.Current.SwAddinTitle);
 
             keyname = @"Software\SolidWorks\AddInsStartup\{" + t.GUID.ToString() + "}";
             addinkey = hkcu.CreateSubKey(keyname);
@@ -122,7 +122,6 @@ public class NaheFitTable : ISwAddin
         this.Settings = settingsLoader.Settings;
 
        this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader);
-
 
         this.ISldWorksApp = (SldWorks)ThisSW;
 

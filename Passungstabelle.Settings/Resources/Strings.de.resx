@@ -219,4 +219,19 @@
   <data name="ButtonUpdateText" xml:space="preserve">
     <value>Übernehmen</value>
   </data>
+  <data name="SwUiCommandText" xml:space="preserve">
+    <value>Passungstabelle</value>
+  </data>
+  <data name="SwUiHelpCommandText" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="SwUiSettingsCommandText" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="SwAddinTitle" xml:space="preserve">
+    <value>Passungstabelle Add-In</value>
+  </data>
+  <data name="SwAddinDescription" xml:space="preserve">
+    <value>Add-In zum Erzeugen einer Passungstabelle auf einer Zeichnung</value>
+  </data>
 </root>

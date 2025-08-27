@@ -9,44 +9,6 @@ using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-public enum UiText
-{
-    ButtonAddText,
-    ButtonDeleteText,
-    ButtonUpdateText,
-    GroupCentralLocationHeader,
-    GroupFormatSettingsHeader,
-    GroupGeneralHeader,
-    GroupInsertPositionsHeader,
-    GroupLogLocationHeader,
-    GroupMarginHeader,
-    GroupOffsetHeader,
-    GroupSavedFormatsHeader,
-    GroupUsersettingsHeader,
-    GroupZoneHeader,
-    OptionAfterRebuild,
-    OptionBeforeSave,
-    OptionBottomLeft,
-    OptionBottomRight,
-    OptionCreateLogFile,
-    OptionNameHeader,
-    OptionOnlyOnFirstSheet,
-    OptionRemoveAtAllPages,
-    OptionSheetFormatHeader,
-    OptionSuppressMessages,
-    OptionTopLeft,
-    OptionTopRight,
-    OptionUseCentralLocation,
-    OptionUseEvents,
-    OptionUsePlusSign,
-    SpracheHeader,
-    TabFormatHeader,
-    TabGeneralHeader,
-    TabTableHeader,
-    TabTemplateHeader,
-    WindowTitle,
-}
-
 public class UiTextExtension : MarkupExtension
 {
     public UiTextExtension(UiText key)

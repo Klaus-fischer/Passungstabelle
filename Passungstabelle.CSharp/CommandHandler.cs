@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.CSharp;
 
+using Passungstabelle.Settings;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
 using SolidWorksTools.File;
@@ -46,8 +47,8 @@ public class CommandHandler : IDisposable
         int cmdIndex0;
         int cmdIndex1;
         int cmdIndex2;
-        string Title = My.Resources.Passungstabelle;
-        string ToolTip = My.Resources.Passungstabelle_Add_In_für_SolidWorks;
+        string Title = ResourceLocater.Current.SwAddinTitle;
+        string ToolTip = ResourceLocater.Current.SwAddinDescription;
         int[] docTypes = [(int)swDocumentTypes_e.swDocDRAWING];
 
         var thisAssembly = Assembly.GetAssembly(this.GetType());
@@ -90,10 +91,10 @@ public class CommandHandler : IDisposable
         int menuToolbarOption = (int)(swCommandItemType_e.swMenuItem | swCommandItemType_e.swToolbarItem);
 
         cmdIndex0 = cmdGroup.AddCommandItem2(
-            My.Resources.Passungstabelle,
+            ResourceLocater.Current.SwUiCommandText,
             -1,
-            My.Resources.Passungstabelle,
-            My.Resources.Passungstabelle,
+            ResourceLocater.Current.SwUiCommandText,
+            ResourceLocater.Current.SwUiCommandText,
             0,
             nameof(ErstelleTabelle),
             "",
@@ -101,10 +102,10 @@ public class CommandHandler : IDisposable
             menuToolbarOption);
 
         cmdIndex1 = cmdGroup.AddCommandItem2(
-            My.Resources.Passungstabelle_Setup,
+            ResourceLocater.Current.SwUiSettingsCommandText,
             -1,
-            My.Resources.Passungstabelle_Setup,
-            My.Resources.Passungstabelle_Setup,
+            ResourceLocater.Current.SwUiSettingsCommandText,
+            ResourceLocater.Current.SwUiSettingsCommandText,
             1,
             nameof(PassungsTabelleSetup),
             "",
@@ -112,10 +113,10 @@ public class CommandHandler : IDisposable
             menuToolbarOption);
 
         cmdIndex2 = cmdGroup.AddCommandItem2(
-            My.Resources.Passungstabelle_Hilfe,
+            ResourceLocater.Current.SwUiHelpCommandText,
             -1,
-            My.Resources.Passungstabelle_Hilfe,
-            My.Resources.Passungstabelle_Hilfe,
+            ResourceLocater.Current.SwUiHelpCommandText,
+            ResourceLocater.Current.SwUiHelpCommandText,
             2,
             nameof(PassungsTabelleHilfe),
             "",
@@ -207,7 +208,6 @@ public class CommandHandler : IDisposable
 
         return true;
     }
-
 
     public void PassungsTabelleSetup()
     {
