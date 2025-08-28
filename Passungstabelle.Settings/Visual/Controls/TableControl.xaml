@@ -1,0 +1,177 @@
+﻿<UserControl x:Class="Passungstabelle.Settings.TableControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Passungstabelle.Settings"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type={x:Type local:TableViewModel}, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Passungstabelle.Settings;component/Visual/CustomStyles.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Passungstabelle.Settings;component/Visual/CustomTemplates.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Passungstabelle.Settings;component/Visual/ColorResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:BoolToEnumConverter x:Key="EnumConverter"/>
+            <ObjectDataProvider x:Key="LineWidthSource"
+                                ObjectType="{x:Type sys:Enum}"
+                                MethodName="GetValues">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="{x:Type local:LineWidth }" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="HeaderPositionSource"
+                      ObjectType="{x:Type sys:Enum}"
+                      MethodName="GetValues">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="{x:Type local:HeaderPosition }" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Tabelleneinstellungen">
+            <StackPanel>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox  Header="Schema Name">
+                        <TextBox Text="{Binding SchemaName}"  Margin="25,2,5,2" />
+                    </GroupBox>
+                    <GroupBox  Header="Strichstärke Rahmen" Grid.Column="1">
+                        <ComboBox Margin="25,2,5,2"
+                                  SelectedItem="{Binding RahmenStrichStärke}"
+                                  ItemsSource="{Binding Source={StaticResource LineWidthSource}}"/>
+                    </GroupBox>
+                    <GroupBox  Header="Strichstärke Raster" Grid.Column="2">
+                        <ComboBox Margin="25,2,5,2" 
+                                  SelectedItem="{Binding RasterStrichStärke}"
+                                  ItemsSource="{Binding Source={StaticResource LineWidthSource}}"/>
+                    </GroupBox>
+                </Grid>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Format Überschrift">
+                        <StackPanel Grid.IsSharedSizeScope="True">
+                            <HeaderedContentControl Header="Schriftart" Template="{StaticResource HorizontalHeader}">
+                                <TextBox Text="{Binding HeaderFormat.Schriftart}"
+                                         Margin="5,2"
+                                         MinHeight="21"/>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Schriftstil" 
+                                                    Visibility="Collapsed"
+                                                    Template="{StaticResource HorizontalHeader}">
+                                <TextBox Text="{Binding HeaderFormat.Schriftstil}"
+                                         Margin="5,2"
+                                         MinHeight="21"/>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Texthöhe" Template="{StaticResource HorizontalHeader}">
+                                <TextBox Text="{Binding HeaderFormat.Schriftstil}"
+                                         Margin="5,2"
+                                         MinHeight="21"/>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Farbe"
+                                                    Template="{StaticResource HorizontalHeader}">
+                                <ComboBox SelectedValue="{Binding HeaderFormat.RgbFarbe}"
+                                          SelectedValuePath="Color"
+                                          Margin="5,2" 
+                                          ItemsSource="{StaticResource AllColors}" >
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="local:Color">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <Rectangle Width="32" Height="16"
+                                                           Fill="{Binding Brush}"
+                                                           Stroke="Black" StrokeThickness="1" 
+                                                           Margin="2"/>
+                                                <TextBlock Text="{Binding Name}" Margin="5,0" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </HeaderedContentControl>
+                            <UniformGrid Columns="2" Margin="48,0,0,0">
+                                <CheckBox Content="Fett" IsChecked="{Binding HeaderFormat.Fett}"/>
+                                <CheckBox Content="Kursiv" IsChecked="{Binding HeaderFormat.Kursiv}"/>
+                                <CheckBox Content="Unterstrichen" IsChecked="{Binding HeaderFormat.Unterstrichen}" />
+                                <CheckBox Content="Durchgestrichen" IsChecked="{Binding HeaderFormat.Durchgestrichen}"/>
+                            </UniformGrid>
+                            <HeaderedContentControl Header="Position" Template="{StaticResource HorizontalHeader}">
+                                <ComboBox Padding="10,2"
+                                          Margin="5,2"
+                                          SelectedItem="{Binding HeaderPosition}"
+                                          ItemsSource="{Binding Source={StaticResource HeaderPositionSource}}"
+                                          />
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Format Text" Grid.Column="1">
+                        <StackPanel DataContext="{Binding TextFormat}" Grid.IsSharedSizeScope="True">
+                            <HeaderedContentControl Header="Schriftart" Template="{StaticResource HorizontalHeader}">
+                                <TextBox Text="{Binding Schriftart}" 
+                                         Margin="5,2"
+                                         MinHeight="21"/>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Schriftstil" 
+                                                    Visibility="Collapsed"
+                                                    Template="{StaticResource HorizontalHeader}">
+                                <TextBox Text="{Binding Schriftstil}"
+                                         Margin="5,2"
+                                         MinHeight="21"/>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Texthöhe" Template="{StaticResource HorizontalHeader}">
+                                <TextBox Text="{Binding Texthöhe}" 
+                                         Margin="5,2"
+                                         MinHeight="21"/>
+                            </HeaderedContentControl>
+                            <HeaderedContentControl Header="Farbe"
+                                                    Template="{StaticResource HorizontalHeader}">
+                                <ComboBox SelectedValue="{Binding RgbFarbe}"
+                                          SelectedValuePath="Color"
+                                          Margin="5,2" 
+                                          ItemsSource="{StaticResource AllColors}" >
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="local:Color">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <Rectangle Width="32" Height="16"
+                                                           Fill="{Binding Brush}"
+                                                           Stroke="Black" StrokeThickness="1" 
+                                                           Margin="2"/>
+                                                <TextBlock Text="{Binding Name}" Margin="5,0" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </HeaderedContentControl>
+                            <UniformGrid Columns="2" Margin="48,0,0,0">
+                                <CheckBox Content="Fett" IsChecked="{Binding Fett}"/>
+                                <CheckBox Content="Kursiv" IsChecked="{Binding Kursiv}"/>
+                                <CheckBox Content="Unterstrichen" IsChecked="{Binding Unterstrichen}" />
+                                <CheckBox Content="Durchgestrichen" IsChecked="{Binding Durchgestrichen}"/>
+                            </UniformGrid>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="Gespeicherte Tabellen" Grid.Column="1">
+            <ListBox SelectedItem="{Binding SelectedTable}"
+                     ItemsSource="{Binding TableCollection}"
+                     SelectionMode="Single"
+                     DisplayMemberPath="SchemaName"
+                     />
+        </GroupBox>
+    </Grid>
+</UserControl>

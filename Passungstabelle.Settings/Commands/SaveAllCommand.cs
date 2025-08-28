@@ -25,8 +25,19 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
     private void ExportSettings()
     {
         var formats = viewModel.Format.FormatCollection.ToArray();
-        var formatWriter = new FormstSettingWriter();
+        var formatWriter = new FormatSettingWriter();
         formatWriter.WriteFormatSettings(formats, DefaultLocations.CommonLocalSettingsPath);
+    }
+
+    private void ExportSettingsTo(string outputPath) 
+    {
+        var generalWriter = new GeneralSettingsWriter();
+        var general = (GeneralSettings)this.viewModel.General;
+        generalWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: false);
+
+        var formats = viewModel.Format.FormatCollection.ToArray();
+        var formatWriter = new FormatSettingWriter();
+        formatWriter.WriteFormatSettings(formats, outputPath);
     }
 }
 

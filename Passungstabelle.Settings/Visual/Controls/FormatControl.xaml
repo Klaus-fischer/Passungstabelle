@@ -147,7 +147,8 @@
         <GroupBox Header="{local:UiText GroupSavedFormatsHeader}" Grid.Column="1">
             <ListBox SelectedItem="{Binding SelectedFormat}"
                      ItemsSource="{Binding FormatCollection}"
-                     SelectionMode="Single">
+                     SelectionMode="Single"
+                     Grid.IsSharedSizeScope="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="local:FormatSettings">
                         <Grid>
