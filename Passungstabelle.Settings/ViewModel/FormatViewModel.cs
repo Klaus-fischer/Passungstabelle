@@ -20,7 +20,7 @@ public class FormatViewModel : BaseViewModel
     private double marginLeft = default;
     private double marginRight = default;
     private double marginBottom = default;
-    private FormatSettings? selectedFormat = new();
+    private FormatSettings selectedFormat = new();
 
     public FormatViewModel()
     {

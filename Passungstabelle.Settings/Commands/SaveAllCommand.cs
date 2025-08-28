@@ -4,6 +4,7 @@
 
 using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 
@@ -24,9 +25,20 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
 
     private void ExportSettings()
     {
-        var formats = viewModel.Format.FormatCollection.ToArray();
-        var formatWriter = new FormatSettingWriter();
-        formatWriter.WriteFormatSettings(formats, DefaultLocations.CommonLocalSettingsPath);
+        if (viewModel.General.UseCentralLocation)
+        {
+            try
+            {
+                ExportSettingsTo(viewModel.General.CentralLocation);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Einstellungen konnten nicht nach {viewModel.General.CentralLocation} exportiert werden.\n"+ex.Message, "Fehler bei ExportSettings");
+            }
+        }
+
+        ExportSettingsTo(DefaultLocations.CommonLocalSettingsPath);
+        ExportUserSettingsTo(DefaultLocations.UserLocalSettingsPath);
     }
 
     private void ExportSettingsTo(string outputPath) 
@@ -38,6 +50,17 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
         var formats = viewModel.Format.FormatCollection.ToArray();
         var formatWriter = new FormatSettingWriter();
         formatWriter.WriteFormatSettings(formats, outputPath);
+
+        var tables = viewModel.Table.TableCollection.ToArray();
+        var tableWriter = new TableSettingsWriter();
+        tableWriter.WriteTableSettings(tables, outputPath);
+    }
+
+    private void ExportUserSettingsTo(string outputPath)
+    {
+        var generalWriter = new GeneralSettingsWriter();
+        var general = (GeneralSettings)this.viewModel.General;
+        generalWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: true);
     }
 }
 

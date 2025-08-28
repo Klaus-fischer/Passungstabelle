@@ -83,7 +83,7 @@
                                     <TextBox Text="{Binding HeaderFormat.Schriftstil}"/>
                                 </HeaderedContentControl>
                                 <HeaderedContentControl Header="Texthöhe" >
-                                    <TextBox Text="{Binding HeaderFormat.Schriftstil}"/>
+                                    <TextBox Text="{Binding HeaderFormat.Texthöhe}"/>
                                 </HeaderedContentControl>
                                 <HeaderedContentControl Header="Farbe"
                                                     >
