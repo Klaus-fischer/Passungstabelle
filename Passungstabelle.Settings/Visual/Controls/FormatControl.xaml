@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Passungstabelle.Settings;component/Visual/CustomTemplates.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Passungstabelle.Settings;component/Visual/CustomStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <local:BoolToEnumConverter x:Key="EnumConverter"/>
             <ObjectDataProvider x:Key="BlattFormatItemsSource"

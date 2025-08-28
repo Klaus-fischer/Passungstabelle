@@ -5,6 +5,7 @@
 namespace Passungstabelle.Settings;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -21,10 +22,9 @@ public class TableViewModel : BaseViewModel
 
     public TableViewModel()
     {
-        this.AddCommand = new RelayCommand(OnAddTable);
-        this.UpdateCommand = new RelayCommand(OnUpdateTable);
-        this.UpdateSpalteCommand = new RelayCommand(OnUpdateSalte);
-        this.DeleteCommand = new RelayCommand(OnDeleteTable);
+        this.AddCommand = new RelayCommand(this.OnAddTable);
+        this.UpdateCommand = new RelayCommand(this.OnUpdateTable, this.CanUpdateTable);
+        this.DeleteCommand = new RelayCommand(this.OnDeleteTable);
         this.SelectedTable = new TableSettings();
         this.TableCollection.Add(this.SelectedTable);
     }
@@ -32,8 +32,6 @@ public class TableViewModel : BaseViewModel
     public ICommand AddCommand { get; }
 
     public ICommand UpdateCommand { get; }
-
-    public ICommand UpdateSpalteCommand { get; }
 
     public ICommand DeleteCommand { get; }
 
@@ -47,30 +45,14 @@ public class TableViewModel : BaseViewModel
 
     public TextViewModel TextFormat { get; } = new();
 
-    public SpaltenViewModel Spalte { get; } = new SpaltenViewModel();
+    public SpalteSettings[] Spalten { get => this.spalten; set => this.Set(ref this.spalten, value); }
 
-    public SpalteSettings[] Spalten { get => spalten; set => Set(ref spalten, value); }
+    public SpalteSettings Spalte { get => this.selectedSpalte; set => this.Set(ref this.selectedSpalte, value); }
 
-    /// <summary>
-    /// Gets or sets the ...
-    /// </summary>
-    public SpalteSettings SelectedSpalte
-    {
-        get => this.selectedSpalte;
-        set
-        {
-            this.Set(ref selectedSpalte, value);
-            this.Spalte.Parse(value);
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the ...
-    /// </summary>
     public HeaderPosition HeaderPosition
     {
         get => this.headerPosition;
-        set => this.Set(ref headerPosition, value);
+        set => this.Set(ref this.headerPosition, value);
     }
 
     public ObservableCollection<TableSettings> TableCollection { get; } = new ObservableCollection<TableSettings>();
@@ -84,7 +66,7 @@ public class TableViewModel : BaseViewModel
     private void SelectTable(TableSettings? value)
     {
         this.selectedTable = value;
-        OnPropertyChanged(nameof(SelectedTable));
+        this.OnPropertyChanged(nameof(this.SelectedTable));
         CommandManager.InvalidateRequerySuggested();
 
         if (value is null)
@@ -98,8 +80,9 @@ public class TableViewModel : BaseViewModel
         this.HeaderPosition = value.HeaderPosition;
         this.HeaderFormat.Parse(value.HeaderFormat);
         this.TextFormat.Parse(value.TextFormat);
-        this.Spalten = [.. value.Spalten];
-        this.SelectedSpalte = this.Spalten[0];
+
+        this.Spalten = [.. this.CopySpalten(value.Spalten)];
+        this.Spalte = this.Spalten[0];
     }
 
     private void OnAddTable()
@@ -110,7 +93,7 @@ public class TableViewModel : BaseViewModel
         this.SelectedTable = Table;
     }
 
-    public bool CanUpdateTable => this.selectedTable is TableSettings table && this.TableCollection.Contains(table);
+    public bool CanUpdateTable() => this.selectedTable is TableSettings table && this.TableCollection.Contains(table);
 
     private void OnUpdateTable()
     {
@@ -129,12 +112,6 @@ public class TableViewModel : BaseViewModel
         this.TableCollection.Insert(index, Table);
         this.TableCollection.Remove(this.selectedTable);
         this.SelectedTable = Table;
-    }
-
-    private void OnUpdateSalte()
-    {
-        this.Spalte.Update(this.selectedSpalte);
-        this.Spalten = [.. this.Spalten];
     }
 
     private void OnDeleteTable()
@@ -161,6 +138,22 @@ public class TableViewModel : BaseViewModel
         }
     }
 
+    private IEnumerable<SpalteSettings> CopySpalten(IEnumerable<SpalteSettings> spalten)
+    {
+        foreach (var spalte in spalten)
+        {
+            yield return new SpalteSettings()
+            {
+                Name = spalte.Name,
+                Title = spalte.Title,
+                SubTitle = spalte.SubTitle,
+                Visible = spalte.Visible,
+                Breite = spalte.Breite,
+                AutoBreite = spalte.AutoBreite,
+            };
+        }
+    }
+
     private TableSettings CreateTable()
     {
         var result = new TableSettings()
@@ -172,7 +165,7 @@ public class TableViewModel : BaseViewModel
         };
 
         result.TextFormat = (TextFormat)this.TextFormat;
-        result.HeaderFormat= (TextFormat)this.HeaderFormat;
+        result.HeaderFormat = (TextFormat)this.HeaderFormat;
 
         foreach (var spalte in this.Spalten)
         {

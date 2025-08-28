@@ -19,7 +19,9 @@
             <TabItem Header="{local:UiText TabFormatHeader}" >
                 <local:FormatControl DataContext="{Binding Format}"/>
             </TabItem>
-            <TabItem Header="{local:UiText TabTableHeader}"/>
+            <TabItem Header="{local:UiText TabTableHeader}">
+                <local:TableControl DataContext="{Binding Table }"/>
+            </TabItem>
             <TabItem Header="{local:UiText TabTemplateHeader}"/>
         </TabControl>
         <DockPanel Grid.Row="1" LastChildFill="False">
