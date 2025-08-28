@@ -13,16 +13,41 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TabControl TabStripPlacement="Left">
-            <TabItem Header="{local:UiText TabGeneralHeader}">
+            <TabItem >
+                <TabItem.Header>
+                    <StackPanel>
+                        <TextBlock FontSize="30" Text="&#x2699;" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{local:UiText TabGeneralHeader}" />
+                    </StackPanel>
+                </TabItem.Header>
                 <local:GeneralControl DataContext="{Binding General}"/>
             </TabItem>
-            <TabItem Header="{local:UiText TabFormatHeader}" >
+            <TabItem >
+                <TabItem.Header>
+                    <StackPanel>
+                        <TextBlock FontSize="30" Text="&#x1F4C4;" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{local:UiText TabFormatHeader}" />
+                    </StackPanel>
+                </TabItem.Header>
                 <local:FormatControl DataContext="{Binding Format}"/>
             </TabItem>
-            <TabItem Header="{local:UiText TabTableHeader}">
+            <TabItem >
+                <TabItem.Header>
+                    <StackPanel>
+                        <TextBlock FontSize="30" Text="&#x1F5DF;" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{local:UiText TabTableHeader}" />
+                    </StackPanel>
+                </TabItem.Header>
                 <local:TableControl DataContext="{Binding Table }"/>
             </TabItem>
-            <TabItem Header="{local:UiText TabTemplateHeader}"/>
+            <TabItem >
+                <TabItem.Header>
+                    <StackPanel>
+                        <TextBlock FontSize="30" Text="&#x1F4C2;" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{local:UiText TabTemplateHeader}" />
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
         </TabControl>
         <DockPanel Grid.Row="1" LastChildFill="False">
             <Button Content="Ini-Datei Importieren" Margin="5" Padding="10,5"/>
