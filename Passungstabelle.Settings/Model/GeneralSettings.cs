@@ -4,26 +4,31 @@
 
 namespace Passungstabelle.Settings;
 
+
 public class GeneralSettings
 {
-    public bool Fehlermeldung { get; internal set; } = false;
+    public string Language { get; set; } = string.Empty;
 
-    public bool LogDatei { get; internal set; } = false;
+    public bool UseCentralLocation { get; set; } = false;
 
-    public bool LöschenAufRestlichenBlättern { get; internal set; } = true;
+    public string CentralLocation { get; set; } = string.Empty;
 
-    public bool Eventgesteuert { get; set; } = false;
+    public bool CreateLogFile { get; internal set; } = false;
+    
+    public string LogFilePath { get; set; } = string.Empty;
 
-    public bool Event_BevorSave { get; set; } = false;
+    public bool OnlyAtFirstSheet { get; set; } = true;
 
-    public bool Event_AfterRegen { get; set; } = false;
+    public bool RemoveAtAllPages { get; internal set; } = true;
 
-    public bool NurAufErstemBlatt { get; set; } = true;
+    public bool UseEvents { get; set; } = false;
 
-    public bool PlusZeichen { get; internal set; } = true;
+    public bool RecalculateBeforeSave { get; set; } = false;
 
-    public double SchichtStärke { get; internal set; } = 0.015;
+    public bool RecalculateAfterRebuild { get; set; } = false;
 
-    public bool SchichtStärkeAbfragen { get; set; } = false;
+    public bool UsePlusSign { get; internal set; } = true;
+
+    public bool SuppressMessages { get; internal set; } = false;
 
 }

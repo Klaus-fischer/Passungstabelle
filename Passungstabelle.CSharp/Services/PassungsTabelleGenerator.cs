@@ -14,7 +14,7 @@ internal class PassungsTabelleGenerator(SettingsLoader  loader)
 
     public void Execute(IDrawingDoc drawing)
     {
-        if (settings.LöschenAufRestlichenBlättern)
+        if (settings.RemoveAtAllPages)
         {
             this.AlleLöschen(drawing);
         }
@@ -23,7 +23,7 @@ internal class PassungsTabelleGenerator(SettingsLoader  loader)
         {
             this.Execute(drawing, sheet);
 
-            if (settings.NurAufErstemBlatt)
+            if (settings.OnlyAtFirstSheet)
             {
                 break;
             }

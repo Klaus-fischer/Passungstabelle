@@ -2,14 +2,8 @@
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Passungstabelle.Settings;
 
@@ -120,5 +114,37 @@ public class GeneralViewModel : BaseViewModel
         get => this._SuppressMessages;
         set => this.Set(ref _SuppressMessages, value);
     }
-}
 
+    internal void ParseValues(GeneralSettings settings)
+    {
+        this.Language = settings.Language;
+        this.UseCentralLocation = settings.UseCentralLocation;
+        this.CentralLocation = settings.CentralLocation;
+        this.CreateLogFile = settings.CreateLogFile;
+        this.LogFilePath = settings.LogFilePath;
+        this.OnlyAtFirstSheet = settings.OnlyAtFirstSheet;
+        this.RemoveAtAllPages = settings.RemoveAtAllPages;
+        this.UseEvents = settings.UseEvents;
+        this.RecalculateBeforeSave = settings.RecalculateBeforeSave;
+        this.RecalculateAfterRebuild = settings.RecalculateAfterRebuild;
+        this.UsePlusSign = settings.UsePlusSign;
+        this.SuppressMessages = settings.SuppressMessages;
+    }
+
+    public static explicit operator GeneralSettings(GeneralViewModel viewModel)
+        => new GeneralSettings()
+        {
+            Language = viewModel.Language,
+            UseCentralLocation = viewModel.UseCentralLocation,
+            CentralLocation = viewModel.CentralLocation,
+            CreateLogFile = viewModel.CreateLogFile,
+            LogFilePath = viewModel.LogFilePath,
+            OnlyAtFirstSheet = viewModel.OnlyAtFirstSheet,
+            RemoveAtAllPages = viewModel.RemoveAtAllPages,
+            UseEvents = viewModel.UseEvents,
+            RecalculateBeforeSave = viewModel.RecalculateBeforeSave,
+            RecalculateAfterRebuild = viewModel.RecalculateAfterRebuild,
+            UsePlusSign = viewModel.UsePlusSign,
+            SuppressMessages = viewModel.SuppressMessages,
+        };
+}

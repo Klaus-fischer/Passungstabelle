@@ -1,33 +1,49 @@
-﻿// <copyright file="FormstSettingWriter" company="SIM Automation">
+﻿// <copyright file="FormatSettingWriter" company="SIM Automation">
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
 namespace Passungstabelle.Settings;
 
+using System;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Xml;
 
-internal class FormstSettingWriter
+internal class FormatSettingWriter
 {
     public void WriteFormatSettings(FormatSettings[] formats, string outputPath)
     {
-        var xmlSettings = new XmlWriterSettings()
+        var culture = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+        try
         {
-            Indent = true,
-            IndentChars = "  ",
-            WriteEndDocumentOnClose = true,
-        };
+            var xmlSettings = new XmlWriterSettings()
+            {
+                Indent = true,
+                IndentChars = "  ",
+                WriteEndDocumentOnClose = true,
+            };
 
-        using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, "FormatSettings.xml"), xmlSettings);
+            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, "FormatSettings.xml"), xmlSettings);
 
-        writer.WriteStartDocument();
-        writer.WriteStartElement("FormatSettings");
-        writer.WriteAttributeString("Version", "1.0");
+            writer.WriteStartDocument();
+            writer.WriteStartElement("FormatSettings");
+            writer.WriteAttributeString("AddInVersion", "9.0");
+            writer.WriteAttributeString("ExportDate", $"{DateTime.Now:s}");
 
-        foreach (var item in formats)
+            foreach (var item in formats)
+            {
+                this.Export(item, writer);
+            }
+
+            writer.WriteEndElement(); // FormatSettings
+            writer.WriteEndDocument();
+        }
+        finally
         {
-            this.Export(item, writer);
+            CultureInfo.CurrentCulture = culture;
         }
     }
 

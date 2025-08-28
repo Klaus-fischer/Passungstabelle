@@ -60,6 +60,7 @@ public class FormatViewModel : BaseViewModel
     private string _MaxZone = "H6";
 
     public string TopRightZone => _MaxZone.Length > 0 ? string.Concat("A", _MaxZone.AsSpan(1)) : "";
+    
     public string BottomLeftZone => _MaxZone.Length > 0 ? string.Concat(_MaxZone[0], "1") : "";
 
     public double MarginTop
@@ -86,11 +87,11 @@ public class FormatViewModel : BaseViewModel
         set => this.Set(ref marginBottom, value);
     }
 
-    public ICommand AddCommand { get; set; } = RelayCommand.Empty;
+    public ICommand AddCommand { get; } 
 
-    public ICommand UpdateCommand { get; set; } = RelayCommand.Empty;
+    public ICommand UpdateCommand { get; }
 
-    public ICommand DeleteCommand { get; set; } = RelayCommand.Empty;
+    public ICommand DeleteCommand { get; }
 
     public ObservableCollection<FormatSettings> FormatCollection { get; } = new ObservableCollection<FormatSettings>();
 
@@ -144,7 +145,7 @@ public class FormatViewModel : BaseViewModel
         this.FormatCollection.Remove(this.selectedFormat);
         this.SelectedFormat = format;
     }
-
+    
     private void OnDeleteFormat()
     {
         if (this.selectedFormat is null)

@@ -178,7 +178,7 @@ public class NaheFitTable : ISwAddin
 
     internal void ExecuteOnSaveNotify(DrawingDoc drawing)
     {
-        if (this.Settings.Eventgesteuert && this.Settings.Event_BevorSave)
+        if (this.Settings.UseEvents && this.Settings.RecalculateBeforeSave)
         {
             this.Execute(drawing);
         }
@@ -186,7 +186,7 @@ public class NaheFitTable : ISwAddin
 
     internal void ExecuteOnRegenPostNotify(DrawingDoc drawing)
     {
-        if (this.Settings.Eventgesteuert && this.Settings.Event_AfterRegen)
+        if (this.Settings.UseEvents && this.Settings.RecalculateAfterRebuild)
         {
             this.Execute(drawing);
         }

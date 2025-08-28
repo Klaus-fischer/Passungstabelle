@@ -17,6 +17,8 @@ public class MainViewModel : BaseViewModel
 
     public FormatViewModel Format { get; } = new();
 
+    public TableViewModel Table { get; } = new();
+
     public void Initialize()
     {
 

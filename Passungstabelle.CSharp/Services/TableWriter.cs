@@ -168,9 +168,9 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
             nameof(TableSettings.Passung)
                 => [zeile.Passung],
             nameof(TableSettings.MaßePassung)
-                => [zeile.MaßPassung(this.settings.PlusZeichen)],
+                => [zeile.MaßPassung(this.settings.UsePlusSign)],
             nameof(TableSettings.Toleranz)
-                => FormatNumber([zeile.ToleranzO, zeile.ToleranzU], "", this.settings.PlusZeichen),
+                => FormatNumber([zeile.ToleranzO, zeile.ToleranzU], "", this.settings.UsePlusSign),
             nameof(TableSettings.Abmaß)
                 => FormatNumber([zeile.AbmaßO, zeile.AbmaßU]),
             nameof(TableSettings.AbmaßToleranzMitte)

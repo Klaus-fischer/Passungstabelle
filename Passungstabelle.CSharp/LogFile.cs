@@ -41,7 +41,7 @@ public class LogFile
 
         try
         {
-            tempattr = Convert.ToBoolean(Attr_generell.LogDatei);
+            tempattr = Convert.ToBoolean(Attr_generell.CreateLogFile);
         }
         catch
         {
@@ -64,7 +64,7 @@ public class LogFile
 
         try
         {
-            tempattr = Convert.ToBoolean(Attr_generell.Fehlermeldung);
+            tempattr = Convert.ToBoolean(Attr_generell.SuppressMessages);
         }
         catch
         {

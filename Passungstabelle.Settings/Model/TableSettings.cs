@@ -15,13 +15,11 @@ public class TableSettings
 
     public LineWidth RahmenStrichStärke { get; internal set; } = LineWidth.Dick;
 
-    public bool SpaltenBreiteAutomatisch { get; internal set; } = false;
+    public TextFormat HeaderFormat { get; internal set; } = new TextFormat();
 
-    public TextFormat HeaderFormat { get; set; } = new TextFormat();
+    public TextFormat TextFormat { get; internal set; } = new TextFormat();
 
-    public TextFormat TextFormat { get; set; } = new TextFormat();
-
-    public HeaderPosition HeaderPosition { get; set; } = HeaderPosition.Oben;
+    public HeaderPosition HeaderPosition { get; internal set; } = HeaderPosition.Oben;
 
     public bool HasMultiLineHeader => this.Spalten.Any(o => o.Visible && !string.IsNullOrWhiteSpace(o.SubTitle));
 
