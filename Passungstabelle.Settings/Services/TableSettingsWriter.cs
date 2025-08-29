@@ -57,7 +57,7 @@ internal class TableSettingsWriter
         WriteTextFormat(writer, nameof(TableSettings.HeaderFormat), settings.HeaderFormat);
         WriteTextFormat(writer, nameof(TableSettings.TextFormat), settings.TextFormat);
 
-        writer.WriteStartElement("Spalten");
+        writer.WriteStartElement("Columns");
         foreach (var spalte in settings.Spalten)
         {
             WriteSpalteSettings(writer, spalte);
@@ -80,15 +80,15 @@ internal class TableSettingsWriter
         writer.WriteEndElement();
     }
 
-    private void WriteSpalteSettings(XmlWriter writer, SpalteSettings spalte)
+    private void WriteSpalteSettings(XmlWriter writer, ColumnSettings spalte)
     {
-        writer.WriteStartElement("Spalte");
-        writer.WriteAttributeString(nameof(SpalteSettings.Name), spalte.Name);
-        writer.WriteAttributeString(nameof(SpalteSettings.Title), spalte.Title);
-        writer.WriteAttributeString(nameof(SpalteSettings.SubTitle), spalte.SubTitle ?? "");
-        writer.WriteAttributeString(nameof(SpalteSettings.Visible), $"{spalte.Visible}");
-        writer.WriteAttributeString(nameof(SpalteSettings.AutoBreite), $"{spalte.AutoBreite}");
-        writer.WriteAttributeString(nameof(SpalteSettings.Breite), $"{spalte.Breite:0.###}");
+        writer.WriteStartElement("Column");
+        writer.WriteAttributeString(nameof(ColumnSettings.Name), spalte.Name);
+        writer.WriteAttributeString(nameof(ColumnSettings.Title), spalte.Title);
+        writer.WriteAttributeString(nameof(ColumnSettings.SubTitle), spalte.SubTitle ?? "");
+        writer.WriteAttributeString(nameof(ColumnSettings.Visible), $"{spalte.Visible}");
+        writer.WriteAttributeString(nameof(ColumnSettings.AutoBreite), $"{spalte.AutoBreite}");
+        writer.WriteAttributeString(nameof(ColumnSettings.Breite), $"{spalte.Breite:0.###}");
         writer.WriteEndElement();
     }
 }

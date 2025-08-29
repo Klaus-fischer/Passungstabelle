@@ -4,13 +4,10 @@
 
 namespace Passungstabelle.Settings;
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.AccessControl;
 using System.Xml;
 
 /// <summary>
@@ -18,7 +15,7 @@ using System.Xml;
 /// </summary>
 internal class TableSettingsReader
 {
-    public TableSettings[] ReadTableSettings(string inputPath, TableSettings[] tables)
+    public void ReadTableSettings(string inputPath, List<TableSettings> tables)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -37,15 +34,9 @@ internal class TableSettingsReader
             {
                 if (reader.NodeType == XmlNodeType.Element && reader.Name == "Table")
                 {
-                    var table = ReadTable(reader, tables);
-                    if (table is not null)
-                    {
-                        result.Add(table);
-                    }
+                    ReadAndAddOrUpdateTable(reader, tables);
                 }
             }
-
-            return [.. result];
         }
         finally
         {
@@ -53,7 +44,7 @@ internal class TableSettingsReader
         }
     }
 
-    private TableSettings? ReadTable(XmlReader reader, TableSettings[] tables)
+    private void ReadAndAddOrUpdateTable(XmlReader reader, List<TableSettings> tables)
     {
         string? name = null;
         LineWidth? raster = null;
@@ -64,27 +55,29 @@ internal class TableSettingsReader
         for (int i = 0; i < reader.AttributeCount; i++)
         {
             reader.MoveToAttribute(i);
-            switch (reader.Name)
+
+            if (reader.Name == nameof(TableSettings.SchemaName))
             {
-                case nameof(TableSettings.SchemaName):
-                    name = reader.Value;
-                    break;
-                case nameof(TableSettings.RasterStrichStärke):
-                    raster = Enum.TryParse<LineWidth>(reader.Value, out var rasterVal) ? rasterVal : null;
-                    break;
-                case nameof(TableSettings.RahmenStrichStärke):
-                    rahmen = Enum.TryParse<LineWidth>(reader.Value, out var rahmenVal) ? rahmenVal : null;
-                    break;
-                case nameof(TableSettings.HeaderPosition):
-                    headerPos = Enum.TryParse<HeaderPosition>(reader.Value, out var pos) ? pos : null;
-                    break;
+                name = reader.Value;
+            }
+            else if (reader.Name == nameof(TableSettings.RasterStrichStärke))
+            {
+                raster = reader.ReadEnum<LineWidth>();
+            }
+            else if (reader.Name == nameof(TableSettings.RahmenStrichStärke))
+            {
+                rahmen = reader.ReadEnum<LineWidth>();
+            }
+            else if (reader.Name == nameof(TableSettings.HeaderPosition))
+            {
+                headerPos = reader.ReadEnum<HeaderPosition>();
             }
         }
         reader.MoveToElement();
 
         if (name is null)
         {
-            return null;
+            return;
         }
 
         if (tables.FirstOrDefault(o => o.SchemaName == name) is not TableSettings table)
@@ -96,11 +89,15 @@ internal class TableSettingsReader
                 RahmenStrichStärke = rahmen ?? LineWidth.Dick,
                 HeaderPosition = headerPos ?? HeaderPosition.Oben,
             };
+
+            tables.Add(table);
         }
 
         // Sub-Elemente lesen
         if (reader.IsEmptyElement)
-            return table;
+        {
+            return;
+        }
 
         while (reader.Read())
         {
@@ -111,56 +108,57 @@ internal class TableSettingsReader
             {
                 if (reader.Name == nameof(TableSettings.HeaderFormat))
                 {
-                    ReadTextFormat(reader, table.HeaderFormat);
+                    ReadAndUpdateTextFormat(reader, table.HeaderFormat);
                 }
                 else if (reader.Name == nameof(TableSettings.TextFormat))
                 {
-                    ReadTextFormat(reader, table.TextFormat);
+                    ReadAndUpdateTextFormat(reader, table.TextFormat);
                 }
-                else if (reader.Name == "Spalten")
+                else if (reader.Name == "Columns")
                 {
-                    this.ReadSpalten(reader, table.Spalten);
+                    this.ReadAndUpdateSpalten(reader, table.Spalten);
                 }
             }
         }
-
-        return table;
     }
 
-    private void ReadTextFormat(XmlReader reader, TextFormat format)
+    private void ReadAndUpdateTextFormat(XmlReader reader, TextFormat format)
     {
         for (int i = 0; i < reader.AttributeCount; i++)
         {
             reader.MoveToAttribute(i);
-            switch (reader.Name)
+
+            if (reader.Name == nameof(TextFormat.Schriftart))
             {
-                case nameof(TextFormat.Schriftart):
-                    format.Schriftart = reader.Value;
-                    break;
-                case nameof(TextFormat.Schriftstil):
-                    format.Schriftstil = reader.Value;
-                    break;
-                case nameof(TextFormat.Texthöhe):
-                    format.Texthöhe = double.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var th) ? th : 0.0;
-                    break;
-                case nameof(TextFormat.Fett):
-                    format.Fett = ParseBool(reader.Value);
-                    break;
-                case nameof(TextFormat.Unterstrichen):
-                    format.Unterstrichen = ParseBool(reader.Value);
-                    break;
-                case nameof(TextFormat.Durchgestrichen):
-                    format.Durchgestrichen = ParseBool(reader.Value);
-                    break;
-                case nameof(TextFormat.Kursiv):
-                    format.Kursiv = ParseBool(reader.Value);
-                    break;
-                case nameof(TextFormat.RgbFarbe):
-                    if (int.TryParse(reader.Value, out var rgb))
-                    {
-                        format.RgbFarbe = rgb;
-                    }
-                    break;
+                format.Schriftart = reader.Value;
+            }
+            else if (reader.Name == nameof(TextFormat.Schriftstil))
+            {
+                format.Schriftstil = reader.Value;
+            }
+            else if (reader.Name == nameof(TextFormat.Texthöhe))
+            {
+                format.Texthöhe = reader.ReadDouble() ?? format.Texthöhe;
+            }
+            else if (reader.Name == nameof(TextFormat.Fett))
+            {
+                format.Fett = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(TextFormat.Unterstrichen))
+            {
+                format.Unterstrichen = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(TextFormat.Durchgestrichen))
+            {
+                format.Durchgestrichen = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(TextFormat.Kursiv))
+            {
+                format.Kursiv = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(TextFormat.RgbFarbe))
+            {
+                format.RgbFarbe = reader.ReadInt() ?? format.RgbFarbe;
             }
         }
 
@@ -170,17 +168,17 @@ internal class TableSettingsReader
             reader.Read();
     }
 
-    private void ReadSpalten(XmlReader reader, IEnumerable<SpalteSettings> spalten)
+    private void ReadAndUpdateSpalten(XmlReader reader, IEnumerable<ColumnSettings> spalten)
     {
         if (reader.IsEmptyElement)
             return;
 
         while (reader.Read())
         {
-            if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "Spalten")
+            if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "Columns")
                 break;
 
-            if (reader.NodeType == XmlNodeType.Element && reader.Name == "Spalte")
+            if (reader.NodeType == XmlNodeType.Element && reader.Name == "Column")
             {
                 string? name = null;
                 string? title = null;
@@ -194,36 +192,32 @@ internal class TableSettingsReader
                     reader.MoveToAttribute(i);
                     switch (reader.Name)
                     {
-                        case nameof(SpalteSettings.Name):
+                        case nameof(ColumnSettings.Name):
                             name = reader.Value;
                             break;
-                        case nameof(SpalteSettings.Title):
+                        case nameof(ColumnSettings.Title):
                             title = reader.Value;
                             break;
-                        case nameof(SpalteSettings.SubTitle):
+                        case nameof(ColumnSettings.SubTitle):
                             subTitle = reader.Value;
                             break;
-                        case nameof(SpalteSettings.Visible):
-                            visible = ParseBool(reader.Value);
+                        case nameof(ColumnSettings.Visible):
+                            visible = reader.ReadBool();
                             break;
-                        case nameof(SpalteSettings.AutoBreite):
-                            autoBreite = ParseBool(reader.Value);
+                        case nameof(ColumnSettings.AutoBreite):
+                            autoBreite = reader.ReadBool();
                             break;
-                        case nameof(SpalteSettings.Breite):
-                            breite = double.TryParse(reader.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var breiteVal) ? breiteVal : null;
+                        case nameof(ColumnSettings.Breite):
+                            breite = reader.ReadDouble();
                             break;
                     }
                 }
 
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    continue;
-                }
-                if (spalten.FirstOrDefault(o => o.Name == name) is SpalteSettings spalte)
+                if (spalten.FirstOrDefault(o => o.Name == name) is ColumnSettings spalte)
                 {
                     spalte.Title = title ?? spalte.Title;
                     spalte.SubTitle = subTitle ?? spalte.SubTitle;
-                    spalte.Visible= visible ?? spalte.Visible;
+                    spalte.Visible = visible ?? spalte.Visible;
                     spalte.AutoBreite = autoBreite ?? spalte.AutoBreite;
                     spalte.Breite = breite ?? spalte.Breite;
                 }
@@ -232,7 +226,4 @@ internal class TableSettingsReader
             }
         }
     }
-
-    private static bool ParseBool(string value)
-        => value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1";
 }

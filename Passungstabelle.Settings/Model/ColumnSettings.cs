@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-public class SpalteSettings : INotifyPropertyChanged
+public class ColumnSettings : INotifyPropertyChanged
 {
     private string name = string.Empty;
     private string title = string.Empty;

@@ -17,8 +17,8 @@ public class TableViewModel : BaseViewModel
     private LineWidth rahmenStrichStärke = LineWidth.Dick;
     private TableSettings? selectedTable = new();
     private HeaderPosition headerPosition = default;
-    private SpalteSettings[] spalten;
-    private SpalteSettings selectedSpalte = new();
+    private ColumnSettings[] spalten;
+    private ColumnSettings selectedSpalte = new();
 
     public TableViewModel()
     {
@@ -45,9 +45,9 @@ public class TableViewModel : BaseViewModel
 
     public TextViewModel TextFormat { get; } = new();
 
-    public SpalteSettings[] Spalten { get => this.spalten; set => this.Set(ref this.spalten, value); }
+    public ColumnSettings[] Spalten { get => this.spalten; set => this.Set(ref this.spalten, value); }
 
-    public SpalteSettings Spalte { get => this.selectedSpalte; set => this.Set(ref this.selectedSpalte, value); }
+    public ColumnSettings Spalte { get => this.selectedSpalte; set => this.Set(ref this.selectedSpalte, value); }
 
     public HeaderPosition HeaderPosition
     {
@@ -138,11 +138,11 @@ public class TableViewModel : BaseViewModel
         }
     }
 
-    private IEnumerable<SpalteSettings> CopySpalten(IEnumerable<SpalteSettings> spalten)
+    private IEnumerable<ColumnSettings> CopySpalten(IEnumerable<ColumnSettings> spalten)
     {
         foreach (var spalte in spalten)
         {
-            yield return new SpalteSettings()
+            yield return new ColumnSettings()
             {
                 Name = spalte.Name,
                 Title = spalte.Title,

@@ -12,11 +12,10 @@ public class FormatSettings
 
     public SheetFormat SheetFormat { get; set; } = SheetFormat.A4V;
 
-    public TableInsertPoint InsertPoint { get; set; }
+    public TableInsertPoint InsertPoint { get; set; } = TableInsertPoint.TopRight;
+    public string MaxZone { get; set; } = "H6";
 
     public Thickness Margin { get; set; } = new Thickness(20, 10, 10, 10);
-
-    public string MaxZone { get; set; } = "H6";
 
     public Vector Offset { get; set; }
 }

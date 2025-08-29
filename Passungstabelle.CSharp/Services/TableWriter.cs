@@ -18,7 +18,7 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
     private readonly GeneralSettings settings = settings;
     private readonly TableSettings tableSettings = tableSettings;
     private readonly FormatSettings formatSettings = formatSettings;
-    private readonly SpalteSettings[] spalten = tableSettings.Spalten.Where(o => o.Visible).ToArray();
+    private readonly ColumnSettings[] spalten = tableSettings.Spalten.Where(o => o.Visible).ToArray();
 
     public double Schichtdicke { get; set; } = settings.SchichtStärke;
 
@@ -159,7 +159,7 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
         }
     }
 
-    private string[] Format(TabellenZeile zeile, SpalteSettings spalte)
+    private string[] Format(TabellenZeile zeile, ColumnSettings spalte)
     {
         return spalte.Name switch
         {

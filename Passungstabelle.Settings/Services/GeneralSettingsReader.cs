@@ -49,50 +49,56 @@ internal class GeneralSettingsReader
         for (int i = 0; i < reader.AttributeCount; i++)
         {
             reader.MoveToAttribute(i);
-            switch (reader.Name)
+            if (reader.Name == nameof(GeneralSettings.Language))
             {
-                case nameof(GeneralSettings.Language):
-                    settings.Language = reader.Value;
-                    break;
-                case nameof(GeneralSettings.UseCentralLocation):
-                    settings.UseCentralLocation = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.CentralLocation):
-                    settings.CentralLocation = reader.Value;
-                    break;
-                case nameof(GeneralSettings.UsePlusSign):
-                    settings.UsePlusSign = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.OnlyAtFirstSheet):
-                    settings.OnlyAtFirstSheet = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.RemoveAtAllPages):
-                    settings.RemoveAtAllPages = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.CreateLogFile):
-                    settings.CreateLogFile = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.LogFilePath):
-                    settings.LogFilePath = reader.Value;
-                    break;
-                case nameof(GeneralSettings.UseEvents):
-                    settings.UseEvents = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.RecalculateBeforeSave):
-                    settings.RecalculateBeforeSave = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.RecalculateAfterRebuild):
-                    settings.RecalculateAfterRebuild = ParseBool(reader.Value);
-                    break;
-                case nameof(GeneralSettings.SuppressMessages):
-                    settings.SuppressMessages = ParseBool(reader.Value);
-                    break;
-                // AddInVersion, ExportDate und unbekannte Attribute werden ignoriert
+                settings.Language = reader.Value;
             }
+            else if (reader.Name == nameof(GeneralSettings.UseCentralLocation))
+            {
+                settings.UseCentralLocation = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.CentralLocation))
+            {
+                settings.CentralLocation = reader.Value;
+            }
+            else if (reader.Name == nameof(GeneralSettings.UsePlusSign))
+            {
+                settings.UsePlusSign = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.OnlyAtFirstSheet))
+            {
+                settings.OnlyAtFirstSheet = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.RemoveAtAllPages))
+            {
+                settings.RemoveAtAllPages = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.CreateLogFile))
+            {
+                settings.CreateLogFile = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.LogFilePath))
+            {
+                settings.LogFilePath = reader.Value;
+            }
+            else if (reader.Name == nameof(GeneralSettings.UseEvents))
+            {
+                settings.UseEvents = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.RecalculateBeforeSave))
+            {
+                settings.RecalculateBeforeSave = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.RecalculateAfterRebuild))
+            {
+                settings.RecalculateAfterRebuild = reader.ReadBool();
+            }
+            else if (reader.Name == nameof(GeneralSettings.SuppressMessages))
+            {
+                settings.SuppressMessages = reader.ReadBool();
+            }
+            // AddInVersion, ExportDate und unbekannte Attribute werden ignoriert
         }
         reader.MoveToElement();
     }
-
-    private static bool ParseBool(string value)
-        => value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1";
 }
