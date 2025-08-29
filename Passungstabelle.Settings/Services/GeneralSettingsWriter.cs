@@ -28,7 +28,7 @@ internal static class GeneralSettingsWriter
 
             using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, DefaultLocations.GeneralSettingsFilename), xmlSettings);
 
-            this.Export(settings, userSettingsOnly, writer);
+            Export(settings, userSettingsOnly, writer);
         }
         finally
         {

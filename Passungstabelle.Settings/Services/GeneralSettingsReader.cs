@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.Settings;
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Globalization;
 using System.IO;
@@ -26,14 +27,17 @@ internal static class GeneralSettingsReader
 
         while (reader.Read())
         {
-            if (reader.NodeType != XmlNodeType.Attribute && reader.Name == "ExportDate")
+            if (reader.NodeType == XmlNodeType.Element && reader.Name == "Settings")
             {
-                if (DateTime.TryParse(reader.Value, CultureInfo.CurrentCulture, out exportDate))
+                if (reader.MoveToAttribute("ExportDate"))
                 {
-                    return true;
-                }
+                    if (DateTime.TryParse(reader.Value, CultureInfo.CurrentCulture, out exportDate))
+                    {
+                        return true;
+                    }
 
-                break;
+                    break;
+                }
             }
         }
 
@@ -50,7 +54,8 @@ internal static class GeneralSettingsReader
             var filePath = Path.Combine(inputPath, DefaultLocations.GeneralSettingsFilename);
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException($"{DefaultLocations.GeneralSettingsFilename} nicht gefunden.", filePath);
+                GlobalLog.Default.LogWarning("{File} nicht gefunden.", filePath);
+                return;
             }
 
             using var reader = XmlReader.Create(filePath, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });

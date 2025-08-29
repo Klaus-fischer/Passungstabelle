@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.Settings;
 
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -24,9 +25,10 @@ internal static class FormatSettingsReader
         {
             var filePath = Path.Combine(inputPath, DefaultLocations.FormatSettingsFilename);
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"{DefaultLocations.FormatSettingsFilename} nicht gefunden.", filePath);
-
-            var result = new List<FormatSettings>();
+            {
+                GlobalLog.Default.LogWarning("{File} nicht gefunden.", filePath);
+                return;
+            }
 
             using var reader = XmlReader.Create(filePath, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
 

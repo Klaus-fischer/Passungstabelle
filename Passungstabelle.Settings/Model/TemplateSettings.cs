@@ -8,7 +8,7 @@ public class TemplateSettings
 {
     public string TemplateNamePattern { get; set; } = "*";
 
-    public string TableSchemeName { get; set; } = "Default";
+    public string TableSchemaName { get; set; } = "Default";
 
     public string[] FormatNames { get; set; } = [];
 }

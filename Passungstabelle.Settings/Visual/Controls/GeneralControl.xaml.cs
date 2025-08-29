@@ -4,6 +4,9 @@
 
 using Microsoft.Win32;
 using System;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -23,6 +26,8 @@ public partial class GeneralControl : UserControl
         this.InitializeComponent();
     }
 
+    public GeneralViewModel ViewModel => (GeneralViewModel)this.DataContext;
+
     private void OnLanguageSelected(object sender, SelectionChangedEventArgs e)
     {
         if (sender is ComboBox cb)
@@ -40,17 +45,16 @@ public partial class GeneralControl : UserControl
 
     private void SearchCommonLocation(object sender, RoutedEventArgs e)
     {
-        SaveFileDialog ofd = new SaveFileDialog
+        SaveFileDialog sfd = new SaveFileDialog
         {
             AddToRecent = true,
             FileName = "Diesen Ordner verwenden",
-            Filter = "XML-Dateien|*.XML",
             ClientGuid = CommonFolderDialogGuid,
         };
 
-        if (ofd.ShowDialog(Application.Current.MainWindow) == true)
+        if (sfd.ShowDialog(Application.Current.MainWindow) == true)
         {
-
+            this.ViewModel.CentralLocation = Path.GetDirectoryName(sfd.FileName) ?? string.Empty;
         }
 
     }
@@ -66,7 +70,7 @@ public partial class GeneralControl : UserControl
 
         if (sfd.ShowDialog(Application.Current.MainWindow) == true)
         {
-
+            this.ViewModel.CentralLocation = Path.GetDirectoryName(sfd.FileName) ?? string.Empty;
         }
     }
 }

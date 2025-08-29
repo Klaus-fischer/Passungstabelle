@@ -4,6 +4,7 @@
 
 namespace Passungstabelle.Settings;
 
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -24,7 +25,10 @@ internal static class TableSettingsReader
         {
             var filePath = Path.Combine(inputPath, DefaultLocations.TableSettingsFilename);
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"{DefaultLocations.TableSettingsFilename} nicht gefunden.", filePath);
+            {
+                GlobalLog.Default.LogWarning("{File} nicht gefunden.", filePath);
+                return;
+            }
 
             var result = new List<TableSettings>();
 
@@ -116,7 +120,7 @@ internal static class TableSettingsReader
                 }
                 else if (reader.Name == "Columns")
                 {
-                    this.ReadAndUpdateSpalten(reader, table.Spalten);
+                    ReadAndUpdateSpalten(reader, table.Spalten);
                 }
             }
         }

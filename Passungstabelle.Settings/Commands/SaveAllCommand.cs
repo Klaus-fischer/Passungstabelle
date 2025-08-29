@@ -25,11 +25,12 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
 
     private void ExportSettings()
     {
-        if (viewModel.General.UseCentralLocation)
+        var general = (GeneralSettings)this.viewModel.General;
+        if (general.UseCentralLocation)
         {
             try
             {
-                ExportSettingsTo(viewModel.General.CentralLocation);
+                ExportSettingsTo(general.CentralLocation, general);
             }
             catch (Exception ex)
             {
@@ -37,13 +38,13 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
             }
         }
 
-        ExportSettingsTo(DefaultLocations.CommonLocalSettingsPath);
-        ExportUserSettingsTo(DefaultLocations.UserLocalSettingsPath);
+        RegistryService.UpdateRegistry(general);
+        ExportSettingsTo(DefaultLocations.CommonLocalSettingsPath, general);
+        ExportUserSettingsTo(DefaultLocations.UserLocalSettingsPath, general);
     }
 
-    private void ExportSettingsTo(string outputPath)
+    private void ExportSettingsTo(string outputPath, GeneralSettings general)
     {
-        var general = (GeneralSettings)this.viewModel.General;
         GeneralSettingsWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: false);
 
         var formats = viewModel.Format.FormatCollection.ToArray();
@@ -51,11 +52,13 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
 
         var tables = viewModel.Table.TableCollection.ToArray();
         TableSettingsWriter.WriteTableSettings(tables, outputPath);
+
+        var templates = viewModel.Template.Templates.ToArray();
+        TemplateSettingWriter.WriteTemplateSettings(templates, outputPath);
     }
 
-    private void ExportUserSettingsTo(string outputPath)
+    private void ExportUserSettingsTo(string outputPath, GeneralSettings general)
     {
-        var general = (GeneralSettings)this.viewModel.General;
         GeneralSettingsWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: true);
     }
 }

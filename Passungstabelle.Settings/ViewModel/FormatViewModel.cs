@@ -3,7 +3,10 @@
 // </copyright>
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -95,13 +98,24 @@ public class FormatViewModel : BaseViewModel
 
     public ObservableCollection<FormatSettings> FormatCollection { get; } = new ObservableCollection<FormatSettings>();
 
-    public FormatSettings? SelectedFormat
+    public FormatSettings SelectedFormat
     {
         get => this.selectedFormat;
         set => this.SelectFormat(value);
     }
 
-    private void SelectFormat(FormatSettings? value)
+    public void InitializeFormats(IEnumerable<FormatSettings> formats)
+    {
+        this.FormatCollection.Clear();
+        foreach (var format in formats)
+        {
+            this.FormatCollection.Add(format);
+        }
+
+        this.SelectedFormat = this.FormatCollection.First();
+    }
+
+    private void SelectFormat(FormatSettings value)
     {
         this.selectedFormat = value;
         OnPropertyChanged(nameof(SelectedFormat));

@@ -63,6 +63,17 @@ public class TableViewModel : BaseViewModel
         set => this.SelectTable(value);
     }
 
+    public void InitializeTableCollection(IEnumerable<TableSettings> tables)
+    {
+        this.TableCollection.Clear();
+        foreach (var table in tables)
+        {
+            this.TableCollection.Add(table);
+        }
+
+        this.SelectedTable = this.TableCollection.First();
+    }
+
     private void SelectTable(TableSettings? value)
     {
         this.selectedTable = value;

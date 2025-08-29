@@ -43,5 +43,6 @@ internal static class DefaultLocations
     public const string GeneralSettingsFilename = "GeneralSettings.xml";
     public const string TableSettingsFilename = "TableSettings.xml";
     public const string FormatSettingsFilename = "FormatSettings.xml";
+    public const string TemplateSettingsFilename = "TemplateSettings.xml";
 }
 

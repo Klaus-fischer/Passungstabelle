@@ -8,15 +8,16 @@ using Passungstabelle.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 public class SettingsLoader
 {
-    private Dictionary<string, TableSettings> tableSettingsCache = new(StringComparer.Ordinal);
+    internal readonly Dictionary<string, TableSettings> tableSettingsCache = new(StringComparer.Ordinal);
 
-    private Dictionary<string, FormatSettings> formatSettingsCache = new(StringComparer.Ordinal);
+    internal readonly Dictionary<string, FormatSettings> formatSettingsCache = new(StringComparer.Ordinal);
 
-    private List<TemplateSettings> templateSettingsCache = new();
+    internal readonly List<TemplateSettings> templateSettingsCache = new();
 
     public GeneralSettings Settings { get; private set; } = new GeneralSettings();
 
@@ -59,6 +60,7 @@ public class SettingsLoader
         this.LoadGeneralSettings();
         this.LoadTableSettings();
         this.LoadFormatSettings();
+        this.LoadTemplateSettings();
     }
 
     private void LoadGeneralSettings()
@@ -95,6 +97,23 @@ public class SettingsLoader
         formatSettings.ForEach(f => this.formatSettingsCache[f.Name] = f);
     }
 
+    private void LoadTemplateSettings()
+    {
+        List<TemplateSettings> templateSettings = [];
+        TemplateSettingsReader.ReadTemplateSettings(DefaultLocations.CommonLocalSettingsPath, templateSettings);
+        if (templateSettings.Count == 0)
+        {
+            templateSettings.Add(new TemplateSettings()
+            {
+                TemplateNamePattern = "*",
+                FormatNames = this.formatSettingsCache.Values.Select(o => o.Name).ToArray(),
+                TableSchemaName = this.tableSettingsCache.First().Key,
+            });
+        }
+
+        templateSettings.ForEach(this.templateSettingsCache.Add);
+    }
+
     public bool TryGetTableSettings(string templateName, SheetFormat sheetFormat, out TableSettings table, out FormatSettings format)
     {
         format = null!;
@@ -105,7 +124,7 @@ public class SettingsLoader
             return false;
         }
 
-        return TryFindTable(template.TableSchemeName, out table)
+        return TryFindTable(template.TableSchemaName, out table)
             && TryFindFormat(template.FormatNames, sheetFormat, out format);
     }
 

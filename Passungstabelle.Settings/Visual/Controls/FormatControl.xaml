@@ -153,8 +153,8 @@
                     <DataTemplate DataType="local:FormatSettings">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MinWidth="100"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto" MinWidth="100" SharedSizeGroup="Name"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Format"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="12" Margin="10,5" />

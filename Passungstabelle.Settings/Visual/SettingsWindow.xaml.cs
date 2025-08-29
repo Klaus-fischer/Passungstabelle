@@ -1,5 +1,6 @@
 ﻿namespace Passungstabelle.Settings;
 
+using Passungstabelle.CSharp;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,6 +13,7 @@ public partial class SettingsWindow : Window
     {
         InitializeComponent();
         this.DataContext = new MainViewModel();
+        this.ViewModel.Initialize();
     }
 
     public MainViewModel ViewModel => (MainViewModel)this.DataContext;
