@@ -13,18 +13,18 @@ using System.Xml;
 /// <summary>
 /// Liest TableSettings aus einer XML-Datei.
 /// </summary>
-internal class TableSettingsReader
+internal static class TableSettingsReader
 {
-    public void ReadTableSettings(string inputPath, List<TableSettings> tables)
+    public static void ReadTableSettings(string inputPath, List<TableSettings> tables)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
         try
         {
-            var filePath = Path.Combine(inputPath, "TableSettings.xml");
+            var filePath = Path.Combine(inputPath, DefaultLocations.TableSettingsFilename);
             if (!File.Exists(filePath))
-                throw new FileNotFoundException("TableSettings.xml nicht gefunden.", filePath);
+                throw new FileNotFoundException($"{DefaultLocations.TableSettingsFilename} nicht gefunden.", filePath);
 
             var result = new List<TableSettings>();
 
@@ -44,7 +44,7 @@ internal class TableSettingsReader
         }
     }
 
-    private void ReadAndAddOrUpdateTable(XmlReader reader, List<TableSettings> tables)
+    private static void ReadAndAddOrUpdateTable(XmlReader reader, List<TableSettings> tables)
     {
         string? name = null;
         LineWidth? raster = null;
@@ -122,7 +122,7 @@ internal class TableSettingsReader
         }
     }
 
-    private void ReadAndUpdateTextFormat(XmlReader reader, TextFormat format)
+    private static void ReadAndUpdateTextFormat(XmlReader reader, TextFormat format)
     {
         for (int i = 0; i < reader.AttributeCount; i++)
         {
@@ -168,7 +168,7 @@ internal class TableSettingsReader
             reader.Read();
     }
 
-    private void ReadAndUpdateSpalten(XmlReader reader, IEnumerable<ColumnSettings> spalten)
+    private static void ReadAndUpdateSpalten(XmlReader reader, IEnumerable<ColumnSettings> spalten)
     {
         if (reader.IsEmptyElement)
             return;

@@ -13,18 +13,18 @@ using System.Xml;
 /// <summary>
 /// Liest FormatSettings aus einer XML-Datei.
 /// </summary>
-internal class FormatSettingsReader
+internal static class FormatSettingsReader
 {
-    public void ReadFormatSettings(string inputPath, List<FormatSettings> formats)
+    public static void ReadFormatSettings(string inputPath, List<FormatSettings> formats)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
         try
         {
-            var filePath = Path.Combine(inputPath, "FormatSettings.xml");
+            var filePath = Path.Combine(inputPath, DefaultLocations.FormatSettingsFilename);
             if (!File.Exists(filePath))
-                throw new FileNotFoundException("FormatSettings.xml nicht gefunden.", filePath);
+                throw new FileNotFoundException($"{DefaultLocations.FormatSettingsFilename} nicht gefunden.", filePath);
 
             var result = new List<FormatSettings>();
 
@@ -44,7 +44,7 @@ internal class FormatSettingsReader
         }
     }
 
-    private void ReadFormat(XmlReader reader, List<FormatSettings> formats)
+    private static void ReadFormat(XmlReader reader, List<FormatSettings> formats)
     {
         string? name = null;
         TableInsertPoint? insertPoint = null;

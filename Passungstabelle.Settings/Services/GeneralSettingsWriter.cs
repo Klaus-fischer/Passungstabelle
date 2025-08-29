@@ -9,9 +9,9 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-internal class GeneralSettingsWriter
+internal static class GeneralSettingsWriter
 {
-    public void WriteGeneralSettings(GeneralSettings settings, string outputPath, bool userSettingsOnly)
+    public static void WriteGeneralSettings(GeneralSettings settings, string outputPath, bool userSettingsOnly)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -26,7 +26,7 @@ internal class GeneralSettingsWriter
                 WriteEndDocumentOnClose = true,
             };
 
-            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, "GeneralSettings.xml"), xmlSettings);
+            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, DefaultLocations.GeneralSettingsFilename), xmlSettings);
 
             this.Export(settings, userSettingsOnly, writer);
         }
@@ -36,7 +36,7 @@ internal class GeneralSettingsWriter
         }
     }
 
-    private void Export(GeneralSettings settings, bool userSettingsOnly, XmlWriter writer)
+    private static void Export(GeneralSettings settings, bool userSettingsOnly, XmlWriter writer)
     {
         writer.WriteStartDocument();
         if (userSettingsOnly)

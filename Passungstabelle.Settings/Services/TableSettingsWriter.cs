@@ -9,9 +9,9 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-internal class TableSettingsWriter
+internal static class TableSettingsWriter
 {
-    public void WriteTableSettings(TableSettings[] tables, string outputPath)
+    public static void WriteTableSettings(TableSettings[] tables, string outputPath)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -25,7 +25,7 @@ internal class TableSettingsWriter
                 WriteEndDocumentOnClose = true,
             };
 
-            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, "TableSettings.xml"), xmlSettings);
+            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath,DefaultLocations.TableSettingsFilename), xmlSettings);
 
             writer.WriteStartDocument();
             writer.WriteStartElement("TableSettings");
@@ -46,7 +46,7 @@ internal class TableSettingsWriter
         }
     }
 
-    private void WriteTableSettings(XmlWriter writer, TableSettings settings)
+    private static void WriteTableSettings(XmlWriter writer, TableSettings settings)
     {
         writer.WriteStartElement("Table");
         writer.WriteAttributeString(nameof(TableSettings.SchemaName), settings.SchemaName);
@@ -66,7 +66,7 @@ internal class TableSettingsWriter
         writer.WriteEndElement(); // Table
     }
 
-    private void WriteTextFormat(XmlWriter writer, string elementName, TextFormat format)
+    private static void WriteTextFormat(XmlWriter writer, string elementName, TextFormat format)
     {
         writer.WriteStartElement(elementName);
         writer.WriteAttributeString(nameof(TextFormat.Schriftart), format.Schriftart);
@@ -80,7 +80,7 @@ internal class TableSettingsWriter
         writer.WriteEndElement();
     }
 
-    private void WriteSpalteSettings(XmlWriter writer, ColumnSettings spalte)
+    private static void WriteSpalteSettings(XmlWriter writer, ColumnSettings spalte)
     {
         writer.WriteStartElement("Column");
         writer.WriteAttributeString(nameof(ColumnSettings.Name), spalte.Name);

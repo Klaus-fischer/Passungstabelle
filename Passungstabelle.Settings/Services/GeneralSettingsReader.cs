@@ -12,19 +12,45 @@ using System.Xml;
 /// <summary>
 /// Liest die GeneralSettings aus einer XML-Datei.
 /// </summary>
-internal class GeneralSettingsReader
+internal static class GeneralSettingsReader
 {
-    public void ReadGeneralSettings(string inputPath, ref GeneralSettings settings)
+    public static bool TryGetExportDate(string inputFilename, out DateTime exportDate)
+    {
+        exportDate = default;
+        if (!File.Exists(inputFilename))
+        {
+            return false;
+        }
+
+        using var reader = XmlReader.Create(inputFilename, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
+
+        while (reader.Read())
+        {
+            if (reader.NodeType != XmlNodeType.Attribute && reader.Name == "ExportDate")
+            {
+                if (DateTime.TryParse(reader.Value, CultureInfo.CurrentCulture, out exportDate))
+                {
+                    return true;
+                }
+
+                break;
+            }
+        }
+
+        return false;
+    }
+
+    public static void ReadGeneralSettings(string inputPath, ref GeneralSettings settings)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
         try
         {
-            var filePath = Path.Combine(inputPath, "GeneralSettings.xml");
+            var filePath = Path.Combine(inputPath, DefaultLocations.GeneralSettingsFilename);
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("GeneralSettings.xml nicht gefunden.", filePath);
+                throw new FileNotFoundException($"{DefaultLocations.GeneralSettingsFilename} nicht gefunden.", filePath);
             }
 
             using var reader = XmlReader.Create(filePath, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });

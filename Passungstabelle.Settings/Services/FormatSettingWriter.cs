@@ -10,9 +10,9 @@ using System.IO;
 using System.Windows;
 using System.Xml;
 
-internal class FormatSettingWriter
+internal static class FormatSettingWriter
 {
-    public void WriteFormatSettings(FormatSettings[] formats, string outputPath)
+    public static void WriteFormatSettings(FormatSettings[] formats, string outputPath)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -26,7 +26,7 @@ internal class FormatSettingWriter
                 WriteEndDocumentOnClose = true,
             };
 
-            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, "FormatSettings.xml"), xmlSettings);
+            using XmlWriter writer = XmlWriter.Create(Path.Combine(outputPath, DefaultLocations.FormatSettingsFilename), xmlSettings);
 
             writer.WriteStartDocument();
             writer.WriteStartElement("FormatSettings");
@@ -47,7 +47,7 @@ internal class FormatSettingWriter
         }
     }
 
-    private void Export(FormatSettings settings, XmlWriter writer)
+    private static void Export(FormatSettings settings, XmlWriter writer)
     {
         writer.WriteStartElement("Format");
         {
