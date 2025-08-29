@@ -8,12 +8,15 @@ using Passungstabelle.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 public class SettingsLoader
 {
     private Dictionary<string, TableSettings> tableSettingsCache = new(StringComparer.Ordinal);
 
     private Dictionary<string, FormatSettings> formatSettingsCache = new(StringComparer.Ordinal);
+
+    private List<TemplateSettings> templateSettingsCache = new();
 
     public GeneralSettings Settings { get; private set; } = new GeneralSettings();
 
@@ -92,30 +95,77 @@ public class SettingsLoader
         formatSettings.ForEach(f => this.formatSettingsCache[f.Name] = f);
     }
 
-    internal TableSettings GetTableSettings(string templateName, SheetFormat format)
+    public bool TryGetTableSettings(string templateName, SheetFormat sheetFormat, out TableSettings table, out FormatSettings format)
     {
-        return new TableSettings();
+        format = null!;
+        if (!this.TryFindTemplate(templateName, out var template))
+        {
+            table = new();
+            format = new();
+            return false;
+        }
+
+        return TryFindTable(template.TableSchemeName, out table)
+            && TryFindFormat(template.FormatNames, sheetFormat, out format);
     }
 
-    internal FormatSettings GetFormat(SheetFormat format, TableSettings tableSettings)
+    private bool TryFindTemplate(string templateName, out TemplateSettings templateSettings)
     {
-        // ToDo: Load FromSettings
-        return new FormatSettings()
+        templateSettings = null!;
+        foreach (var template in templateSettingsCache)
         {
-            SheetFormat = format,
-            InsertPoint = TableInsertPoint.TopRight,
-            MaxZone = GetMaxZone(format),
-        };
+            if (!TemplateNameMatches(templateName, template.TemplateNamePattern))
+            {
+                continue;
+            }
+
+            templateSettings = template;
+            return true;
+        }
+
+        return false;
     }
 
-    private string GetMaxZone(SheetFormat sf)
-        => sf switch
+    private bool TemplateNameMatches(string templateName, string templatePattern)
+    {
+        var pattern = Regex.Escape(templateName)
+            .Replace("\\*", ".*")
+            .Replace("\\?", ".");
+
+        return Regex.IsMatch(templatePattern, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    }
+
+    private bool TryFindTable(string schemaName, out TableSettings tableSettings)
+    {
+        if (this.tableSettingsCache.TryGetValue(schemaName, out tableSettings))
         {
-            SheetFormat.A4V => "F4",
-            SheetFormat.A4 => "D6",
-            SheetFormat.A3 => "F8",
-            SheetFormat.A2 => "H12",
-            SheetFormat.A1 => "M16",
-            _ => "R24",
+            tableSettings = new TableSettings { SchemaName = schemaName };
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool TryFindFormat(string[] formatNames, SheetFormat sheetFormat, out FormatSettings formatSettings)
+    {
+        foreach (var formatName in formatNames)
+        {
+            if (this.formatSettingsCache.TryGetValue(formatName, out var format))
+            {
+                if (format.SheetFormat == SheetFormat.All || format.SheetFormat == sheetFormat)
+                {
+                    formatSettings = format;
+                    return true;
+                }
+            }
+        }
+
+        formatSettings = new FormatSettings
+        {
+            SheetFormat = sheetFormat,
+            MaxZone = string.Empty,
         };
+
+        return false;
+    }
 }

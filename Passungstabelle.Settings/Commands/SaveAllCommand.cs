@@ -31,9 +31,9 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
             {
                 ExportSettingsTo(viewModel.General.CentralLocation);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Einstellungen konnten nicht nach {viewModel.General.CentralLocation} exportiert werden.\n"+ex.Message, "Fehler bei ExportSettings");
+                MessageBox.Show($"Einstellungen konnten nicht nach {viewModel.General.CentralLocation} exportiert werden.\n" + ex.Message, "Fehler bei ExportSettings");
             }
         }
 
@@ -41,26 +41,22 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
         ExportUserSettingsTo(DefaultLocations.UserLocalSettingsPath);
     }
 
-    private void ExportSettingsTo(string outputPath) 
+    private void ExportSettingsTo(string outputPath)
     {
-        var generalWriter = new GeneralSettingsWriter();
         var general = (GeneralSettings)this.viewModel.General;
-        generalWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: false);
+        GeneralSettingsWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: false);
 
         var formats = viewModel.Format.FormatCollection.ToArray();
-        var formatWriter = new FormatSettingWriter();
-        formatWriter.WriteFormatSettings(formats, outputPath);
+        FormatSettingWriter.WriteFormatSettings(formats, outputPath);
 
         var tables = viewModel.Table.TableCollection.ToArray();
-        var tableWriter = new TableSettingsWriter();
-        tableWriter.WriteTableSettings(tables, outputPath);
+        TableSettingsWriter.WriteTableSettings(tables, outputPath);
     }
 
     private void ExportUserSettingsTo(string outputPath)
     {
-        var generalWriter = new GeneralSettingsWriter();
         var general = (GeneralSettings)this.viewModel.General;
-        generalWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: true);
+        GeneralSettingsWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: true);
     }
 }
 

@@ -35,7 +35,7 @@ internal static class FormatSettingWriter
 
             foreach (var item in formats)
             {
-                this.Export(item, writer);
+                Export(item, writer);
             }
 
             writer.WriteEndElement(); // FormatSettings
