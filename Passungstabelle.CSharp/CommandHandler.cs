@@ -25,7 +25,6 @@ public class CommandHandler : IDisposable
     public const int mainItemID1 = 31300;
     public const int mainItemID2 = 31301;
     public const int mainItemID3 = 31301;
-    public const int flyoutGroupID = 91;
     private readonly SldWorks sldWorks;
     private readonly int cookie;
     private readonly NaheFitTable addIn;
@@ -175,7 +174,7 @@ public class CommandHandler : IDisposable
         try
         {
             this.swCommandManager.RemoveCommandGroup(mainCmdGroupID);
-            this.swCommandManager.RemoveFlyoutGroup(flyoutGroupID);
+            this.swCommandManager.RemoveCommandTab()
         }
         catch (Exception e)
         {
@@ -222,8 +221,6 @@ public class CommandHandler : IDisposable
             RemoveCommandMgr();
             AddCommands();
         }
-
-        this.addIn
     }
 
     public void PassungsTabelleHilfe()

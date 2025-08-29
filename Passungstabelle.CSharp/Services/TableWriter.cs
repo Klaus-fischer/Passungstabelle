@@ -20,7 +20,7 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
     private readonly FormatSettings formatSettings = formatSettings;
     private readonly ColumnSettings[] spalten = tableSettings.Spalten.Where(o => o.Visible).ToArray();
 
-    public double Schichtdicke { get; set; } = settings.SchichtStärke;
+    public double Schichtdicke { get; set; } = 0.0;
 
     public void InsertTable(IModelDoc2 modelDoc, ISheet sheet, TabellenZeile[] zeilen)
     {
@@ -92,11 +92,11 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
             "Passungstabelle_Schichtdicke",
             this.Schichtdicke.ToString("0.###", CultureInfo.InvariantCulture));
 
-        if (settings.SchichtStärkeAbfragen)
+        if (!settings.SuppressMessages)
         {
             MessageBox.Show("""
             Die Schichtdicke ist nicht definiert, der Standardwert wird verwendet.
-            Bitte den Parameter in Zeichnungseigenschaften aktualisieren und Tabelle neu erzeugen.                
+            Bitte den Parameter in Zeichnungseigenschaften aktualisieren und Tabelle neu erzeugen.
             """);
 
         }

@@ -15,12 +15,20 @@ public class TemplateViewModel : BaseViewModel
     private readonly ObservableCollection<FormatSettings> formats;
     private string templatePattern = "*";
     private TemplateSettings selectedTemplate;
+    private string _SelectedTableSchemaName = string.Empty;
+
 
     public TemplateViewModel(ObservableCollection<TableSettings> tables, ObservableCollection<FormatSettings> formats)
     {
         this.Tables = tables;
         this.formats = formats;
         formats.CollectionChanged += OnFormatCollectionChanged;
+    }
+
+    public string SelectedTableSchemaName
+    {
+        get => this._SelectedTableSchemaName;
+        set => this.Set(ref _SelectedTableSchemaName, value);
     }
 
     public string TemplatePattern

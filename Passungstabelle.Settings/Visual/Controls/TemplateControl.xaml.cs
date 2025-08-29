@@ -1,4 +1,4 @@
-﻿// <copyright file="TableControl.xaml.cs" company="SIM Automation">
+﻿// <copyright file="TemplateControl.xaml.cs" company="SIM Automation">
 // Copyright (c) SIM Automation. All rights reserved.
 // </copyright>
 
@@ -9,12 +9,12 @@ using System.Windows.Controls;
 /// <summary>
 /// Code behind for TableControl.xaml.
 /// </summary>
-public partial class TableControl : UserControl
+public partial class TemplateControl : UserControl
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TableControl"/> class.
+    /// Initializes a new instance of the <see cref="TemplateControl"/> class.
     /// </summary>
-    public TableControl()
+    public TemplateControl()
     {
         this.InitializeComponent();
     }
