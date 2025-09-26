@@ -51,7 +51,7 @@ internal static class GeneralSettingsReader
 
         try
         {
-            var filePath = Path.Combine(inputPath, DefaultLocations.GeneralSettingsFilename);
+            var filePath = Path.Combine(inputPath, DefaultLocations.SettingsFilename);
             if (!File.Exists(filePath))
             {
                 GlobalLog.Default.LogWarning("{File} nicht gefunden.", filePath);

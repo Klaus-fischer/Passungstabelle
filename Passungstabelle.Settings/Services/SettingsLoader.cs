@@ -25,7 +25,7 @@ public class SettingsLoader
     {
         if (RegistryService.TryGetCentralLocation(out var centralLocation))
         {
-            this.OverrideLocalSettings(centralLocation, DefaultLocations.GeneralSettingsFilename);
+            this.OverrideLocalSettings(centralLocation, DefaultLocations.SettingsFilename);
             this.OverrideLocalSettings(centralLocation, DefaultLocations.TableSettingsFilename);
             this.OverrideLocalSettings(centralLocation, DefaultLocations.FormatSettingsFilename);
         }

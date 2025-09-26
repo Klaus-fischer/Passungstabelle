@@ -45,21 +45,15 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
 
     private void ExportSettingsTo(string outputPath, GeneralSettings general)
     {
-        GeneralSettingsWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: false);
-
         var formats = viewModel.Format.FormatCollection.ToArray();
-        FormatSettingWriter.WriteFormatSettings(formats, outputPath);
-
         var tables = viewModel.Table.TableCollection.ToArray();
-        TableSettingsWriter.WriteTableSettings(tables, outputPath);
 
-        var templates = viewModel.Template.Templates.Select(o => o.ToModel()).ToArray();
-        TemplateSettingWriter.WriteTemplateSettings(templates, outputPath);
+        SettingsWriter.WriteSettings(general, formats, tables, outputPath, userSettingsOnly: false);
     }
 
     private void ExportUserSettingsTo(string outputPath, GeneralSettings general)
     {
-        GeneralSettingsWriter.WriteGeneralSettings(general, outputPath, userSettingsOnly: true);
+        SettingsWriter.WriteSettings(general, [], [], outputPath, userSettingsOnly: true);
     }
 }
 

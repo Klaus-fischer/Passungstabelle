@@ -40,7 +40,7 @@ internal static class DefaultLocations
     public static string UserLocalSettingsPath { get; }
 
 
-    public const string GeneralSettingsFilename = "GeneralSettings.xml";
+    public const string SettingsFilename = "Settings.xml";
     public const string TableSettingsFilename = "TableSettings.xml";
     public const string FormatSettingsFilename = "FormatSettings.xml";
     public const string TemplateSettingsFilename = "TemplateSettings.xml";
