@@ -82,7 +82,7 @@ public class SettingsLoader
             tableSettings.Add(new TableSettings());
         }
 
-        tableSettings.ForEach(t => this.tableSettingsCache[t.SchemaName] = t);
+        tableSettings.ForEach(t => this.tableSettingsCache[t.Name] = t);
     }
 
     private void LoadFormatSettings()
@@ -158,7 +158,7 @@ public class SettingsLoader
     {
         if (!this.tableSettingsCache.TryGetValue(schemaName, out tableSettings))
         {
-            tableSettings = new TableSettings { SchemaName = schemaName };
+            tableSettings = new TableSettings { Name = schemaName };
             return false;
         }
 

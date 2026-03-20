@@ -26,7 +26,7 @@ public class TemplateViewModel : BaseViewModel, ISelectedItemHost<TemplateSettin
         this.formats.CollectionChanged += OnFormatCollectionChanged;
         this.AddCommand = new RelayCommand(OnAddTemplate);
         this.UpdateCommand = new RelayCommand(OnUpdateTemplate, CanUpdateTemplate);
-        this.DeleteCommand = new RelayCommand(OnDeleteTemplate, () => this.Templates.Count > 1);
+        this.DeleteCommand = new DeleteSelectedCommand<TemplateSettingsViewModel>(this);
 
         this.MoveSelectedUpCommand = new MoveSelectedCommand<TemplateSettingsViewModel>(
             MoveDirection.Up, this);

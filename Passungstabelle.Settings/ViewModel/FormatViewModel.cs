@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Passungstabelle.Settings;
 
-public class FormatViewModel : BaseViewModel
+public class FormatViewModel : BaseViewModel, ISelectedItemHost<FormatSettings>
 {
     private string name = string.Empty;
     private SheetFormat sheetFormat = default;
@@ -29,7 +29,7 @@ public class FormatViewModel : BaseViewModel
     {
         this.AddCommand = new RelayCommand(OnAddFormat);
         this.UpdateCommand = new RelayCommand(OnUpdateFormat, CanUpdateFormat);
-        this.DeleteCommand = new RelayCommand(OnDeleteFormat, () => this.FormatCollection.Count > 1);
+        this.DeleteCommand = new DeleteSelectedCommand<FormatSettings>(this);
     }
 
     public string Name
@@ -98,11 +98,12 @@ public class FormatViewModel : BaseViewModel
 
     public ObservableCollection<FormatSettings> FormatCollection { get; } = new ObservableCollection<FormatSettings>();
 
-    public FormatSettings SelectedFormat
+    public FormatSettings SelectedItem
     {
         get => this.selectedFormat;
         set => this.SelectFormat(value);
     }
+    IList<FormatSettings> ISelectedItemHost<FormatSettings>.Collection => this.FormatCollection;
 
     public void InitializeFormats(IEnumerable<FormatSettings> formats)
     {
@@ -112,13 +113,13 @@ public class FormatViewModel : BaseViewModel
             this.FormatCollection.Add(format);
         }
 
-        this.SelectedFormat = this.FormatCollection.First();
+        this.SelectedItem = this.FormatCollection.First();
     }
 
     private void SelectFormat(FormatSettings value)
     {
         this.selectedFormat = value;
-        OnPropertyChanged(nameof(SelectedFormat));
+        OnPropertyChanged(nameof(SelectedItem));
 
         if (value is null)
         {
@@ -142,12 +143,12 @@ public class FormatViewModel : BaseViewModel
         var format = this.CreateFormat();
 
         this.FormatCollection.Add(format);
-        this.SelectedFormat = format;
+        this.SelectedItem = format;
     }
 
     private bool CanUpdateFormat()
     {
-        var selected = this.SelectedFormat;
+        var selected = this.SelectedItem;
 
         return this.InsertPoint != selected.InsertPoint
             || this.Name != selected.Name
@@ -173,12 +174,12 @@ public class FormatViewModel : BaseViewModel
 
         this.FormatCollection.Insert(index, format);
         this.FormatCollection.Remove(this.selectedFormat);
-        this.SelectedFormat = format;
+        this.SelectedItem = format;
     }
 
     private void OnDeleteFormat()
     {
-        if (this.SelectedFormat is null)
+        if (this.SelectedItem is null)
         {
             var first = this.FormatCollection.FirstOrDefault() ?? new();
 
@@ -199,7 +200,7 @@ public class FormatViewModel : BaseViewModel
             this.FormatCollection.Add(next);
         }
 
-        this.SelectedFormat = next;
+        this.SelectedItem = next;
     }
 
     private FormatSettings CreateFormat() =>

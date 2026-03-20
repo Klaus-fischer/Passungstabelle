@@ -4,29 +4,30 @@
 
 namespace Passungstabelle.Settings;
 
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-public class TableViewModel : BaseViewModel
+public class TableViewModel : BaseViewModel, ISelectedItemHost<TableSettings>
 {
     private string schemaName = "Default";
     private LineWidth rasterStrichStärke = LineWidth.Dünn;
     private LineWidth rahmenStrichStärke = LineWidth.Dick;
-    private TableSettings? selectedTable = new();
+    private TableSettings selectedTable = new();
     private HeaderPosition headerPosition = default;
-    private ColumnSettings[] spalten;
+    private ColumnSettings[] spalten = [];
     private ColumnSettings selectedSpalte = new();
 
     public TableViewModel()
     {
         this.AddCommand = new RelayCommand(this.OnAddTable);
         this.UpdateCommand = new RelayCommand(this.OnUpdateTable, this.CanUpdateTable);
-        this.DeleteCommand = new RelayCommand(this.OnDeleteTable);
-        this.SelectedTable = new TableSettings();
-        this.TableCollection.Add(this.SelectedTable);
+        this.DeleteCommand = new DeleteSelectedCommand<TableSettings>(this);
+        this.SelectedItem = new TableSettings();
+        this.TableCollection.Add(this.SelectedItem);
     }
 
     public ICommand AddCommand { get; }
@@ -35,7 +36,7 @@ public class TableViewModel : BaseViewModel
 
     public ICommand DeleteCommand { get; }
 
-    public string SchemaName { get => this.schemaName; set => this.Set(ref this.schemaName, value); }
+    public string Name { get => this.schemaName; set => this.Set(ref this.schemaName, value); }
 
     public LineWidth RasterStrichStärke { get => this.rasterStrichStärke; set => this.Set(ref this.rasterStrichStärke, value); }
 
@@ -57,11 +58,13 @@ public class TableViewModel : BaseViewModel
 
     public ObservableCollection<TableSettings> TableCollection { get; } = new ObservableCollection<TableSettings>();
 
-    public TableSettings? SelectedTable
+    public TableSettings SelectedItem
     {
         get => this.selectedTable;
         set => this.SelectTable(value);
     }
+
+    IList<TableSettings> ISelectedItemHost<TableSettings>.Collection => this.TableCollection;
 
     public void InitializeTableCollection(IEnumerable<TableSettings> tables)
     {
@@ -71,13 +74,13 @@ public class TableViewModel : BaseViewModel
             this.TableCollection.Add(table);
         }
 
-        this.SelectedTable = this.TableCollection.First();
+        this.SelectedItem = this.TableCollection.First();
     }
 
-    private void SelectTable(TableSettings? value)
+    private void SelectTable(TableSettings value)
     {
         this.selectedTable = value;
-        this.OnPropertyChanged(nameof(this.SelectedTable));
+        this.OnPropertyChanged(nameof(this.SelectedItem));
         CommandManager.InvalidateRequerySuggested();
 
         if (value is null)
@@ -85,7 +88,7 @@ public class TableViewModel : BaseViewModel
             return;
         }
 
-        this.SchemaName = value.SchemaName;
+        this.Name = value.Name;
         this.RasterStrichStärke = value.RasterStrichStärke;
         this.RahmenStrichStärke = value.RahmenStrichStärke;
         this.HeaderPosition = value.HeaderPosition;
@@ -101,7 +104,7 @@ public class TableViewModel : BaseViewModel
         var Table = this.CreateTable();
 
         this.TableCollection.Add(Table);
-        this.SelectedTable = Table;
+        this.SelectedItem = Table;
     }
 
     public bool CanUpdateTable() => this.selectedTable is TableSettings table && this.TableCollection.Contains(table);
@@ -122,31 +125,7 @@ public class TableViewModel : BaseViewModel
         var Table = this.CreateTable();
         this.TableCollection.Insert(index, Table);
         this.TableCollection.Remove(this.selectedTable);
-        this.SelectedTable = Table;
-    }
-
-    private void OnDeleteTable()
-    {
-        if (this.selectedTable is null)
-        {
-            return;
-        }
-
-        var index = this.TableCollection.IndexOf(this.selectedTable);
-        this.TableCollection.Remove(this.selectedTable);
-
-        if (this.TableCollection.Count == 0)
-        {
-            this.SelectedTable = null;
-        }
-        else if (index < this.TableCollection.Count)
-        {
-            this.SelectedTable = this.TableCollection[index];
-        }
-        else
-        {
-            this.SelectedTable = this.TableCollection[^1];
-        }
+        this.SelectedItem = Table;
     }
 
     private IEnumerable<ColumnSettings> CopySpalten(IEnumerable<ColumnSettings> spalten)
@@ -169,7 +148,7 @@ public class TableViewModel : BaseViewModel
     {
         var result = new TableSettings()
         {
-            SchemaName = this.SchemaName,
+            Name = this.Name,
             RasterStrichStärke = this.RasterStrichStärke,
             RahmenStrichStärke = this.RahmenStrichStärke,
             HeaderPosition = this.HeaderPosition,

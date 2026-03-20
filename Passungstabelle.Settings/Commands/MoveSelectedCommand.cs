@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 
 internal class MoveSelectedCommand<T> : ICommand
+    where T : new()
 {
     private readonly MoveDirection moveDirection;
     private readonly ISelectedItemHost<T> host;
@@ -42,7 +43,7 @@ internal class MoveSelectedCommand<T> : ICommand
         var index = this.host.Collection.IndexOf(current);
         return moveDirection == MoveDirection.Up
             ? index > 0
-            : index < this.host.Collection.Count-1;
+            : index < this.host.Collection.Count - 1;
     }
 
     public void Execute(object? parameter)

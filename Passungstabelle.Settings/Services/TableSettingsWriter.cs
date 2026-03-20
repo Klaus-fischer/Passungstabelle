@@ -49,7 +49,7 @@ internal static class TableSettingsWriter
     private static void WriteTableSettings(XmlWriter writer, TableSettings settings)
     {
         writer.WriteStartElement("Table");
-        writer.WriteAttributeString(nameof(TableSettings.SchemaName), settings.SchemaName);
+        writer.WriteAttributeString(nameof(TableSettings.Name), settings.Name);
         writer.WriteAttributeString(nameof(TableSettings.RasterStrichStärke), settings.RasterStrichStärke.ToString());
         writer.WriteAttributeString(nameof(TableSettings.RahmenStrichStärke), settings.RahmenStrichStärke.ToString());
         writer.WriteAttributeString(nameof(TableSettings.HeaderPosition), settings.HeaderPosition.ToString());

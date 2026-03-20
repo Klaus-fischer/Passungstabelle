@@ -60,7 +60,7 @@ internal static class TableSettingsReader
         {
             reader.MoveToAttribute(i);
 
-            if (reader.Name == nameof(TableSettings.SchemaName))
+            if (reader.Name == nameof(TableSettings.Name))
             {
                 name = reader.Value;
             }
@@ -84,11 +84,11 @@ internal static class TableSettingsReader
             return;
         }
 
-        if (tables.FirstOrDefault(o => o.SchemaName == name) is not TableSettings table)
+        if (tables.FirstOrDefault(o => o.Name == name) is not TableSettings table)
         {
             table = new TableSettings()
             {
-                SchemaName = name,
+                Name = name,
                 RasterStrichStärke = raster ?? LineWidth.Dünn,
                 RahmenStrichStärke = rahmen ?? LineWidth.Dick,
                 HeaderPosition = headerPos ?? HeaderPosition.Oben,

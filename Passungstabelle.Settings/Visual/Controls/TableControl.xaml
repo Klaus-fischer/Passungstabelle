@@ -57,7 +57,7 @@
 
                         <GroupBox Header="Schema" Grid.Row="0" Grid.Column="0">
                             <HeaderedContentControl Header="Name" >
-                                <TextBox Text="{Binding SchemaName}" />
+                                <TextBox Text="{Binding Name}" />
                             </HeaderedContentControl>
                         </GroupBox>
                         <GroupBox  Header="Strichstärke " Grid.Row="0" Grid.Column="1">
@@ -222,7 +222,7 @@
                      >
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="local:TableSettings">
-                        <TextBlock Text="{Binding SchemaName}" FontSize="12" 
+                        <TextBlock Text="{Binding Name}" FontSize="12" 
                                    Margin="10,5" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
