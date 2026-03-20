@@ -28,8 +28,8 @@ public class FormatViewModel : BaseViewModel
     public FormatViewModel()
     {
         this.AddCommand = new RelayCommand(OnAddFormat);
-        this.UpdateCommand = new RelayCommand(OnUpdateFormat);
-        this.DeleteCommand = new RelayCommand(OnDeleteFormat);
+        this.UpdateCommand = new RelayCommand(OnUpdateFormat, CanUpdateFormat);
+        this.DeleteCommand = new RelayCommand(OnDeleteFormat, () => this.FormatCollection.Count > 1);
     }
 
     public string Name
@@ -63,7 +63,7 @@ public class FormatViewModel : BaseViewModel
     private string _MaxZone = "H6";
 
     public string TopRightZone => _MaxZone.Length > 0 ? string.Concat("A", _MaxZone.AsSpan(1)) : "";
-    
+
     public string BottomLeftZone => _MaxZone.Length > 0 ? string.Concat(_MaxZone[0], "1") : "";
 
     public double MarginTop
@@ -90,7 +90,7 @@ public class FormatViewModel : BaseViewModel
         set => this.Set(ref marginBottom, value);
     }
 
-    public ICommand AddCommand { get; } 
+    public ICommand AddCommand { get; }
 
     public ICommand UpdateCommand { get; }
 
@@ -145,6 +145,22 @@ public class FormatViewModel : BaseViewModel
         this.SelectedFormat = format;
     }
 
+    private bool CanUpdateFormat()
+    {
+        var selected = this.SelectedFormat;
+
+        return this.InsertPoint != selected.InsertPoint
+            || this.Name != selected.Name
+            || this.OffsetX != selected.Offset.X
+            || this.OffsetY != selected.Offset.Y
+            || this.MarginBottom != selected.Margin.Bottom
+            || this.MarginLeft != selected.Margin.Left
+            || this.MarginRight != selected.Margin.Right
+            || this.MarginTop != selected.Margin.Top
+            || this.MaxZone != selected.MaxZone
+            || this.SheetFormat != selected.SheetFormat;
+    }
+
     private void OnUpdateFormat()
     {
         if (this.selectedFormat is null)
@@ -159,29 +175,31 @@ public class FormatViewModel : BaseViewModel
         this.FormatCollection.Remove(this.selectedFormat);
         this.SelectedFormat = format;
     }
-    
+
     private void OnDeleteFormat()
     {
-        if (this.selectedFormat is null)
+        if (this.SelectedFormat is null)
         {
+            var first = this.FormatCollection.FirstOrDefault() ?? new();
+
+            if (!this.FormatCollection.Contains(first))
+            {
+                this.FormatCollection.Add(first);
+            }
             return;
         }
 
         var index = this.FormatCollection.IndexOf(this.selectedFormat);
-        this.FormatCollection.Remove(this.selectedFormat);
+        this.FormatCollection.RemoveAt(index);
 
-        if (this.FormatCollection.Count == 0)
+        var next = this.FormatCollection.Skip(index).FirstOrDefault() ?? new();
+
+        if (!this.FormatCollection.Contains(next))
         {
-            this.SelectedFormat = null;
+            this.FormatCollection.Add(next);
         }
-        else if (index < this.FormatCollection.Count)
-        {
-            this.SelectedFormat = this.FormatCollection[index];
-        }
-        else
-        {
-            this.SelectedFormat = this.FormatCollection[^1];
-        }
+
+        this.SelectedFormat = next;
     }
 
     private FormatSettings CreateFormat() =>
