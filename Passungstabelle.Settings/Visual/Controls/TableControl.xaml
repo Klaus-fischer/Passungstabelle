@@ -33,10 +33,10 @@
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="250"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Tabelleneinstellungen">
+        <GroupBox Header="Tabelleneinstellungen" Grid.Column="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -215,12 +215,18 @@
 
             </Grid>
         </GroupBox>
-        <GroupBox Header="Gespeicherte Tabellen" Grid.Column="1">
+        <GroupBox Header="Gespeicherte Tabellen" >
             <ListBox SelectedItem="{Binding SelectedTable}"
                      ItemsSource="{Binding TableCollection}"
                      SelectionMode="Single"
-                     DisplayMemberPath="SchemaName"
-                     />
+                     >
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:TableSettings">
+                        <TextBlock Text="{Binding SchemaName}" FontSize="12" 
+                                   Margin="10,5" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </GroupBox>
     </Grid>
 </UserControl>

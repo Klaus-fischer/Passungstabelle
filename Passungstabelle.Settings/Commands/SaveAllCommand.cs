@@ -53,7 +53,7 @@ internal class SaveAllCommand(MainViewModel viewModel) : ICommand
         var tables = viewModel.Table.TableCollection.ToArray();
         TableSettingsWriter.WriteTableSettings(tables, outputPath);
 
-        var templates = viewModel.Template.Templates.ToArray();
+        var templates = viewModel.Template.Templates.Select(o => o.ToModel()).ToArray();
         TemplateSettingWriter.WriteTemplateSettings(templates, outputPath);
     }
 

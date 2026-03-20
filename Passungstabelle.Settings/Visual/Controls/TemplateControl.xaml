@@ -33,175 +33,93 @@
     </UserControl.Resources>
     <Grid Grid.IsSharedSizeScope="True">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="250"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Templateeinstellungen">
+        
+        <GroupBox Header="Gespeicherte Vorlagen" Grid.Column="0">
+            <ListBox SelectedItem="{Binding SelectedTemplate}"
+                     ItemsSource="{Binding Templates}"
+                     SelectionMode="Single"
+                     >
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:TemplateSettings">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="50" SharedSizeGroup="Name"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Format"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="{Binding TableSchemaName }"
+                                       FontSize="12" Margin="10,5" />
+                            <TextBlock Grid.Column="0" Text="{Binding TemplateNamePattern}" 
+                                       Margin="10,5"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </GroupBox>
+        
+        <GroupBox Header="Templateeinstellungen" Grid.Column="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <ScrollViewer>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <GroupBox Header="Tabelle" Grid.Row="0" Grid.Column="1">
-                            <HeaderedContentControl Header="Schema" >
-                                <ComboBox SelectedValue="{Binding SelectedTableSchemaName}"
-                  ItemsSource="{Binding Tables}"
-                  SelectedValuePath="Name"
-                  DisplayMemberPath="Name"
-                  />
+                    <StackPanel Grid.IsSharedSizeScope="True">
+                        <GroupBox Header="Blattformat Vorlage" Grid.Row="0" Grid.Column="1">
+                            <HeaderedContentControl Header="Muster" >
+                                <TextBox  Text="{Binding SelectedTemplatePattern}"/>
                             </HeaderedContentControl>
                         </GroupBox>
-
-
-                        <GroupBox Header="Vorlage" Grid.Row="0" Grid.Column="1">
-                            <HeaderedContentControl Header="Schema" >
+                        <GroupBox Header="{local:UiText TabFormatHeader}" Grid.Row="0" Grid.Column="0">
+                            <HeaderedContentControl Header="Name" >
                                 <ComboBox SelectedValue="{Binding SelectedTableSchemaName}"
                                           ItemsSource="{Binding Tables}"
-                                          SelectedValuePath="Name"
-                                          DisplayMemberPath="Name"
+                                          SelectedValuePath="SchemaName"
+                                          DisplayMemberPath="SchemaName"
                                           />
                             </HeaderedContentControl>
                         </GroupBox>
-
-                        <GroupBox Header="Überschrift" Grid.Row="1" Grid.Column="0">
-                            <StackPanel >
-                                <HeaderedContentControl Header="Schriftart" >
-                                    <TextBox Text="{Binding HeaderFormat.Schriftart}"/>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Schriftstil" 
-                                                    Visibility="Collapsed">
-                                    <TextBox Text="{Binding HeaderFormat.Schriftstil}"/>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Texthöhe" >
-                                    <TextBox Text="{Binding HeaderFormat.Texthöhe}"/>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Farbe"
-                                                    >
-                                    <ComboBox SelectedValue="{Binding HeaderFormat.RgbFarbe}"
-                                          SelectedValuePath="Color"
-                                          ItemsSource="{StaticResource AllColors}" >
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate DataType="local:Color">
-                                                <StackPanel Orientation="Horizontal" >
-                                                    <Rectangle Width="32" Height="16"
-                                                           Fill="{Binding Brush}"
-                                                           Stroke="Black" StrokeThickness="1" 
-                                                           Margin="2"/>
-                                                    <TextBlock Text="{Binding Name}" Margin="5,0" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl>
-                                    <StackPanel >
-                                        <CheckBox Content="Fett" IsChecked="{Binding HeaderFormat.Fett}"/>
-                                        <CheckBox Content="Kursiv" IsChecked="{Binding HeaderFormat.Kursiv}"/>
-                                        <CheckBox Content="Unterstrichen" IsChecked="{Binding HeaderFormat.Unterstrichen}" />
-                                        <CheckBox Content="Durchgestrichen" IsChecked="{Binding HeaderFormat.Durchgestrichen}"/>
-                                    </StackPanel>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Position">
-                                    <ComboBox SelectedItem="{Binding HeaderPosition}"
-                                          ItemsSource="{Binding Source={StaticResource HeaderPositionSource}}"
-                                          />
-                                </HeaderedContentControl>
-                            </StackPanel>
+                        <GroupBox Header="Blattformate">
+                            <HeaderedContentControl>
+                                <ListBox ItemsSource="{Binding Formats}" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate  DataType="local:FormatSelector">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" MinWidth="20" SharedSizeGroup="Name"/>
+                                                    <ColumnDefinition Width="Auto" SharedSizeGroup="Format"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding IsSelected}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Format.Name}" FontSize="12" Margin="10,5" />
+                                                <TextBlock Grid.Column="2" Text="{Binding Format.SheetFormat}"        Margin="10,5"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </HeaderedContentControl>
                         </GroupBox>
-
-                        <GroupBox Header="Text" Grid.Row="1" Grid.Column="1">
-                            <StackPanel DataContext="{Binding TextFormat}">
-                                <HeaderedContentControl Header="Schriftart">
-                                    <TextBox Text="{Binding Schriftart}" />
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Schriftstil" 
-                                                    Visibility="Collapsed" >
-                                    <TextBox Text="{Binding Schriftstil}"/>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Texthöhe" >
-                                    <TextBox Text="{Binding Texthöhe}" />
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Farbe">
-                                    <ComboBox SelectedValue="{Binding RgbFarbe}"
-                                          SelectedValuePath="Color"
-                                          ItemsSource="{StaticResource AllColors}" >
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate DataType="local:Color">
-                                                <StackPanel Orientation="Horizontal" >
-                                                    <Rectangle Width="32" Height="16"
-                                                           Fill="{Binding Brush}"
-                                                           Stroke="Black" StrokeThickness="1" 
-                                                           Margin="2"/>
-                                                    <TextBlock Text="{Binding Name}" Margin="5,0" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </HeaderedContentControl>
-                                <HeaderedContentControl>
-                                    <StackPanel>
-                                        <CheckBox Content="Fett" IsChecked="{Binding Fett}"/>
-                                        <CheckBox Content="Kursiv" IsChecked="{Binding Kursiv}"/>
-                                        <CheckBox Content="Unterstrichen" IsChecked="{Binding Unterstrichen}" />
-                                        <CheckBox Content="Durchgestrichen" IsChecked="{Binding Durchgestrichen}"/>
-                                    </StackPanel>
-                                </HeaderedContentControl>
-                            </StackPanel>
-                        </GroupBox>
-
-                        <GroupBox Header="Spalten Eigenschaften" Grid.Row="2" Grid.ColumnSpan="2" >
-                            <UniformGrid Columns="2">
-                                <HeaderedContentControl Header="Name">
-                                    <ComboBox ItemsSource="{Binding Spalten}"
-                                              SelectedItem="{Binding Spalte}" 
-                                              DisplayMemberPath="DisplayName"
-                                              Margin="5,2"
-                                              />
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Sichtbar">
-                                    <CheckBox Content="Sichtbar" 
-                                              IsChecked="{Binding Spalte.Visible}" 
-                                              />
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Titel" >
-                                    <TextBox Text="{Binding Spalte.Title}"
-                                             />
-                                </HeaderedContentControl>
-                                <HeaderedContentControl Header="Untertitel">
-                                    <TextBox Text="{Binding Spalte.SubTitle}" />
-                                </HeaderedContentControl>
-
-                                <HeaderedContentControl>
-                                    <CheckBox Content="Breite Automatisch" 
-                                              IsChecked="{Binding Spalte.AutoBreite}" 
-                                              />
-                                </HeaderedContentControl>
-
-                                <HeaderedContentControl Header="Breite">
-                                    <TextBox Text="{Binding Spalte.Breite}" IsEnabled="{Binding Spalte.AutoBreite, Converter={StaticResource Invert}}"/>
-                                </HeaderedContentControl>
-                            </UniformGrid>
-                        </GroupBox>
-                    </Grid>
+                    </StackPanel>
                 </ScrollViewer>
                 <DockPanel Grid.Row="1" Grid.ColumnSpan="2" LastChildFill="False">
                     <Button Content="{local:UiText ButtonDeleteText}" 
                             Command="{Binding DeleteCommand}"
                             Margin="5" MinWidth="100"
                             Foreground="Crimson" 
+                            />
+
+                    <Button Content="&#x23F6;" Margin="5,5,0,5" Padding="2,0,1,2" MinWidth="25"
+                            Command="{Binding MoveSelectedUpCommand}"
+                            CommandParameter="{Binding SelectedTemplate}"
+                            ToolTip="Reihenfolge ändern"
+                            />
+                    <Button Content="&#x23F7;" Margin="0,5,5,5" Padding="2,0,1,2" MinWidth="25" 
+                            Command="{Binding MoveSelectedDownCommand}"
+                            CommandParameter="{Binding SelectedTemplate}"
+                            ToolTip="Reihenfolge ändern"
                             />
                     <Button Content="{local:UiText ButtonAddText}"
                             Command="{Binding AddCommand}"
@@ -215,15 +133,7 @@
                             DockPanel.Dock="Right"
                             />
                 </DockPanel>
-
             </Grid>
-        </GroupBox>
-        <GroupBox Header="Gespeicherte Templates" Grid.Column="1">
-            <ListBox SelectedItem="{Binding SelectedTable}"
-                     ItemsSource="{Binding TableCollection}"
-                     SelectionMode="Single"
-                     DisplayMemberPath="SchemaName"
-                     />
         </GroupBox>
     </Grid>
 </UserControl>

@@ -148,13 +148,13 @@
     <value>Sprache</value>
   </data>
   <data name="TabFormatHeader" xml:space="preserve">
-    <value>Format</value>
+    <value>Blattformate</value>
   </data>
   <data name="TabGeneralHeader" xml:space="preserve">
     <value>Allgemein</value>
   </data>
   <data name="TabTableHeader" xml:space="preserve">
-    <value>Tabelle</value>
+    <value>Passungstabelle</value>
   </data>
   <data name="TabTemplateHeader" xml:space="preserve">
     <value>Vorlagen</value>

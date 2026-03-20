@@ -21,14 +21,45 @@
                     <x:Type Type="{x:Type local:SheetFormat }" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <Visibility x:Key="ZoneVisibility">Collapsed</Visibility>
+            <Style x:Key="ZoneTextBoxStyle" TargetType="TextBox">
+                <Setter Property="Width" Value="40" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Background" Value="#FFC6FDC6" />
+                <Setter Property="Visibility" Value="{StaticResource ZoneVisibility}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsReadOnly" Value="True">
+                        <Setter Property="Foreground" Value="Gray" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="MarginTextBoxStyle" TargetType="TextBox">
+                <Setter Property="Width" Value="40" />
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Background" Value="LemonChiffon" />
+                <Style.Triggers>
+                    <Trigger Property="IsReadOnly" Value="True">
+                        <Setter Property="Foreground" Value="Gray" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto" MinWidth="250"/>
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <GroupBox Header="{local:UiText GroupFormatSettingsHeader}" >
+        <GroupBox Header="{local:UiText GroupFormatSettingsHeader}" Grid.Column="1" >
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -98,11 +129,16 @@
 
                 <GroupBox  Grid.Row="3" Grid.ColumnSpan="2" MinHeight="200">
                     <GroupBox.Header>
-                        <TextBlock>
-                      <Run Text="{local:UiText GroupMarginHeader}" Background="LemonChiffon"/>
-                      <Run Text="/"/>
-                      <Run Text="{local:UiText GroupZoneHeader}" Background="#FFC6FDC6"/>
-                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{local:UiText GroupMarginHeader}"
+                                       Background="LemonChiffon"/>
+                            <TextBlock Text="/" Margin="10,0"
+                                       Visibility="{StaticResource ZoneVisibility}"
+                                       />
+                            <TextBlock Text="{local:UiText GroupZoneHeader}"
+                                       Background="#FFC6FDC6" 
+                                       Visibility="{StaticResource ZoneVisibility}"/>
+                        </StackPanel>
                     </GroupBox.Header>
                     <Grid>
                         <Rectangle Margin="47,25"  Stroke="DimGray" StrokeThickness="1" 
@@ -113,14 +149,44 @@
                                    />
                         <Rectangle Margin="2,2,2,2"      Stroke="Gray"  StrokeThickness="1" Grid.ColumnSpan="2"/>
                         <Rectangle Margin="47,25,47,25"  Stroke="Black" StrokeThickness="1" Grid.ColumnSpan="2"/>
-                        <TextBox Width="40" Margin="5" Padding="0" Text="A1" VerticalAlignment="Top"    HorizontalAlignment="Left"   HorizontalContentAlignment="Center" Background="#FFC6FDC6"  Foreground="Gray"   IsReadOnly="True" />
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding MarginTop}" VerticalAlignment="Top"    HorizontalAlignment="Center" HorizontalContentAlignment="Center" Background="LemonChiffon" />
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding TopRightZone, Mode=OneWay}" VerticalAlignment="Top"    HorizontalAlignment="Right"  HorizontalContentAlignment="Center" Background="#FFC6FDC6" Foreground="Gray"   IsReadOnly="True" />
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding MarginLeft}" VerticalAlignment="Center" HorizontalAlignment="Left"   HorizontalContentAlignment="Center" Background="LemonChiffon"/>
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding MarginRight}" VerticalAlignment="Center" HorizontalAlignment="Right"  HorizontalContentAlignment="Center" Background="LemonChiffon" />
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding BottomLeftZone, Mode=OneWay}" VerticalAlignment="Bottom" HorizontalAlignment="Left"   HorizontalContentAlignment="Center" Background="#FFC6FDC6" Foreground="Gray"   IsReadOnly="True"/>
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding MarginBottom}" VerticalAlignment="Bottom" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Background="LemonChiffon" />
-                        <TextBox Width="40" Margin="5" Padding="0" Text="{Binding MaxZone}" VerticalAlignment="Bottom" HorizontalAlignment="Right"  HorizontalContentAlignment="Center" Background="#FFC6FDC6"/>
+
+                        <TextBox Text="A1"
+                                 IsReadOnly="True" 
+                                 Style="{StaticResource ZoneTextBoxStyle}"
+                                 />
+                        <TextBox Text="{Binding TopRightZone, Mode=OneWay}" 
+                                 IsReadOnly="True" 
+                                 HorizontalAlignment="Right"
+                                 Style="{StaticResource ZoneTextBoxStyle}" 
+                                 />
+                        <TextBox Text="{Binding BottomLeftZone, Mode=OneWay}" 
+                                 VerticalAlignment="Bottom"
+                                 IsReadOnly="True"
+                                 Style="{StaticResource ZoneTextBoxStyle}"
+                                 />
+                        <TextBox Text="{Binding MaxZone}"
+                                 VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                 Style="{StaticResource ZoneTextBoxStyle}"
+                                 />
+
+                        <TextBox Text="{Binding MarginTop}"
+                                 VerticalAlignment="Top"
+                                 Style="{StaticResource MarginTextBoxStyle}"
+                                 />
+
+                        <TextBox Text="{Binding MarginLeft}" 
+                                 HorizontalAlignment="Left" 
+                                 Style="{StaticResource MarginTextBoxStyle}"
+                                 />
+
+                        <TextBox Text="{Binding MarginRight}"
+                                 HorizontalAlignment="Right"
+                                 Style="{StaticResource MarginTextBoxStyle}"
+                                 />
+
+                        <TextBox Text="{Binding MarginBottom}"
+                                 VerticalAlignment="Bottom"
+                                 Style="{StaticResource MarginTextBoxStyle}" />
                     </Grid>
                 </GroupBox>
 
@@ -129,22 +195,25 @@
                             Command="{Binding DeleteCommand}"
                             Margin="5" MinWidth="100"
                             Foreground="Crimson" 
+                            ToolTip="Entfernt die ausgewählte Formatvorlage"
                             />
                     <Button Content="{local:UiText ButtonAddText}"
                             Command="{Binding AddCommand}"
                             Margin="5" MinWidth="100" 
                             Foreground="Teal" 
                             DockPanel.Dock="Right"
+                            ToolTip="Fügt eine neue Formatvorlage der Auswahlt hinzu."
                             />
                     <Button Content="{local:UiText ButtonUpdateText}"
                             Command="{Binding UpdateCommand}"
                             Margin="5" MinWidth="100"
                             DockPanel.Dock="Right"
+                            ToolTip="Übernimmt die Änderungen zur ausgewählten Formatvorlage"
                             />
                 </DockPanel>
             </Grid>
         </GroupBox>
-        <GroupBox Header="{local:UiText GroupSavedFormatsHeader}" Grid.Column="1">
+        <GroupBox Header="{local:UiText GroupSavedFormatsHeader}" Grid.Column="0">
             <ListBox SelectedItem="{Binding SelectedFormat}"
                      ItemsSource="{Binding FormatCollection}"
                      SelectionMode="Single"

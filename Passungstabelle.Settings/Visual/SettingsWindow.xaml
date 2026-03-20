@@ -47,6 +47,7 @@
                         <TextBlock Text="{local:UiText TabTemplateHeader}" />
                     </StackPanel>
                 </TabItem.Header>
+                <local:TemplateControl DataContext="{Binding Template}"/>
             </TabItem>
         </TabControl>
         <DockPanel Grid.Row="1" LastChildFill="False">
