@@ -44,6 +44,7 @@ public class NaheFitTable : ISwAddin
     }
 
     public GeneralSettings Settings { get; private set; } = new();
+    public SettingsLoader SettingsLoader { get; private set; }
 
     [ComRegisterFunction()]
     public static void RegisterFunction(Type t)
@@ -118,8 +119,7 @@ public class NaheFitTable : ISwAddin
     public bool ConnectToSW(object ThisSW, int cookie)
     {
         this.ReloadSettings();
-        var settingsLoader = new SettingsLoader();
-        this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader);
+        this.PassungsTabelleGenerator = new PassungsTabelleGenerator(this.SettingsLoader);
 
         this.ISldWorksApp = (SldWorks)ThisSW;
 
@@ -161,9 +161,9 @@ public class NaheFitTable : ISwAddin
 
     internal void ReloadSettings()
     {
-        var settingsLoader = new SettingsLoader();
-        settingsLoader.ReloadSettings();
-        this.Settings = settingsLoader.Settings;
+        this.SettingsLoader = new SettingsLoader();
+        this.SettingsLoader.ReloadSettings();
+        this.Settings = this.SettingsLoader.Settings;
     }
 
     internal void ExecuteOnCurrentSheet(DrawingDoc drawing)

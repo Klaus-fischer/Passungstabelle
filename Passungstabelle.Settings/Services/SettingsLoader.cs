@@ -147,16 +147,16 @@ public class SettingsLoader
 
     private bool TemplateNameMatches(string templateName, string templatePattern)
     {
-        var pattern = Regex.Escape(templateName)
+        var pattern = Regex.Escape(templatePattern)
             .Replace("\\*", ".*")
             .Replace("\\?", ".");
 
-        return Regex.IsMatch(templatePattern, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        return Regex.IsMatch(templateName, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 
     private bool TryFindTable(string schemaName, out TableSettings tableSettings)
     {
-        if (this.tableSettingsCache.TryGetValue(schemaName, out tableSettings))
+        if (!this.tableSettingsCache.TryGetValue(schemaName, out tableSettings))
         {
             tableSettings = new TableSettings { SchemaName = schemaName };
             return false;

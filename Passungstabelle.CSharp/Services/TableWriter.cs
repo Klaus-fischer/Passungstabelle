@@ -208,7 +208,7 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
 
             var width = spalte.AutoBreite
                 ? this.GetMaxWidth(column, display, swTable)
-                : spalte.Breite;
+                : spalte.Breite / factor;
 
             swTable.SetColumnWidth(column, width, (int)swTableRowColSizeChangeBehavior_e.swTableRowColChange_TableSizeCanChange);
         }
@@ -225,7 +225,7 @@ internal class TableWriter(GeneralSettings settings, TableSettings tableSettings
             width = Math.Max(width, cellWidth);
         }
 
-        return width + 0.001;
+        return Math.Ceiling(width * factor + 1) / factor;
     }
 
     private Point GetEinfügepunkt(TableAnnotation swTable, Point current)

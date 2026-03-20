@@ -226,6 +226,8 @@ public class CommandHandler : IDisposable
         dialog.ViewModel.Initialize();
         dialog.ShowDialog();
 
+        this.addIn.SettingsLoader.ReloadSettings();
+
         if (currentCulture != CultureInfo.CurrentUICulture.Name)
         {
             RemoveCommandMgr();
