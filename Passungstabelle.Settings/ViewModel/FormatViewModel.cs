@@ -7,7 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace Passungstabelle.Settings;
@@ -27,8 +29,8 @@ public class FormatViewModel : BaseViewModel, ISelectedItemHost<FormatSettings>
 
     public FormatViewModel()
     {
-        this.AddCommand = new RelayCommand(OnAddFormat);
-        this.UpdateCommand = new RelayCommand(OnUpdateFormat, CanUpdateFormat);
+        this.AddCommand = new AddToSelectionCommand<FormatSettings>(this);
+        this.UpdateCommand = new UpdateSelectionCommand<FormatSettings>(this);
         this.DeleteCommand = new DeleteSelectedCommand<FormatSettings>(this);
     }
 
@@ -103,7 +105,36 @@ public class FormatViewModel : BaseViewModel, ISelectedItemHost<FormatSettings>
         get => this.selectedFormat;
         set => this.SelectFormat(value);
     }
+
     IList<FormatSettings> ISelectedItemHost<FormatSettings>.Collection => this.FormatCollection;
+
+    FormatSettings ISelectedItemHost<FormatSettings>.CreateItem(out int? index)
+    {
+        index = null;
+        return new()
+        {
+            InsertPoint = this.InsertPoint,
+            Name = this.Name,
+            MaxZone = this.MaxZone,
+            SheetFormat = this.SheetFormat,
+            Offset = new Vector(this.OffsetX, this.OffsetY),
+            Margin = new Thickness(this.MarginBottom, this.MarginLeft, this.MarginRight, this.MarginTop),
+        };
+    }
+
+    bool ISelectedItemHost<FormatSettings>.PropertiesHasChanged(FormatSettings item)
+    {
+        return this.InsertPoint != item.InsertPoint
+            || this.Name != item.Name
+            || this.OffsetX != item.Offset.X
+            || this.OffsetY != item.Offset.Y
+            || this.MarginBottom != item.Margin.Bottom
+            || this.MarginLeft != item.Margin.Left
+            || this.MarginRight != item.Margin.Right
+            || this.MarginTop != item.Margin.Top
+            || this.MaxZone != item.MaxZone
+            || this.SheetFormat != item.SheetFormat;
+    }
 
     public void InitializeFormats(IEnumerable<FormatSettings> formats)
     {
@@ -137,80 +168,4 @@ public class FormatViewModel : BaseViewModel, ISelectedItemHost<FormatSettings>
         this.MaxZone = value.MaxZone;
         this.SheetFormat = value.SheetFormat;
     }
-
-    private void OnAddFormat()
-    {
-        var format = this.CreateFormat();
-
-        this.FormatCollection.Add(format);
-        this.SelectedItem = format;
-    }
-
-    private bool CanUpdateFormat()
-    {
-        var selected = this.SelectedItem;
-
-        return this.InsertPoint != selected.InsertPoint
-            || this.Name != selected.Name
-            || this.OffsetX != selected.Offset.X
-            || this.OffsetY != selected.Offset.Y
-            || this.MarginBottom != selected.Margin.Bottom
-            || this.MarginLeft != selected.Margin.Left
-            || this.MarginRight != selected.Margin.Right
-            || this.MarginTop != selected.Margin.Top
-            || this.MaxZone != selected.MaxZone
-            || this.SheetFormat != selected.SheetFormat;
-    }
-
-    private void OnUpdateFormat()
-    {
-        if (this.selectedFormat is null)
-        {
-            return;
-        }
-
-        var index = this.FormatCollection.IndexOf(this.selectedFormat);
-        var format = this.CreateFormat();
-
-        this.FormatCollection.Insert(index, format);
-        this.FormatCollection.Remove(this.selectedFormat);
-        this.SelectedItem = format;
-    }
-
-    private void OnDeleteFormat()
-    {
-        if (this.SelectedItem is null)
-        {
-            var first = this.FormatCollection.FirstOrDefault() ?? new();
-
-            if (!this.FormatCollection.Contains(first))
-            {
-                this.FormatCollection.Add(first);
-            }
-            return;
-        }
-
-        var index = this.FormatCollection.IndexOf(this.selectedFormat);
-        this.FormatCollection.RemoveAt(index);
-
-        var next = this.FormatCollection.Skip(index).FirstOrDefault() ?? new();
-
-        if (!this.FormatCollection.Contains(next))
-        {
-            this.FormatCollection.Add(next);
-        }
-
-        this.SelectedItem = next;
-    }
-
-    private FormatSettings CreateFormat() =>
-        new()
-        {
-            InsertPoint = this.InsertPoint,
-            Name = this.Name,
-            MaxZone = this.MaxZone,
-            SheetFormat = this.SheetFormat,
-            Offset = new Vector(this.OffsetX, this.OffsetY),
-            Margin = new Thickness(this.MarginBottom, this.MarginLeft, this.MarginRight, this.MarginTop),
-        };
 }

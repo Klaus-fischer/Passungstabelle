@@ -4,6 +4,8 @@
 
 namespace Passungstabelle.Settings;
 
+using System;
+
 public class TextFormat
 {
     public string Schriftart { get; set; } = "Arial";

@@ -4,7 +4,6 @@
 
 namespace Passungstabelle.Settings;
 
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,8 +22,8 @@ public class TableViewModel : BaseViewModel, ISelectedItemHost<TableSettings>
 
     public TableViewModel()
     {
-        this.AddCommand = new RelayCommand(this.OnAddTable);
-        this.UpdateCommand = new RelayCommand(this.OnUpdateTable, this.CanUpdateTable);
+        this.AddCommand = new AddToSelectionCommand<TableSettings>(this);
+        this.UpdateCommand = new UpdateSelectionCommand<TableSettings>(this);
         this.DeleteCommand = new DeleteSelectedCommand<TableSettings>(this);
         this.SelectedItem = new TableSettings();
         this.TableCollection.Add(this.SelectedItem);
@@ -48,7 +47,11 @@ public class TableViewModel : BaseViewModel, ISelectedItemHost<TableSettings>
 
     public ColumnSettings[] Spalten { get => this.spalten; set => this.Set(ref this.spalten, value); }
 
-    public ColumnSettings Spalte { get => this.selectedSpalte; set => this.Set(ref this.selectedSpalte, value); }
+    public ColumnSettings Spalte
+    {
+        get => this.selectedSpalte;
+        set => this.Set(ref this.selectedSpalte, value);
+    }
 
     public HeaderPosition HeaderPosition
     {
@@ -64,8 +67,6 @@ public class TableViewModel : BaseViewModel, ISelectedItemHost<TableSettings>
         set => this.SelectTable(value);
     }
 
-    IList<TableSettings> ISelectedItemHost<TableSettings>.Collection => this.TableCollection;
-
     public void InitializeTableCollection(IEnumerable<TableSettings> tables)
     {
         this.TableCollection.Clear();
@@ -77,75 +78,11 @@ public class TableViewModel : BaseViewModel, ISelectedItemHost<TableSettings>
         this.SelectedItem = this.TableCollection.First();
     }
 
-    private void SelectTable(TableSettings value)
+    IList<TableSettings> ISelectedItemHost<TableSettings>.Collection => this.TableCollection;
+
+    TableSettings ISelectedItemHost<TableSettings>.CreateItem(out int? insertIndex)
     {
-        this.selectedTable = value;
-        this.OnPropertyChanged(nameof(this.SelectedItem));
-        CommandManager.InvalidateRequerySuggested();
-
-        if (value is null)
-        {
-            return;
-        }
-
-        this.Name = value.Name;
-        this.RasterStrichStärke = value.RasterStrichStärke;
-        this.RahmenStrichStärke = value.RahmenStrichStärke;
-        this.HeaderPosition = value.HeaderPosition;
-        this.HeaderFormat.Parse(value.HeaderFormat);
-        this.TextFormat.Parse(value.TextFormat);
-
-        this.Spalten = [.. this.CopySpalten(value.Spalten)];
-        this.Spalte = this.Spalten[0];
-    }
-
-    private void OnAddTable()
-    {
-        var Table = this.CreateTable();
-
-        this.TableCollection.Add(Table);
-        this.SelectedItem = Table;
-    }
-
-    public bool CanUpdateTable() => this.selectedTable is TableSettings table && this.TableCollection.Contains(table);
-
-    private void OnUpdateTable()
-    {
-        if (this.selectedTable is null)
-        {
-            return;
-        }
-
-        var index = this.TableCollection.IndexOf(this.selectedTable);
-        if (index < 0)
-        {
-            return;
-        }
-
-        var Table = this.CreateTable();
-        this.TableCollection.Insert(index, Table);
-        this.TableCollection.Remove(this.selectedTable);
-        this.SelectedItem = Table;
-    }
-
-    private IEnumerable<ColumnSettings> CopySpalten(IEnumerable<ColumnSettings> spalten)
-    {
-        foreach (var spalte in spalten)
-        {
-            yield return new ColumnSettings()
-            {
-                Name = spalte.Name,
-                Title = spalte.Title,
-                SubTitle = spalte.SubTitle,
-                Visible = spalte.Visible,
-                Breite = spalte.Breite,
-                AutoBreite = spalte.AutoBreite,
-            };
-        }
-    }
-
-    private TableSettings CreateTable()
-    {
+        insertIndex = null;
         var result = new TableSettings()
         {
             Name = this.Name,
@@ -173,5 +110,54 @@ public class TableViewModel : BaseViewModel, ISelectedItemHost<TableSettings>
         }
 
         return result;
+    }
+
+    bool ISelectedItemHost<TableSettings>.PropertiesHasChanged(TableSettings item)
+    {
+        return this.Name != item.Name
+           || this.RasterStrichStärke != item.RasterStrichStärke
+           || this.RahmenStrichStärke != item.RahmenStrichStärke
+           || this.HeaderPosition != item.HeaderPosition
+           || !this.HeaderFormat.Equals(item.HeaderFormat)
+           || !this.TextFormat.Equals(item.TextFormat)
+           || !this.Spalten.SequenceEqual(item.Spalten);
+    }
+
+    private void SelectTable(TableSettings value)
+    {
+        this.selectedTable = value;
+        this.OnPropertyChanged(nameof(this.SelectedItem));
+        CommandManager.InvalidateRequerySuggested();
+
+        if (value is null)
+        {
+            return;
+        }
+
+        this.Name = value.Name;
+        this.RasterStrichStärke = value.RasterStrichStärke;
+        this.RahmenStrichStärke = value.RahmenStrichStärke;
+        this.HeaderPosition = value.HeaderPosition;
+        this.HeaderFormat.Parse(value.HeaderFormat);
+        this.TextFormat.Parse(value.TextFormat);
+
+        this.Spalten = [.. this.CopySpalten(value.Spalten)];
+        this.selectedSpalte = this.Spalten[0];
+    }
+
+    private IEnumerable<ColumnSettings> CopySpalten(IEnumerable<ColumnSettings> spalten)
+    {
+        foreach (var spalte in spalten)
+        {
+            yield return new ColumnSettings()
+            {
+                Name = spalte.Name,
+                Title = spalte.Title,
+                SubTitle = spalte.SubTitle,
+                Visible = spalte.Visible,
+                Breite = spalte.Breite,
+                AutoBreite = spalte.AutoBreite,
+            };
+        }
     }
 }

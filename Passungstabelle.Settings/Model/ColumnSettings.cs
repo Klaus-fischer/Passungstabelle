@@ -4,11 +4,14 @@
 
 namespace Passungstabelle.Settings;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
-public class ColumnSettings : INotifyPropertyChanged
+public class ColumnSettings : INotifyPropertyChanged, IEquatable<ColumnSettings>
 {
     private string name = string.Empty;
     private string title = string.Empty;
@@ -71,5 +74,20 @@ public class ColumnSettings : INotifyPropertyChanged
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.DisplayName)));
         }
+    }
+
+    public bool Equals(ColumnSettings? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return Name == other.Name
+            && Title == other.Title
+            && SubTitle == other.SubTitle
+            && Visible == other.Visible
+            && Breite == other.Breite
+            && AutoBreite == other.AutoBreite;
     }
 }

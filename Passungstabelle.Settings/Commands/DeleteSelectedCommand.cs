@@ -1,4 +1,8 @@
-﻿namespace Passungstabelle.Settings;
+﻿// <copyright file="HeaderPosition" company="SIM Automation">
+// Copyright (c) SIM Automation. All rights reserved.
+// </copyright>
+
+namespace Passungstabelle.Settings;
 
 using System;
 using System.Linq;

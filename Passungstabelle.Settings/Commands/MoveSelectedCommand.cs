@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Windows.Input;
 
 internal class MoveSelectedCommand<T> : ICommand
-    where T : new()
 {
     private readonly MoveDirection moveDirection;
     private readonly ISelectedItemHost<T> host;

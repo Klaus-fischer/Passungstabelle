@@ -18,14 +18,13 @@ public class TemplateViewModel : BaseViewModel, ISelectedItemHost<TemplateSettin
     private TemplateSettingsViewModel selectedTemplate = new();
     private string _SelectedTableSchemaName = string.Empty;
 
-
     public TemplateViewModel(ObservableCollection<TableSettings> tables, ObservableCollection<FormatSettings> formats)
     {
         this.Tables = tables;
         this.formats = formats;
         this.formats.CollectionChanged += OnFormatCollectionChanged;
-        this.AddCommand = new RelayCommand(OnAddTemplate);
-        this.UpdateCommand = new RelayCommand(OnUpdateTemplate, CanUpdateTemplate);
+        this.AddCommand = new AddToSelectionCommand<TemplateSettingsViewModel>(this);
+        this.UpdateCommand = new UpdateSelectionCommand<TemplateSettingsViewModel>(this);
         this.DeleteCommand = new DeleteSelectedCommand<TemplateSettingsViewModel>(this);
 
         this.MoveSelectedUpCommand = new MoveSelectedCommand<TemplateSettingsViewModel>(
@@ -82,8 +81,6 @@ public class TemplateViewModel : BaseViewModel, ISelectedItemHost<TemplateSettin
         set => this.SelectedTemplate = value;
     }
 
-    IList<TemplateSettingsViewModel> ISelectedItemHost<TemplateSettingsViewModel>.Collection => this.Templates;
-
     public void InitializeTemplates(IEnumerable<TemplateSettings> templates)
     {
         this.Templates.Clear();
@@ -93,6 +90,31 @@ public class TemplateViewModel : BaseViewModel, ISelectedItemHost<TemplateSettin
         }
 
         this.SelectedTemplate = this.Templates.First();
+    }
+
+    IList<TemplateSettingsViewModel> ISelectedItemHost<TemplateSettingsViewModel>.Collection => this.Templates;
+
+    TemplateSettingsViewModel ISelectedItemHost<TemplateSettingsViewModel>.CreateItem(out int? insertIndex)
+    {
+        insertIndex = this.Templates.LastOrDefault()?.TemplateNamePattern == "*" ? Templates.Count - 1 : null;
+
+        return new TemplateSettingsViewModel()
+        {
+            TemplateNamePattern = this.SelectedTemplatePattern,
+            TableSchemaName = this.SelectedTableSchemaName,
+            FormatNames = [.. this.Formats.Where(o => o.IsSelected).Select(o => o.Format.Name)]
+        };
+    }
+
+    bool ISelectedItemHost<TemplateSettingsViewModel>.PropertiesHasChanged(TemplateSettingsViewModel item)
+    {
+        var formatNamesEquals = item.FormatNames
+            .ToHashSet()
+            .SetEquals(this.Formats.Where(o => o.IsSelected).Select(o => o.Format.Name));
+
+        return item.TemplateNamePattern != this.SelectedTemplatePattern
+            || item.TableSchemaName != this.SelectedTableSchemaName
+            || !formatNamesEquals;
     }
 
     private void UpdateFormatSelection()
@@ -115,99 +137,5 @@ public class TemplateViewModel : BaseViewModel, ISelectedItemHost<TemplateSettin
         }
 
         this.UpdateFormatSelection();
-    }
-
-    private void OnAddTemplate()
-    {
-        var settings = new TemplateSettingsViewModel()
-        {
-            TemplateNamePattern = this.SelectedTemplatePattern,
-            TableSchemaName = this.SelectedTableSchemaName,
-            FormatNames = [.. this.Formats.Where(o => o.IsSelected).Select(o => o.Format.Name)]
-        };
-
-        if (this.Templates.LastOrDefault()?.TemplateNamePattern == "*")
-        {
-            this.Templates.Insert(Templates.Count - 1, settings);
-        }
-        else
-        {
-            this.Templates.Add(settings);
-        }
-
-        this.SelectedTemplate = settings;
-    }
-
-    private bool CanUpdateTemplate()
-    {
-        var settings = this.SelectedTemplate;
-        var formatNamesEquals = settings.FormatNames
-            .ToHashSet()
-            .SetEquals(this.Formats.Where(o => o.IsSelected).Select(o => o.Format.Name));
-
-        return settings.TemplateNamePattern != this.SelectedTemplatePattern
-            || settings.TableSchemaName != this.SelectedTableSchemaName
-            || !formatNamesEquals;
-    }
-
-    private void OnUpdateTemplate()
-    {
-        if (this.SelectedTemplate is null)
-        {
-            this.OnAddTemplate();
-            return;
-        }
-
-        var settings = this.SelectedTemplate;
-
-        settings.TemplateNamePattern = this.SelectedTemplatePattern;
-        settings.TableSchemaName = this.SelectedTableSchemaName;
-        settings.FormatNames = [.. this.Formats.Where(o => o.IsSelected).Select(o => o.Format.Name)];
-    }
-
-    private void OnDeleteTemplate()
-    {
-        if (this.SelectedTemplate is null)
-        {
-            var first = this.Templates.FirstOrDefault() ?? new();
-
-            if (!this.Templates.Contains(first))
-            {
-                this.Templates.Add(first);
-            }
-
-            return;
-        }
-
-        var index = this.Templates.IndexOf(this.SelectedTemplate);
-        this.Templates.RemoveAt(index);
-        var next = this.Templates.Skip(index).FirstOrDefault()
-            ?? this.Templates.LastOrDefault()
-            ?? new();
-
-        if (!this.Templates.Contains(next))
-        {
-            this.Templates.Add(next);
-        }
-
-        this.SelectedTemplate = next;
-    }
-}
-
-public class FormatSelector(FormatSettings format) : BaseViewModel
-{
-    private FormatSettings format = format;
-    private bool _IsSelected = default;
-
-    public FormatSettings Format
-    {
-        get => this.format;
-        set => this.Set(ref format, value);
-    }
-
-    public bool IsSelected
-    {
-        get => this._IsSelected;
-        set => this.Set(ref _IsSelected, value);
     }
 }

@@ -4,7 +4,9 @@
 
 namespace Passungstabelle.Settings;
 
-public class TextViewModel : BaseViewModel
+using System;
+
+public class TextViewModel : BaseViewModel, IEquatable<TextFormat>
 {
     private string schriftart = string.Empty;
     public string Schriftart
@@ -72,6 +74,21 @@ public class TextViewModel : BaseViewModel
         this.Durchgestrichen = format.Durchgestrichen;
         this.Kursiv = format.Kursiv;
         this.RgbFarbe = format.RgbFarbe;
+    }
+
+
+    public bool Equals(TextFormat? other)
+    {
+        if (other is null) return false;
+
+        return this.Schriftart == other.Schriftart
+            && this.Schriftstil == other.Schriftstil
+            && this.Texthöhe == other.Texthöhe
+            && this.Fett == other.Fett
+            && this.Unterstrichen == other.Unterstrichen
+            && this.Durchgestrichen == other.Durchgestrichen
+            && this.Kursiv == other.Kursiv
+            && this.RgbFarbe == other.RgbFarbe;
     }
 
     public static explicit operator TextFormat(TextViewModel viewModel) => new TextFormat

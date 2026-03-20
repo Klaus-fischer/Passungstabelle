@@ -75,7 +75,7 @@
                 </Grid.RowDefinitions>
 
                 <GroupBox Header="{local:UiText OptionNameHeader}" Grid.Column="0">
-                    <TextBox Text="{Binding Name}" Margin="25,2,5,2"/>
+                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Delay=200}" Margin="25,2,5,2"/>
                 </GroupBox>
 
                 <GroupBox Header="{local:UiText OptionSheetFormatHeader}" Grid.Column="1">
@@ -113,7 +113,7 @@
                                                 Template="{StaticResource HorizontalHeader}" 
                                                 Margin="5"
                                                 Padding="8,0,0,0">
-                            <TextBox Text="{Binding OffsetX}" 
+                            <TextBox Text="{Binding OffsetX, UpdateSourceTrigger=PropertyChanged, Delay=200}" 
                                      VerticalContentAlignment="Center"/>
                         </HeaderedContentControl>
                         <HeaderedContentControl Header="Y: "
@@ -121,7 +121,7 @@
                                                 Margin="5"
                                                 Padding="8,0,0,0"
                                                 >
-                            <TextBox Text="{Binding OffsetY}" 
+                            <TextBox Text="{Binding OffsetY, UpdateSourceTrigger=PropertyChanged, Delay=200}" 
                                      VerticalContentAlignment="Center"/>
                         </HeaderedContentControl>
                     </UniformGrid>
@@ -214,7 +214,7 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="{local:UiText GroupSavedFormatsHeader}" Grid.Column="0">
-            <ListBox SelectedItem="{Binding SelectedFormat}"
+            <ListBox SelectedItem="{Binding SelectedItem}"
                      ItemsSource="{Binding FormatCollection}"
                      SelectionMode="Single"
                      Grid.IsSharedSizeScope="True">

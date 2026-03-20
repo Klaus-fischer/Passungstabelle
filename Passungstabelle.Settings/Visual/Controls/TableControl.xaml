@@ -216,7 +216,7 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Gespeicherte Tabellen" >
-            <ListBox SelectedItem="{Binding SelectedTable}"
+            <ListBox SelectedItem="{Binding SelectedItem}"
                      ItemsSource="{Binding TableCollection}"
                      SelectionMode="Single"
                      >
