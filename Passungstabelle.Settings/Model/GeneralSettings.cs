@@ -4,10 +4,11 @@
 
 namespace Passungstabelle.Settings;
 
+using System.Globalization;
 
 public class GeneralSettings
 {
-    public string Language { get; set; } = string.Empty;
+    public string Language { get; set; } = CultureInfo.CurrentCulture.Name;
 
     public bool UseCentralLocation { get; set; } = false;
 
