@@ -118,6 +118,7 @@ public class NaheFitTable : ISwAddin
     public bool ConnectToSW(object ThisSW, int cookie)
     {
         this.ReloadSettings();
+        var settingsLoader = new SettingsLoader();
         this.PassungsTabelleGenerator = new PassungsTabelleGenerator(settingsLoader);
 
         this.ISldWorksApp = (SldWorks)ThisSW;

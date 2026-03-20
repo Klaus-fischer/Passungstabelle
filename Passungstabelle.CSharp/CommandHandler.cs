@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -29,6 +30,7 @@ public class CommandHandler : IDisposable
     private readonly int cookie;
     private readonly NaheFitTable addIn;
     private readonly CommandManager swCommandManager;
+    private ICommandTab[] commandTabs;
 
     public CommandHandler(SldWorks sldWorks, int cookie, NaheFitTable addIn)
     {
@@ -127,6 +129,8 @@ public class CommandHandler : IDisposable
         cmdGroup.HasMenu = true;
         cmdGroup.Activate();
 
+        this.commandTabs = new ICommandTab[docTypes.Length];
+        int index = 0;
         foreach (int docType in docTypes)
         {
             ICommandTab? cmdTab = this.swCommandManager.GetCommandTab(docType, Title);
@@ -164,6 +168,9 @@ public class CommandHandler : IDisposable
 
                 bResult = cmdBox1.AddCommands(cmdIDs, TextType);
             }
+
+            this.commandTabs[index] = cmdTab;
+            index++;
         }
 
         thisAssembly = null;
@@ -174,7 +181,10 @@ public class CommandHandler : IDisposable
         try
         {
             this.swCommandManager.RemoveCommandGroup(mainCmdGroupID);
-            this.swCommandManager.RemoveCommandTab()
+            foreach (var cmdTab in this.commandTabs.OfType<CommandTab>())
+            {
+                this.swCommandManager.RemoveCommandTab(cmdTab);
+            }
         }
         catch (Exception e)
         {

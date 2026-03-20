@@ -1,6 +1,7 @@
 @setlocal enableextensions
 @cd /d "%~dp0"
 rem only for .net5.0 and higher
+regsvr32 /u "Passungstabelle.CSharp.comhost.dll" 
 regsvr32 "Passungstabelle.CSharp.comhost.dll" 
 
 set FMWK="v4.0.30319"

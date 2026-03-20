@@ -65,8 +65,12 @@ internal class PassungsTabelleGenerator(SettingsLoader  loader)
 
     private void InsertTable(IModelDoc2 drawing, ISheet sheet, TabellenZeile[] zeilen)
     {
-        var tableSettings = loader.GetTableSettings(sheet);
-        var formatSettings = loader.GetFormat(sheet, tableSettings);
+        var templateName = sheet.GetTemplateName();
+        var sheetFormat = sheet.GetSheetFormat();
+        if (!loader.TryGetTableSettings(templateName, sheetFormat, out var tableSettings, out var formatSettings))
+        {
+            return;
+        }
 
         var tableWriter = new TableWriter(this.settings, tableSettings, formatSettings);
         tableWriter.InsertTable(drawing, sheet, zeilen);

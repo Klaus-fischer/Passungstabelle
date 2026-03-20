@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Passungstabelle.Settings\Passungstabelle.Settings.csproj" />
-    <ProjectReference Include="..\Settings.UI\Passungstabelle.Settings.csproj" />
   </ItemGroup>
 
   <ItemGroup>
