@@ -23,25 +23,25 @@ public class TableSettings
 
     public bool HasMultiLineHeader => this.Spalten.Any(o => o.Visible && !string.IsNullOrWhiteSpace(o.SubTitle));
 
-    public ColumnSettings Maß { get; } = new ColumnSettings() { Name = "Maß", Title = "Maß", Visible = true, Breite = 15, };
+    public ColumnSettings Maß { get; } = new ColumnSettings() { Name = "Maß", Title = "Maß", Visible = true, Breite = 15, AutoBreite = true };
 
-    public ColumnSettings Passung { get; } = new ColumnSettings() { Name = "Passung", Title = "Passung", Visible = true, Breite = 15, };
+    public ColumnSettings Passung { get; } = new ColumnSettings() { Name = "Passung", Title = "Passung", Visible = true, Breite = 15, AutoBreite = true };
 
-    public ColumnSettings MaßePassung { get; } = new ColumnSettings() { Name = "MaßePassung", Title = "MaßePassung", Visible = false, Breite = 20, };
+    public ColumnSettings MaßePassung { get; } = new ColumnSettings() { Name = "MaßePassung", Title = "MaßePassung", Visible = false, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings Toleranz { get; } = new ColumnSettings() { Name = "Toleranz", Title = "Toleranz", Visible = true, Breite = 20, };
+    public ColumnSettings Toleranz { get; } = new ColumnSettings() { Name = "Toleranz", Title = "Toleranz", Visible = true, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings Abmaß { get; } = new ColumnSettings() { Name = "Abmaß", Title = "Abmaß", Visible = true, Breite = 20, };
+    public ColumnSettings Abmaß { get; } = new ColumnSettings() { Name = "Abmaß", Title = "Abmaß", Visible = true, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings AbmaßToleranzMitte { get; } = new ColumnSettings() { Name = "AbmaßToleranzMitte", Title = "AbmaßToleranzMitte", Visible = false, Breite = 20, };
+    public ColumnSettings AbmaßToleranzMitte { get; } = new ColumnSettings() { Name = "AbmaßToleranzMitte", Title = "AbmaßToleranzMitte", Visible = false, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings VorbearbeitungsAbmaße { get; } = new ColumnSettings() { Name = "VorbearbeitungsAbmaße", Title = "VorbearbeitungsAbmaße", Visible = false, Breite = 20, };
+    public ColumnSettings VorbearbeitungsAbmaße { get; } = new ColumnSettings() { Name = "VorbearbeitungsAbmaße", Title = "VorbearbeitungsAbmaße", Visible = false, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings VorbearbeitungsToleranzMitte { get; } = new ColumnSettings() { Name = "VorbearbeitungsToleranzMitte", Title = "VorbearbeitungsToleranzMitte", Visible = false, Breite = 20, };
+    public ColumnSettings VorbearbeitungsToleranzMitte { get; } = new ColumnSettings() { Name = "VorbearbeitungsToleranzMitte", Title = "VorbearbeitungsToleranzMitte", Visible = false, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings Anzahl { get; } = new ColumnSettings() { Name = "Anzahl", Title = "Anzahl", Visible = false, Breite = 20, };
+    public ColumnSettings Anzahl { get; } = new ColumnSettings() { Name = "Anzahl", Title = "Anzahl", Visible = false, Breite = 20, AutoBreite = true };
 
-    public ColumnSettings Zone { get; } = new ColumnSettings() { Name = "Zone", Title = "Zone", Visible = false, Breite = 20, };
+    public ColumnSettings Zone { get; } = new ColumnSettings() { Name = "Zone", Title = "Zone", Visible = false, Breite = 20, AutoBreite = true };
 
     public IEnumerable<ColumnSettings> Spalten
     {
