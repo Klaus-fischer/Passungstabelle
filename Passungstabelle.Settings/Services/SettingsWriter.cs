@@ -7,12 +7,20 @@ namespace Passungstabelle.Settings;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text.Encodings.Web;
+using System.Web;
 using System.Windows;
 using System.Xml;
 
 internal static class SettingsWriter
 {
-    public static void WriteSettings(GeneralSettings settings, FormatSettings[] formats, TableSettings[] tables, string outputPath, bool userSettingsOnly)
+    public static void WriteSettings(
+        GeneralSettings settings,
+        FormatSettings[] formats,
+        TableSettings[] tables,
+        TemplateSettings[] templates,
+        string outputPath,
+        bool userSettingsOnly)
     {
         var culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
@@ -38,6 +46,7 @@ internal static class SettingsWriter
             {
                 ExportFormats(formats, writer);
                 ExportTables(tables, writer);
+                ExportTemplates(templates, writer);
             }
 
             writer.WriteEndElement(); // Settings
@@ -147,6 +156,35 @@ internal static class SettingsWriter
         }
         writer.WriteEndElement(); // Spalten
         writer.WriteEndElement(); // Table
+    }
+
+    private static void ExportTemplates(TemplateSettings[] templates, XmlWriter writer)
+    {
+        writer.WriteStartElement("TemplateSettings");
+
+        foreach (var template in templates)
+        {
+            ExportTemplate(template, writer);
+        }
+
+        writer.WriteEndElement(); // TableSettings
+    }
+
+    private static void ExportTemplate(TemplateSettings settings, XmlWriter writer)
+    {
+        writer.WriteStartElement("Template");
+        writer.WriteAttributeString(nameof(TemplateSettings.TemplateNamePattern), HttpUtility.HtmlAttributeEncode(settings.TemplateNamePattern));
+        writer.WriteAttributeString(nameof(TemplateSettings.TableSchemaName), settings.TableSchemaName);
+
+        writer.WriteStartElement("AllowedFormats");
+        foreach (var formatName in settings.FormatNames)
+        {
+            writer.WriteStartElement("Format");
+            writer.WriteAttributeString("Name", formatName);
+            writer.WriteEndElement();
+        }
+        writer.WriteEndElement(); // AllowedFormats
+        writer.WriteEndElement(); // Template
     }
 
     private static void WriteTextFormat(XmlWriter writer, string elementName, TextFormat format)

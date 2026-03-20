@@ -8,7 +8,6 @@ using Passungstabelle.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 public class SettingsLoader
@@ -26,8 +25,6 @@ public class SettingsLoader
         if (RegistryService.TryGetCentralLocation(out var centralLocation))
         {
             this.OverrideLocalSettings(centralLocation, DefaultLocations.SettingsFilename);
-            this.OverrideLocalSettings(centralLocation, DefaultLocations.TableSettingsFilename);
-            this.OverrideLocalSettings(centralLocation, DefaultLocations.FormatSettingsFilename);
         }
 
         this.LoadLocalSettings();
@@ -39,13 +36,13 @@ public class SettingsLoader
         var centralFilename = Path.Combine(centralLocation, filename);
         var localFilename = Path.Combine(DefaultLocations.CommonLocalSettingsPath, filename);
 
-        if (!GeneralSettingsReader.TryGetExportDate(centralFilename, out var centralExportDate))
+        if (!SettingsReader.TryGetExportDate(centralFilename, out var centralExportDate))
         {
             // no settings date --> no central settings found
             return;
         }
 
-        if (GeneralSettingsReader.TryGetExportDate(localFilename, out var localExportDate)
+        if (SettingsReader.TryGetExportDate(localFilename, out var localExportDate)
             && centralExportDate <= localExportDate)
         {
             // central settings are older or equal to local settings
@@ -57,112 +54,71 @@ public class SettingsLoader
 
     private void LoadLocalSettings()
     {
-        this.LoadGeneralSettings();
-        this.LoadTableSettings();
-        this.LoadFormatSettings();
-        this.LoadTemplateSettings();
-    }
-
-    private void LoadGeneralSettings()
-    {
         var settings = new GeneralSettings();
-        GeneralSettingsReader.ReadGeneralSettings(DefaultLocations.CommonLocalSettingsPath, ref settings);
+        List<TableSettings> tableSettings = [];
+        List<FormatSettings> formatSettings = [];
+        List<TemplateSettings> templateSettings = [];
+
+        SettingsReader.ReadGeneralSettings(DefaultLocations.CommonLocalSettingsPath, ref settings, ref formatSettings, ref tableSettings);
 
         // user settings overrides common settings
-        GeneralSettingsReader.ReadGeneralSettings(DefaultLocations.UserLocalSettingsPath, ref settings);
+        SettingsReader.ReadGeneralSettings(DefaultLocations.UserLocalSettingsPath, ref settings, ref formatSettings, ref tableSettings);
         this.Settings = settings;
-    }
 
-    private void LoadTableSettings()
-    {
-        List<TableSettings> tableSettings = [];
-        TableSettingsReader.ReadTableSettings(DefaultLocations.CommonLocalSettingsPath, tableSettings);
         if (tableSettings.Count == 0)
         {
             tableSettings.Add(new TableSettings());
         }
 
         tableSettings.ForEach(t => this.tableSettingsCache[t.Name] = t);
-    }
 
-    private void LoadFormatSettings()
-    {
-        List<FormatSettings> formatSettings = [];
-        FormatSettingsReader.ReadFormatSettings(DefaultLocations.CommonLocalSettingsPath, formatSettings);
         if (formatSettings.Count == 0)
         {
             formatSettings.Add(new FormatSettings() { SheetFormat = SheetFormat.All, MaxZone = "" });
         }
 
         formatSettings.ForEach(f => this.formatSettingsCache[f.Name] = f);
-    }
 
-    private void LoadTemplateSettings()
-    {
-        List<TemplateSettings> templateSettings = [];
-        TemplateSettingsReader.ReadTemplateSettings(DefaultLocations.CommonLocalSettingsPath, templateSettings);
-        if (templateSettings.Count == 0)
-        {
-            templateSettings.Add(new TemplateSettings()
-            {
-                TemplateNamePattern = "*",
-                FormatNames = this.formatSettingsCache.Values.Select(o => o.Name).ToArray(),
-                TableSchemaName = this.tableSettingsCache.First().Key,
-            });
-        }
-
-        templateSettings.ForEach(this.templateSettingsCache.Add);
     }
 
     public bool TryGetTableSettings(string templateName, SheetFormat sheetFormat, out TableSettings table, out FormatSettings format)
     {
-        format = null!;
-        if (!this.TryFindTemplate(templateName, out var template))
-        {
-            table = new();
-            format = new();
-            return false;
-        }
+        format = new FormatSettings() { SheetFormat = SheetFormat.All };
 
-        return TryFindTable(template.TableSchemaName, out table)
-            && TryFindFormat(template.FormatNames, sheetFormat, out format);
+        return TryFindTable(templateName, out table)
+            && TryFindFormat(table.FormatNames, sheetFormat, out format);
     }
 
-    private bool TryFindTemplate(string templateName, out TemplateSettings templateSettings)
+    private bool TryFindTable(string templateName, out TableSettings tableSettings)
     {
-        templateSettings = null!;
-        foreach (var template in templateSettingsCache)
+        tableSettings = null!;
+        foreach (var table in tableSettingsCache.Values)
         {
-            if (!TemplateNameMatches(templateName, template.TemplateNamePattern))
+            if (!TemplateNameMatches(templateName, table.TemplateNamePattern))
             {
                 continue;
             }
 
-            templateSettings = template;
-            return true;
+            tableSettings = table;
+            break;
         }
 
-        return false;
-    }
-
-    private bool TemplateNameMatches(string templateName, string templatePattern)
-    {
-        var pattern = Regex.Escape(templatePattern)
-            .Replace("\\*", ".*")
-            .Replace("\\?", ".");
-
-        return Regex.IsMatch(templateName, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-    }
-
-    private bool TryFindTable(string schemaName, out TableSettings tableSettings)
-    {
-        if (!this.tableSettingsCache.TryGetValue(schemaName, out tableSettings))
+        if (tableSettings is null)
         {
-            tableSettings = new TableSettings { Name = schemaName };
+            tableSettings = new TableSettings();
             return false;
         }
 
         return true;
+    }
+
+    private bool TemplateNameMatches(string templateName, string templatePattern)
+    {
+        var pattern = Regex.Escape(templateName)
+            .Replace("\\*", ".*")
+            .Replace("\\?", ".");
+
+        return Regex.IsMatch(templatePattern, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 
     private bool TryFindFormat(string[] formatNames, SheetFormat sheetFormat, out FormatSettings formatSettings)

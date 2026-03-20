@@ -68,21 +68,21 @@
                 </Grid.RowDefinitions>
                 <ScrollViewer>
                     <StackPanel Grid.IsSharedSizeScope="True">
-                        <GroupBox Header="Blattformat Vorlage" Grid.Row="0" Grid.Column="1">
+                        <GroupBox Header="Blattformat Vorlage Dateiname" Grid.Row="0" Grid.Column="1">
                             <HeaderedContentControl Header="Muster" >
                                 <TextBox  Text="{Binding SelectedTemplatePattern}"/>
                             </HeaderedContentControl>
                         </GroupBox>
-                        <GroupBox Header="{local:UiText TabFormatHeader}" Grid.Row="0" Grid.Column="0">
+                        <GroupBox Header="{local:UiText TabTableHeader}" Grid.Row="0" Grid.Column="0">
                             <HeaderedContentControl Header="Name" >
                                 <ComboBox SelectedValue="{Binding SelectedTableSchemaName}"
                                           ItemsSource="{Binding Tables}"
-                                          SelectedValuePath="SchemaName"
-                                          DisplayMemberPath="SchemaName"
+                                          SelectedValuePath="Name"
+                                          DisplayMemberPath="Name"
                                           />
                             </HeaderedContentControl>
                         </GroupBox>
-                        <GroupBox Header="Blattformate">
+                        <GroupBox Header="{local:UiText TabFormatHeader}">
                             <HeaderedContentControl>
                                 <ListBox ItemsSource="{Binding Formats}" >
                                     <ListBox.ItemTemplate>
